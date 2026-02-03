@@ -7,27 +7,28 @@
     <style>
         body { font-family: 'Comic Sans MS', sans-serif; background: #fdfdfd; text-align: center; margin: 0; padding-bottom: 50px; }
         .topo { background: #FF6B6B; color: white; padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
         .tela { display: none; padding: 20px; }
         .ativa { display: block; }
-
         .caixa { background: white; border: 3px solid #4ECDC4; border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 400px; box-shadow: 5px 5px 0 #4ECDC4; }
         input { width: 80%; padding: 10px; margin: 10px; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; }
-        
         .alvo { background: #FFE66D; margin: 15px; padding: 15px; border-radius: 15px; border: 3px dashed #FF6B6B; font-size: 22px; font-weight: bold; }
         .area-cartas { display: flex; justify-content: center; gap: 10px; margin: 20px; }
         .carta { width: 65px; height: 95px; background: white; border: 3px solid #4ECDC4; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; box-shadow: 4px 4px 0 #4ECDC4; font-weight: bold; }
         .sinal { padding: 15px 20px; font-size: 20px; margin: 5px; cursor: pointer; border: none; border-radius: 10px; background: #4ECDC4; color: white; font-weight: bold; }
-        
         #pausa { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #FF6B6B; color: white; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
         .btn-principal { background: #4ECDC4; color: white; padding: 15px 40px; border: none; border-radius: 50px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 #36918a; }
         .btn-principal:active { transform: translateY(4px); box-shadow: none; }
-
         #relogio { font-size: 40px; color: #FF6B6B; font-weight: bold; margin: 10px; }
         #visor-conta { font-size: 28px; margin: 20px; background: #eee; padding: 15px; border-radius: 15px; min-height: 40px; border: 2px solid #ccc; }
     </style>
 </head>
 <body>
+
+    <div id="pausa">
+        <h1>⏸️ PAUSA DO PINGÃO</h1>
+        <p id="frase-pausa" style="font-size: 24px; padding: 20px;">Vou ali buscar mais um gelo...</p>
+        <button class="btn-principal" style="background:#333; box-shadow: 0 4px 0 #000;" onclick="voltarJogo()">VOLTAR PRO JOGO</button>
+    </div>
 
     <div id="tela-entrada" class="tela ativa">
         <div class="topo"><h1>😎 Desafio do Pingão</h1></div>
@@ -43,8 +44,7 @@
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>🏠 Sala: <span id="sala-id">...</span></h1></div>
         <div class="caixa">
-            <p style="font-size: 20px;">Esperando o resto da galera entrar no chat... 🌭</p>
-            <div id="lista-jogadores" style="font-weight: bold; color: #4ECDC4;"></div>
+            <p style="font-size: 20px;">Aguardando a galera entrar... 🌭</p>
             <br>
             <button class="btn-principal" style="background:#FF6B6B; box-shadow: 0 4px 0 #b34a4a;" onclick="comecarJogo()">INICIAR DESAFIO!</button>
         </div>
@@ -74,13 +74,7 @@
             <button class="btn-principal" onclick="enviar()">ENVIAR CONTA!</button>
         </div>
         <br>
-        <button onclick="solicitarPausa()" style="background:none; border:1px solid #ccc; border-radius:10px; cursor:pointer;">Pausa do Host</button>
-    </div>
-
-    <div id="pausa">
-        <h1>⏸️ PAUSA DO PINGÃO</h1>
-        <p id="frase-pausa" style="font-size: 24px; padding: 20px;">Vou ali buscar mais um gelo...</p>
-        <button class="btn-principal" style="background:#333; box-shadow: 0 4px 0 #000;" onclick="socket.send(JSON.stringify({type:'RESUME'}))">VOLTAR PRO JOGO</button>
+        <button onclick="solicitarPausa()" style="background:none; border:1px solid #ccc; border-radius:10px; cursor:pointer; padding: 5px 10px;">Pausa do Host</button>
     </div>
 
     <script>
@@ -89,18 +83,12 @@
         let tempo = 90;
         let timerAtivo = false;
 
-        const frasesPinga = [
-            "O banheiro é ali no fundo, a chave tá em cima da geladeira!",
-            "Parei porque o Dudu já tava suando de tanto fazer conta...",
-            "Aproveita a pausa e traz um petisco pro Pingão!",
-            "Segura o tchan! Vou ali buscar gelo e já volto."
-        ];
-
         function conectar() {
             const nome = document.getElementById('nome-player').value;
             const sala = document.getElementById('nome-sala').value;
             if(!nome || !sala) return alert("Preenche os campos, Pingão!");
 
+            // USANDO O SEU WORKER
             socket = new WebSocket('wss://pingao-backend.esdrasjulio.workers.dev/');
 
             socket.onopen = () => {
@@ -119,7 +107,6 @@
                 
                 if(data.type === 'PAUSE') {
                     document.getElementById('pausa').style.display = 'flex';
-                    document.getElementById('frase-pausa').innerText = frasesPinga[Math.floor(Math.random()*frasesPinga.length)];
                 }
                 
                 if(data.type === 'RESUME') {
@@ -136,12 +123,15 @@
         function comecarJogo() {
             if(socket && socket.readyState === WebSocket.OPEN) {
                 socket.send(JSON.stringify({type: 'START'}));
+            } else {
+                // Se der erro de conexão, ele inicia forçado pra você ver
+                mostrarTela('tela-jogo');
+                iniciarRelogio();
             }
         }
 
-        function solicitarPausa() {
-            socket.send(JSON.stringify({type: 'PAUSE'}));
-        }
+        function solicitarPausa() { socket.send(JSON.stringify({type: 'PAUSE'})); }
+        function voltarJogo() { socket.send(JSON.stringify({type: 'RESUME'})); }
 
         function colocar(v) { 
             minhaConta += v; 
@@ -156,10 +146,8 @@
         function enviar() {
             try {
                 let res = eval(minhaConta);
-                alert("O Pingão viu sua conta!\nResultado: " + res + "\nDistância do Alvo: " + Math.abs(11 - res));
-            } catch(e) { 
-                alert("Epa! Essa conta tá errada. Limpe e tente de novo!"); 
-            }
+                alert("Conta enviada!\nResultado: " + res + "\nDistância: " + Math.abs(11 - res));
+            } catch(e) { alert("Conta errada! Limpe e tente de novo."); }
         }
 
         function iniciarRelogio() {
