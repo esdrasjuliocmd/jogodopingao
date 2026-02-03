@@ -1,302 +1,124 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>O Caminho das Duplas 📜</title>
-  <style>
-    :root{
-      /* Cores ajustadas para um tema bíblico moderno (Papiro, Ouro, Céu e Vinho) */
-      --bg1:#2c3e50; --bg2:#3498db; --bg3:#f1c40f; --bg4:#e67e22;
-      --ink:#1a1a1a;
-      --card:#ffffff;
-      --shadow: 0 14px 40px rgba(0,0,0,.2);
-      --radius: 20px;
-      --accent:#e74c3c; /* Vinho/Vermelho */
-      --good:#27ae60;
-      --bad:#c0392b;
-      --warn:#f39c12;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%; margin:0; font-family: ui-rounded, system-ui, sans-serif; color:var(--ink);}
-    body{
-      background: 
-        radial-gradient(circle at top left, rgba(255,255,255,0.2), transparent),
-        linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg4));
-      background-attachment: fixed;
-      overflow-x:hidden;
-    }
-    .wrap{max-width:1100px; margin:0 auto; padding:20px 15px;}
-    
-    /* Topbar com Glassmorphism */
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:15px; position:sticky; top:10px; z-index:100;
-      backdrop-filter: blur(15px); background: rgba(255,255,255,.7);
-      border: 1px solid rgba(255,255,255,.4); border-radius: 20px;
-      box-shadow: var(--shadow); margin-bottom: 20px;
-    }
-    .logo{
-      width:45px; height:45px; border-radius:12px;
-      background: linear-gradient(45deg, #f1c40f, #e67e22);
-      display:grid; place-items:center; font-size:24px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    /* Grid principal */
-    .grid{ display:grid; grid-template-columns: 1fr; gap:20px; }
-    @media (min-width: 900px){ .grid{ grid-template-columns: 350px 1fr; } }
-
-    .card{
-      background: rgba(255,255,255,.9); border-radius: var(--radius);
-      padding:20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.5);
-    }
-
-    /* Sistema de Duplas */
-    .dupla-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
-      margin-top: 15px;
-    }
-    .p-card {
-      background: white; border-radius: 15px; padding: 12px;
-      border-left: 6px solid #ccc; position: relative;
-      transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    .p-card.dupla-1 { border-left-color: #3498db; }
-    .p-card.dupla-2 { border-left-color: #e74c3c; }
-    .p-card.dupla-3 { border-left-color: #27ae60; }
-    .p-card.dupla-4 { border-left-color: #f1c40f; }
-
-    /* Cartas Temáticas */
-    .cards-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px; margin-top: 15px;
-    }
-    .biblical-card {
-      background: linear-gradient(135deg, #fff, #f9f9f9);
-      border: 2px solid transparent; border-radius: 15px; padding: 15px;
-      cursor: pointer; position: relative; transition: all 0.2s;
-    }
-    .biblical-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .biblical-card.selected { border-color: var(--bg2); background: #ebf5ff; }
-    .card-icon { font-size: 24px; margin-bottom: 8px; }
-    .card-pts { 
-      position: absolute; top: 10px; right: 10px; 
-      background: var(--bg3); color: white; padding: 2px 8px; 
-      border-radius: 10px; font-weight: bold; font-size: 12px;
-    }
-
-    /* Estilização de Inputs e Botões */
-    input, select, textarea {
-      width: 100%; padding: 12px; margin: 8px 0;
-      border-radius: 12px; border: 1px solid #ddd; outline: none;
-    }
-    button {
-      width: 100%; padding: 14px; border-radius: 12px; border: none;
-      font-weight: bold; cursor: pointer; transition: 0.2s;
-      background: linear-gradient(45deg, var(--bg2), #2980b9); color: white;
-    }
-    button:active { transform: scale(0.98); }
-    button.secondary { background: #ecf0f1; color: #333; margin-top: 8px; }
-
-    .chat-log {
-      height: 200px; overflow-y: auto; background: #fdfdfd;
-      border-radius: 12px; padding: 10px; font-size: 13px; border: 1px solid #eee;
-    }
-    .badge { font-size: 10px; padding: 3px 7px; border-radius: 8px; font-weight: bold; text-transform: uppercase; }
-    .badge-host { background: #f1c40f; color: #000; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio do Pingão</title>
+    <style>
+        /* CORES E VISUAL DO PINGÃO */
+        body { font-family: 'Comic Sans MS', sans-serif; background: #fdfdfd; text-align: center; margin: 0; padding-bottom: 50px; }
+        .topo { background: #FF6B6B; color: white; padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .alvo { background: #FFE66D; margin: 15px; padding: 15px; border-radius: 15px; border: 3px dashed #FF6B6B; font-size: 22px; font-weight: bold; }
+        .cronometro { font-size: 40px; color: #FF6B6B; margin: 10px; font-weight: bold; }
+        
+        /* CARTAS E BOTÕES */
+        .area-cartas { display: flex; justify-content: center; gap: 10px; margin: 20px; }
+        .carta { width: 70px; height: 100px; background: white; border: 3px solid #4ECDC4; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; box-shadow: 4px 4px 0 #4ECDC4; }
+        .botoes-sinais { margin: 20px; }
+        .sinal { padding: 15px 20px; font-size: 20px; margin: 5px; cursor: pointer; border: none; border-radius: 10px; background: #4ECDC4; color: white; font-weight: bold; }
+        
+        /* CONTA ATUAL */
+        .display-conta { background: #eee; padding: 20px; margin: 15px; border-radius: 10px; min-height: 40px; font-size: 24px; color: #333; }
+        
+        /* TELA DE PAUSA */
+        #pausa { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #FF6B6B; color: white; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
+        .botao-grande { background: #333; color: white; padding: 20px 40px; border: none; border-radius: 50px; font-size: 20px; cursor: pointer; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
-  <div class="wrap">
-    <div class="topbar">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="logo">📜</div>
-        <div>
-          <b style="font-size:18px;">O Caminho das Duplas</b><br>
-          <small id="room-info">Aguardando entrada...</small>
-        </div>
-      </div>
-      <div id="connection-status" style="font-size:12px; font-weight:bold; color:var(--bad);">● Desconectado</div>
+    <div id="pausa">
+        <h1>⏸️ PAUSA DO PINGÃO</h1>
+        <p id="frase-pausa" style="font-size: 24px; padding: 20px;"></p>
+        <button class="botao-grande" onclick="tirarPausa()">VOLTAR PRO JOGO</button>
     </div>
 
-    <div class="grid">
-      <div class="card">
-        <h3>🏠 Sala de Oração</h3>
-        <input id="workerUrl" type="text" placeholder="URL do Cloudflare Worker">
-        <input id="nick" type="text" placeholder="Seu Nome (ex: Pedro)">
-        <input id="roomCode" type="text" placeholder="Código da Sala" style="text-transform: uppercase;">
-        
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <button id="btnCreate">Criar</button>
-          <button id="btnJoin" class="secondary">Entrar</button>
-        </div>
-
-        <hr style="opacity:0.2; margin:20px 0;">
-        
-        <div id="room-display" style="display:none;">
-          <small>Código para convite:</small>
-          <h2 id="displayCode" style="letter-spacing:5px; color:var(--bg2); margin:5px 0;">---</h2>
-          <button id="btnCopy" class="secondary" style="font-size:12px; padding:8px;">📋 Copiar Convite</button>
-          <button id="btnLeave" class="secondary" style="color:var(--bad); font-size:12px;">Sair da Sala</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h2 id="current-phase">🏁 Lobby</h2>
-          <div id="timer" style="background:#eee; padding:5px 15px; border-radius:15px; font-weight:bold;">00s</div>
-        </div>
-
-        <div id="lobby-actions" style="margin-bottom:20px; display:flex; gap:10px;">
-          <button id="btnReady" style="background:var(--good);">Estou Pronto!</button>
-          <button id="btnStart" style="display:none;">Iniciar Jornada</button>
-        </div>
-
-        <h3>👥 Peregrinos (Duplas)</h3>
-        <div id="players-list" class="dupla-container">
-          </div>
-
-        <div id="vote-section" style="display:none; margin-top:30px;">
-          <hr style="opacity:0.2;">
-          <h3>📖 Escolha sua Sabedoria</h3>
-          <p style="font-size:12px; opacity:0.7;">Seu voto ajuda sua dupla a ganhar vantagens!</p>
-          <div id="cards-container" class="cards-grid">
-            </div>
-        </div>
-
-        <div style="margin-top:30px;">
-          <h3>💬 Chat da Comunidade</h3>
-          <div id="chatLog" class="chat-log"></div>
-          <div style="display:flex; gap:5px; margin-top:10px;">
-            <input id="chatInput" placeholder="Envie uma mensagem...">
-            <button id="btnSend" style="width:80px;">Enviar</button>
-          </div>
-        </div>
-      </div>
+    <div class="topo">
+        <h1>😎 Desafio do Pingão</h1>
+        <div id="relogio" class="cronometro">90</div>
     </div>
-  </div>
 
-<script>
-(() => {
-  // CONFIGURAÇÃO DAS CARTAS BÍBLICAS
-  const BIBLICAL_CARDS = [
-    { id: 'B1', icon: '🕊️', title: 'Fruto do Espírito', pts: '+3', desc: 'Sua dupla ganha bônus por paciência.' },
-    { id: 'B2', icon: '🛡️', title: 'Escudo da Fé', pts: '+2', desc: 'Protege contra a próxima perda de pontos.' },
-    { id: 'B3', icon: '🎺', title: 'Muralhas de Jericó', pts: '+5', desc: 'Derruba um obstáculo da rodada.' },
-    { id: 'B4', icon: '🐋', title: 'Paciência de Jonas', pts: '+1', desc: 'Permite refazer a última ação.' },
-    { id: 'B5', icon: '🔥', title: 'Sarça Ardente', pts: '+4', desc: 'Revela uma dica oculta no chat.' },
-    { id: 'B6', icon: '🌈', title: 'Promessa', pts: '+2', desc: 'Garante pontos mínimos nesta rodada.' }
-  ];
+    <div class="alvo">
+        🎯 ALVO: CHEGAR PERTO DE <span id="numero-alvo">11</span>!
+    </div>
 
-  const state = {
-    ws: null,
-    playerId: localStorage.getItem('pingao_uid') || Math.random().toString(36).slice(2, 11),
-    room: null,
-    isHost: false
-  };
-  localStorage.setItem('pingao_uid', state.playerId);
+    <div class="display-conta" id="visor-conta">Sua conta aparecerá aqui...</div>
 
-  const els = {
-    workerUrl: document.getElementById('workerUrl'),
-    nick: document.getElementById('nick'),
-    roomCode: document.getElementById('roomCode'),
-    playersList: document.getElementById('players-list'),
-    currentPhase: document.getElementById('current-phase'),
-    timer: document.getElementById('timer'),
-    chatLog: document.getElementById('chatLog'),
-    cardsContainer: document.getElementById('cards-container')
-  };
+    <div class="area-cartas">
+        <div class="carta" onclick="colocar('5')">5</div>
+        <div class="carta" onclick="colocar('2')">2</div>
+        <div class="carta" onclick="colocar('9')">9</div>
+    </div>
 
-  // Inicializa Cartas
-  function initCards() {
-    els.cardsContainer.innerHTML = BIBLICAL_CARDS.map(c => `
-      <div class="biblical-card" onclick="vote('${c.id}')" id="card-${c.id}">
-        <div class="card-pts">${c.pts}</div>
-        <div class="card-icon">${c.icon}</div>
-        <div style="font-weight:bold; font-size:14px;">${c.title}</div>
-        <div style="font-size:11px; opacity:0.8;">${c.desc}</div>
-      </div>
-    `).join('');
-  }
+    <div class="botoes-sinais">
+        <button class="sinal" onclick="colocar('+')">+</button>
+        <button class="sinal" onclick="colocar('-')">-</button>
+        <button class="sinal" onclick="colocar('*')">×</button>
+        <button class="sinal" onclick="colocar('/')">÷</button>
+        <button class="sinal" style="background:#ff4757" onclick="limpar()">Limpar</button>
+    </div>
 
-  // Lógica de Conexão (idêntica à sua, mas com UI nova)
-  async function connect(url, mode, code) {
-    const nick = els.nick.value.trim();
-    if(!nick) return alert("Digite seu nome!");
+    <button class="botao-grande" style="background:#4ECDC4" onclick="enviar()">ENVIAR JOGADA!</button>
     
-    try {
-      const endpoint = mode === 'create' ? '/api/room/create' : '/api/room/join';
-      const res = await fetch(url + endpoint, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ nick, playerId: state.playerId, roomCode: code })
-      });
-      const data = await res.json();
-      
-      state.ws = new WebSocket(data.wsUrl);
-      setupWs();
-    } catch (e) {
-      alert("Erro ao conectar: " + e.message);
-    }
-  }
+    <br><br>
+    <button onclick="pausar()">Botão do Host: Pausar</button>
 
-  function setupWs() {
-    state.ws.onopen = () => {
-      document.getElementById('connection-status').style.color = 'var(--good)';
-      document.getElementById('connection-status').innerText = '● Conectado';
-      document.getElementById('room-display').style.display = 'block';
-    };
+    <script>
+        // CONFIGURAÇÕES BÁSICAS
+        let conta = "";
+        let alvo = 11;
+        const frasesPinga = [
+            "O banheiro é ali no fundo, a chave tá em cima da geladeira!",
+            "Parei porque o Dudu já tava suando de tanto fazer conta...",
+            "Aproveita a pausa e traz um petisco pro Pingão!",
+            "Segura o tchan! Vou ali buscar gelo e já volto."
+        ];
 
-    state.ws.onmessage = (e) => {
-      const msg = JSON.parse(e.data);
-      if(msg.type === 'state') updateUI(msg.state);
-    };
-  }
+        // FUNÇÃO PARA CLICAR NOS NÚMEROS E SINAIS
+        function colocar(valor) {
+            conta = conta + valor;
+            document.getElementById('visor-conta').innerText = conta;
+        }
 
-  function updateUI(room) {
-    state.room = room;
-    state.isHost = room.hostId === state.playerId;
-    
-    els.currentPhase.innerText = room.phase === 'lobby' ? '🏁 Lobby' : '🗳️ Votação';
-    document.getElementById('displayCode').innerText = room.roomCode;
-    document.getElementById('btnStart').style.display = state.isHost && room.phase === 'lobby' ? 'block' : 'none';
-    document.getElementById('vote-section').style.display = room.phase === 'vote' ? 'block' : 'none';
+        function limpar() {
+            conta = "";
+            document.getElementById('visor-conta').innerText = "Sua conta aparecerá aqui...";
+        }
 
-    // RENDERIZAÇÃO POR DUPLAS (MELHORIA)
-    const players = Object.values(room.players);
-    els.playersList.innerHTML = players.map((p, index) => {
-      // Lógica simples de dupla: 1-2, 3-4, 5-6, 7-8
-      const duplaNum = Math.floor(index / 2) + 1;
-      return `
-        <div class="p-card dupla-${duplaNum}">
-          <div style="font-weight:bold;">${p.nick} ${p.id === state.playerId ? '(Você)' : ''}</div>
-          <div style="font-size:11px;">Dupla ${duplaNum} • Pontos: ${p.score || 0}</div>
-          ${p.id === room.hostId ? '<span class="badge badge-host">Líder</span>' : ''}
-          <span class="badge" style="background:${p.ready ? '#27ae60' : '#eee'}; color:${p.ready ? '#fff' : '#999'}">
-            ${p.ready ? 'Pronto' : 'Aguardando'}
-          </span>
-        </div>
-      `;
-    }).join('');
-  }
+        // FUNÇÃO QUE CALCULA O RESULTADO
+        function enviar() {
+            try {
+                // O "eval" faz a conta matemática sozinho
+                let resultado = eval(conta);
+                let distancia = Math.abs(alvo - resultado);
+                
+                alert("O Pingão viu sua conta!\nResultado: " + resultado + "\nDistância do alvo: " + distancia);
+            } catch (erro) {
+                alert("Epa! Essa conta tá errada. Limpe e tente de novo!");
+            }
+        }
 
-  window.vote = (cardId) => {
-    state.ws.send(JSON.stringify({ type: 'vote', cardId }));
-    document.querySelectorAll('.biblical-card').forEach(c => c.classList.remove('selected'));
-    document.getElementById('card-' + cardId).classList.add('selected');
-  };
+        // FUNÇÕES DE PAUSA
+        function pausar() {
+            document.getElementById('pausa').style.display = 'flex';
+            let sorteio = Math.floor(Math.random() * frasesPinga.length);
+            document.getElementById('frase-pausa').innerText = frasesPinga[sorteio];
+        }
 
-  document.getElementById('btnCreate').onclick = () => connect(els.workerUrl.value, 'create');
-  document.getElementById('btnJoin').onclick = () => connect(els.workerUrl.value, 'join', els.roomCode.value);
-  document.getElementById('btnStart').onclick = () => state.ws.send(JSON.stringify({ type: 'start' }));
-  document.getElementById('btnReady').onclick = () => state.ws.send(JSON.stringify({ type: 'ready', ready: true }));
+        function tirarPausa() {
+            document.getElementById('pausa').style.display = 'none';
+        }
 
-  initCards();
-})();
-</script>
+        // CRONÔMETRO SIMPLES
+        let tempo = 90;
+        setInterval(() => {
+            if (document.getElementById('pausa').style.display !== 'flex') {
+                if (tempo > 0) {
+                    tempo--;
+                    document.getElementById('relogio').innerText = tempo;
+                }
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
