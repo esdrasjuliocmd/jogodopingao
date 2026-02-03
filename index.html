@@ -88,7 +88,7 @@
             const sala = document.getElementById('nome-sala').value;
             if(!nome || !sala) return alert("Preenche os campos, Pingão!");
 
-            // USANDO O SEU WORKER
+            // Conectando ao seu backend oficial
             socket = new WebSocket('wss://pingao-backend.esdrasjulio.workers.dev/');
 
             socket.onopen = () => {
@@ -100,6 +100,7 @@
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 
+                // Se o servidor disser START, todo mundo muda de tela na hora
                 if(data.type === 'START') {
                     mostrarTela('tela-jogo');
                     iniciarRelogio();
@@ -122,9 +123,10 @@
 
         function comecarJogo() {
             if(socket && socket.readyState === WebSocket.OPEN) {
+                // Envia o sinal de START para o servidor repassar a todos
                 socket.send(JSON.stringify({type: 'START'}));
             } else {
-                // Se der erro de conexão, ele inicia forçado pra você ver
+                // Caso falte internet, ele abre só para você testar localmente
                 mostrarTela('tela-jogo');
                 iniciarRelogio();
             }
@@ -146,8 +148,8 @@
         function enviar() {
             try {
                 let res = eval(minhaConta);
-                alert("Conta enviada!\nResultado: " + res + "\nDistância: " + Math.abs(11 - res));
-            } catch(e) { alert("Conta errada! Limpe e tente de novo."); }
+                alert("Conta enviada!\nResultado: " + res + "\nDistância do Alvo: " + Math.abs(11 - res));
+            } catch(e) { alert("Conta errada! Tenta de novo."); }
         }
 
         function iniciarRelogio() {
