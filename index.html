@@ -1,12 +1,965 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Desafio do Pingão 🎪</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Casa de Jogos do Pingão 🎪</title>
+  <style>
+    :root{
+      --bg1:#1b1bff; --bg2:#00d4ff; --bg3:#00ff9a; --bg4:#ffe600;
+      --ink:#0a0a18;
+      --card:#ffffff;
+      --card2:#f7f8ff;
+      --shadow: 0 14px 40px rgba(0,0,0,.18);
+      --shadow2: 0 8px 22px rgba(0,0,0,.12);
+      --radius: 18px;
+      --radius2: 14px;
+      --accent:#ff2bd6;
+      --accent2:#6a5cff;
+      --good:#16c172;
+      --bad:#ff3b3b;
+      --warn:#ffb300;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 900px at 10% 10%, rgba(255,255,255,.55), transparent 45%),
+        radial-gradient(1000px 800px at 90% 20%, rgba(255,255,255,.35), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 35%, var(--bg3) 70%, var(--bg4));
+      overflow-x:hidden;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 28px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:12px 12px;
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,.42);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 16px;
+      box-shadow: var(--shadow2);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; min-width:0;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 25%, #fff, rgba(255,255,255,.2) 35%),
+        conic-gradient(from 200deg, #ff2bd6, #6a5cff, #00d4ff, #00ff9a, #ffe600, #ff2bd6);
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      position:relative;
+    }
+    .logo:after{
+      content:"🎪";
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      font-size:20px;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+    }
+    .title{
+      display:flex; flex-direction:column; min-width:0;
+      line-height:1.05;
+    }
+    .title b{font-size:14px}
+    .title small{opacity:.85; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.75);
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      font-weight:700;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--warn); box-shadow:0 0 0 4px rgba(255,179,0,.25)}
+    .dot.on{background:var(--good); box-shadow:0 0 0 4px rgba(22,193,114,.25)}
+    .dot.off{background:var(--bad); box-shadow:0 0 0 4px rgba(255,59,59,.20)}
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid{grid-template-columns: 360px 1fr;}
+    }
+    .card{
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+    }
+    .card h2{margin:0 0 10px; font-size:14px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    .col{flex:1; min-width:140px}
+    label{display:block;font-size:12px; font-weight:800; opacity:.9; margin:10px 0 6px}
+    input,select,button,textarea{
+      font:inherit;
+      border-radius: 14px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.9);
+      padding:12px 12px;
+      width:100%;
+      outline:none;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    }
+    input:focus, textarea:focus{border-color: rgba(106,92,255,.55); box-shadow: 0 0 0 4px rgba(106,92,255,.16);}
+    button{
+      cursor:pointer;
+      font-weight:900;
+      border:none;
+      color:#0a0a18;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(255,255,255,.9), rgba(255,255,255,.15) 40%),
+        linear-gradient(135deg, #ffe600, #00ff9a 40%, #00d4ff 80%);
+      box-shadow: 0 16px 34px rgba(0,0,0,.15);
+      transition: transform .08s ease, filter .08s ease;
+    }
+    button:active{transform: translateY(1px) scale(.99); filter: brightness(.98)}
+    .btn2{
+      background: rgba(255,255,255,.9);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    }
+    .btnDanger{
+      background: linear-gradient(135deg, #ff6b6b, #ff2bd6);
+      color:#fff;
+    }
+    .mini{
+      font-size:12px; font-weight:800;
+      padding:10px 10px;
+      border-radius: 14px;
+    }
+    .muted{opacity:.75;font-size:12px}
+    .hr{height:1px;background:rgba(0,0,0,.08); margin:12px 0}
+    .kpi{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center; justify-content:space-between;
+    }
+    .kpiBox{
+      flex:1; min-width:140px;
+      background: rgba(255,255,255,.75);
+      border: 1px dashed rgba(0,0,0,.16);
+      border-radius: 16px;
+      padding:10px 12px;
+    }
+    .kpiBox b{display:block;font-size:12px}
+    .kpiBox span{font-weight:900;font-size:16px}
+    .bigCode{
+      font-size:22px;
+      font-weight:1000;
+      letter-spacing:.8px;
+      padding:10px 12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.85);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      text-align:center;
+      user-select:text;
+    }
+    .players{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+    }
+    @media (min-width: 520px){
+      .players{grid-template-columns: repeat(3, 1fr);}
+    }
+    @media (min-width: 860px){
+      .players{grid-template-columns: repeat(4, 1fr);}
+    }
+    .p{
+      background: rgba(255,255,255,.84);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 16px;
+      padding:10px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+      position:relative;
+      overflow:hidden;
+    }
+    .p:before{
+      content:"";
+      position:absolute; inset:-60px -60px auto auto;
+      width:120px;height:120px;border-radius:999px;
+      background: conic-gradient(from 40deg, #ff2bd6, #6a5cff, #00d4ff, #00ff9a, #ffe600, #ff2bd6);
+      opacity:.22;
+      transform: rotate(12deg);
+    }
+    .p b{display:block; font-size:13px; position:relative}
+    .p small{display:block; opacity:.8; font-weight:800; position:relative}
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:11px; font-weight:1000;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(106,92,255,.12);
+      border: 1px solid rgba(106,92,255,.25);
+      margin-top:8px;
+      position:relative;
+    }
+    .badge.ok{background: rgba(22,193,114,.12); border-color: rgba(22,193,114,.28)}
+    .badge.no{background: rgba(255,59,59,.10); border-color: rgba(255,59,59,.24)}
+    .badge.host{background: rgba(255,179,0,.14); border-color: rgba(255,179,0,.35)}
+    .stageTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom:8px;
+    }
+    .timer{
+      font-weight:1000; font-size:12px;
+      padding:8px 10px; border-radius:999px;
+      background: rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.10);
+      white-space:nowrap;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    @media (min-width: 520px){
+      .cards{grid-template-columns: repeat(2, 1fr);}
+    }
+    @media (min-width: 860px){
+      .cards{grid-template-columns: repeat(3, 1fr);}
+    }
+    .c{
+      border-radius: 18px;
+      padding:12px;
+      border:1px solid rgba(0,0,0,.10);
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,.95), rgba(255,255,255,.10) 55%),
+        linear-gradient(135deg, rgba(255,43,214,.20), rgba(106,92,255,.18), rgba(0,212,255,.18), rgba(0,255,154,.18), rgba(255,230,0,.18));
+      box-shadow: 0 14px 30px rgba(0,0,0,.12);
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .08s ease, filter .08s ease;
+      user-select:none;
+    }
+    .c:active{transform: translateY(1px) scale(.99); filter: brightness(.98)}
+    .c.sel{outline: 4px solid rgba(255,43,214,.35)}
+    .c h3{margin:0 0 6px; font-size:14px}
+    .c p{margin:0; font-size:12px; font-weight:800; opacity:.85}
+    .c .pts{
+      position:absolute; right:10px; top:10px;
+      padding:8px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.82);
+      border:1px solid rgba(0,0,0,.10);
+      font-weight:1000;
+      font-size:12px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+    }
+    .chat{
+      display:flex; gap:10px; align-items:flex-end;
+    }
+    textarea{min-height:44px; max-height:120px; resize:vertical}
+    .chatLog{
+      margin-top:10px;
+      background: rgba(255,255,255,.78);
+      border:1px solid rgba(0,0,0,.08);
+      border-radius: 16px;
+      padding:10px;
+      max-height: 260px;
+      overflow:auto;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+    .msg{margin:8px 0; font-size:12px}
+    .msg b{font-weight:1000}
+    .toast{
+      position:fixed; left:50%; top:14px; transform:translateX(-50%);
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.10);
+      padding:10px 12px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      z-index:999;
+      display:flex; align-items:center; gap:10px;
+      max-width:min(560px, calc(100vw - 24px));
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.on{opacity:1; transform:translateX(-50%) translateY(2px);}
+    .toast .emoji{font-size:18px}
+    .foot{
+      margin-top:12px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      opacity:.9;
+      font-size:12px;
+    }
+    .link{
+      color:#111; font-weight:1000; text-decoration:none;
+      border-bottom:2px solid rgba(0,0,0,.16);
+    }
+    .confetti{
+      pointer-events:none;
+      position:fixed; inset:0;
+      overflow:hidden; z-index:998;
+    }
+    .confetti i{
+      position:absolute; top:-20px;
+      width:10px;height:14px;
+      border-radius:3px;
+      opacity:.9;
+      animation: fall 1.2s linear forwards;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.18));
+    }
+    @keyframes fall{
+      to{ transform: translateY(calc(100vh + 40px)) rotate(260deg); opacity:1; }
+    }
+  </style>
 </head>
 <body>
-  <h1>🎉 Desafio do Pingão</h1>
-  <p>Site no ar com Cloudflare Pages!</p>
+  <div class="toast" id="toast"><span class="emoji">🎉</span><span id="toastText">Olá!</span></div>
+  <div class="confetti" id="confetti"></div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="title">
+          <b>Casa de Jogos do Pingão</b>
+          <small id="subtitle">8 jogadores • social • blefe leve • votação por vantagens</small>
+        </div>
+      </div>
+      <div class="pill">
+        <span class="dot off" id="dot"></span>
+        <span id="statusTxt">Desconectado</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: Setup -->
+      <div class="card">
+        <h2>🎮 Entrar / Criar sala</h2>
+
+        <label>URL do Worker (backend)</label>
+        <input id="workerUrl" placeholder="https://pingao-backend....workers.dev"/>
+
+        <div class="row">
+          <div class="col">
+            <label>Seu apelido</label>
+            <input id="nick" maxlength="18" placeholder="ex: Esdras"/>
+          </div>
+          <div class="col">
+            <label>Código da sala</label>
+            <input id="roomCode" placeholder="PINGAO-ABC" style="text-transform:uppercase"/>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <div class="col">
+            <button id="btnCreate">✨ Criar sala</button>
+          </div>
+          <div class="col">
+            <button class="btn2" id="btnJoin">🚪 Entrar na sala</button>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="kpi">
+          <div class="kpiBox">
+            <b>Sala atual</b>
+            <span id="kpiRoom">—</span>
+          </div>
+          <div class="kpiBox">
+            <b>Você</b>
+            <span id="kpiMe">—</span>
+          </div>
+        </div>
+
+        <label style="margin-top:12px">Código grande (para compartilhar)</label>
+        <div class="bigCode" id="bigCode">—</div>
+
+        <div class="row" style="margin-top:10px">
+          <div class="col">
+            <button class="mini btn2" id="btnCopy">📋 Copiar convite</button>
+          </div>
+          <div class="col">
+            <button class="mini btnDanger" id="btnLeave">🧨 Sair</button>
+          </div>
+        </div>
+
+        <div class="foot">
+          <span class="muted">⏱️ Voto: 90s • Rodadas: 10 • Empate: sorteio automático (em breve)</span>
+          <a class="link" href="#" id="btnSound">🔊 Som: ligado</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: Game -->
+      <div class="card">
+        <div class="stageTitle">
+          <h2 id="stage">🏁 Lobby</h2>
+          <div class="timer" id="timer">—</div>
+        </div>
+
+        <div class="row" style="margin-bottom:10px">
+          <div class="col">
+            <button class="btn2" id="btnReady">✅ Pronto</button>
+          </div>
+          <div class="col">
+            <button id="btnStart">🚀 Começar</button>
+          </div>
+        </div>
+
+        <div class="muted" id="hint">
+          No lobby: marque “Pronto”. O host pode iniciar quando quiser.
+        </div>
+
+        <div class="hr"></div>
+
+        <h2>👥 Jogadores</h2>
+        <div class="players" id="players"></div>
+
+        <div class="hr"></div>
+
+        <div id="voteArea">
+          <h2>🃏 Votação de vantagens (sem votar contra pessoas)</h2>
+          <div class="muted" style="margin-bottom:10px">
+            Escolha uma carta divertida. Seu voto vai para uma vantagem/pontos — não contra jogadores.
+          </div>
+          <div class="cards" id="cards"></div>
+        </div>
+
+        <div class="hr"></div>
+
+        <h2>💬 Chat do circo</h2>
+        <div class="chat">
+          <textarea id="chatText" placeholder="manda um blefe leve… 😄"></textarea>
+          <button class="mini" id="btnSend">Enviar</button>
+        </div>
+        <div class="chatLog" id="chatLog"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  // ---------- Config ----------
+  const DEFAULT_WORKER = "https://pingao-backend.esdrasjulio.workers.dev";
+  const MAX_PLAYERS_HINT = 8; // (o backend não limita ainda, mas a ideia do jogo é 8)
+
+  const CARDS = [
+    { id:"C1",  title:"🎈 Balão da Sorte", pts:"+2", desc:"Ganhe 2 pontos se fizer todo mundo rir no chat." },
+    { id:"C2",  title:"🧃 Suco Turbo", pts:"+3", desc:"3 pontos se você convencer alguém de algo improvável." },
+    { id:"C3",  title:"🦄 Unicórnio do Blefe", pts:"+4", desc:"4 pontos se seu blefe passar despercebido (ninguém te zoar 😅)." },
+    { id:"C4",  title:"🍭 Algodão Doce", pts:"+1", desc:"1 ponto e uma aura de fofura: você pode mandar 2 mensagens seguidas." },
+    { id:"C5",  title:"🎺 Buzina Mágica", pts:"+2", desc:"2 pontos se você fizer um “plot twist” engraçado." },
+    { id:"C6",  title:"🪄 Varinha Confete", pts:"+3", desc:"3 pontos se você declarar uma “regra maluca” e alguém topar." },
+    { id:"C7",  title:"🐣 Pintinho Ninja", pts:"+2", desc:"2 pontos se você responder com uma frase de 5 palavras (difícil!)." },
+    { id:"C8",  title:"🍉 Melancia Misteriosa", pts:"+4", desc:"4 pontos se você elogiar alguém sem parecer puxa-saco." },
+    { id:"C9",  title:"🥳 Chapéu do Host", pts:"+1", desc:"1 ponto e você pode sugerir a próxima rodada (host decide)." },
+    { id:"C10", title:"🎲 Sorteio Relâmpago", pts:"+5", desc:"5 pontos… mas só se você não mandar emoji por 30s." },
+    { id:"C11", title:"🧠 Cérebro Colorido", pts:"+3", desc:"3 pontos se você fizer uma pergunta que pegue geral de surpresa." },
+    { id:"C12", title:"🦖 Dino Fofo", pts:"+2", desc:"2 pontos se você inventar um apelido novo para alguém." },
+  ];
+
+  // ---------- State ----------
+  const els = {
+    workerUrl: q("#workerUrl"),
+    nick: q("#nick"),
+    roomCode: q("#roomCode"),
+    btnCreate: q("#btnCreate"),
+    btnJoin: q("#btnJoin"),
+    btnCopy: q("#btnCopy"),
+    btnLeave: q("#btnLeave"),
+    kpiRoom: q("#kpiRoom"),
+    kpiMe: q("#kpiMe"),
+    bigCode: q("#bigCode"),
+    dot: q("#dot"),
+    statusTxt: q("#statusTxt"),
+    stage: q("#stage"),
+    timer: q("#timer"),
+    hint: q("#hint"),
+    btnReady: q("#btnReady"),
+    btnStart: q("#btnStart"),
+    players: q("#players"),
+    cards: q("#cards"),
+    voteArea: q("#voteArea"),
+    chatText: q("#chatText"),
+    btnSend: q("#btnSend"),
+    chatLog: q("#chatLog"),
+    toast: q("#toast"),
+    toastText: q("#toastText"),
+    confetti: q("#confetti"),
+    btnSound: q("#btnSound"),
+  };
+
+  const LS = {
+    workerUrl: "pingao_worker_url",
+    nick: "pingao_nick",
+    playerId: "pingao_player_id",
+    sound: "pingao_sound",
+  };
+
+  let ws = null;
+  let wsUrl = null;
+  let roomState = null;
+  let connected = false;
+  let lastEndsAt = null;
+  let tickTimer = null;
+
+  // audio
+  let soundOn = (localStorage.getItem(LS.sound) ?? "on") === "on";
+  els.btnSound.textContent = soundOn ? "🔊 Som: ligado" : "🔈 Som: desligado";
+
+  // player identity
+  const playerId = getOrCreatePlayerId();
+  els.kpiMe.textContent = "ID " + playerId.slice(0, 6).toUpperCase();
+
+  // init inputs
+  els.workerUrl.value = localStorage.getItem(LS.workerUrl) || DEFAULT_WORKER;
+  els.nick.value = localStorage.getItem(LS.nick) || "";
+  els.roomCode.value = "";
+
+  // render cards
+  renderCards();
+
+  // ---------- Events ----------
+  els.btnCreate.addEventListener("click", () => createRoom());
+  els.btnJoin.addEventListener("click", () => joinRoom());
+  els.btnCopy.addEventListener("click", () => copyInvite());
+  els.btnLeave.addEventListener("click", () => leave());
+  els.btnReady.addEventListener("click", () => toggleReady());
+  els.btnStart.addEventListener("click", () => send({ type:"start" }));
+  els.btnSend.addEventListener("click", () => sendChat());
+  els.chatText.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+  els.btnSound.addEventListener("click", (e) => {
+    e.preventDefault();
+    soundOn = !soundOn;
+    localStorage.setItem(LS.sound, soundOn ? "on" : "off");
+    els.btnSound.textContent = soundOn ? "🔊 Som: ligado" : "🔈 Som: desligado";
+    toast(soundOn ? "Som ligado 🎵" : "Som desligado 🤫", "🔊");
+    if (soundOn) sfx("pop");
+  });
+
+  els.nick.addEventListener("input", () => localStorage.setItem(LS.nick, els.nick.value.trim()));
+  els.workerUrl.addEventListener("input", () => localStorage.setItem(LS.workerUrl, els.workerUrl.value.trim()));
+
+  // ---------- Functions ----------
+  function normalizeWorkerUrl(u){
+    u = (u||"").trim();
+    if (!u) return DEFAULT_WORKER;
+    return u.replace(/\/+$/, "");
+  }
+  function normalizeRoomCode(s){
+    return (s||"").trim().toUpperCase();
+  }
+  function normalizeNick(s){
+    return (s||"").trim().slice(0,18);
+  }
+
+  async function createRoom(){
+    const worker = normalizeWorkerUrl(els.workerUrl.value);
+    const nick = normalizeNick(els.nick.value);
+    if (nick.length < 2) return toast("Coloque um apelido com 2+ letras 😄", "✍️");
+    els.btnCreate.disabled = true;
+    try{
+      sfx("click");
+      const res = await fetch(worker + "/api/room/create", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ nick, playerId })
+      });
+      const data = await res.json().catch(()=>null);
+      if (!res.ok) throw new Error(data?.error || ("Erro HTTP " + res.status));
+      wsUrl = data.wsUrl;
+      els.roomCode.value = data.roomCode;
+      setRoomUi(data.roomCode);
+      await connectWs(wsUrl);
+      toast("Sala criada! Compartilhe o código 🎉", "🎪");
+      confettiBurst(24);
+    }catch(err){
+      toast("Erro ao criar sala: " + err.message, "💥");
+      sfx("bad");
+    }finally{
+      els.btnCreate.disabled = false;
+    }
+  }
+
+  async function joinRoom(){
+    const worker = normalizeWorkerUrl(els.workerUrl.value);
+    const nick = normalizeNick(els.nick.value);
+    const roomCode = normalizeRoomCode(els.roomCode.value);
+    if (nick.length < 2) return toast("Coloque um apelido com 2+ letras 😄", "✍️");
+    if (!/^PINGAO-[A-Z0-9]{3}$/.test(roomCode)) return toast("Código inválido. Ex: PINGAO-ABC", "🔎");
+
+    els.btnJoin.disabled = true;
+    try{
+      sfx("click");
+      const res = await fetch(worker + "/api/room/join", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ roomCode, nick, playerId })
+      });
+      const data = await res.json().catch(()=>null);
+      if (!res.ok) throw new Error(data?.error || ("Erro HTTP " + res.status));
+      wsUrl = data.wsUrl;
+      setRoomUi(roomCode);
+      await connectWs(wsUrl);
+      toast("Entrou na sala! 🤝", "🚪");
+      sfx("join");
+    }catch(err){
+      toast("Erro ao entrar: " + err.message, "💥");
+      sfx("bad");
+    }finally{
+      els.btnJoin.disabled = false;
+    }
+  }
+
+  function setRoomUi(roomCode){
+    els.kpiRoom.textContent = roomCode;
+    els.bigCode.textContent = roomCode;
+  }
+
+  async function connectWs(url){
+    leave(false);
+    updateStatus(false, "Conectando…");
+    return new Promise((resolve, reject) => {
+      try{
+        ws = new WebSocket(url);
+      }catch(e){
+        updateStatus(false, "Falha WS");
+        return reject(e);
+      }
+
+      ws.onopen = () => {
+        connected = true;
+        updateStatus(true, "Online");
+        sfx("ok");
+        resolve();
+      };
+      ws.onmessage = (ev) => {
+        let msg;
+        try{ msg = JSON.parse(ev.data); } catch { return; }
+        if (msg.type === "state"){
+          roomState = msg.state;
+          renderState();
+        } else if (msg.type === "toast"){
+          toast(msg.text, "✨");
+          sfx("pop");
+        }
+      };
+      ws.onerror = () => {
+        updateStatus(false, "Erro");
+        sfx("bad");
+      };
+      ws.onclose = () => {
+        connected = false;
+        updateStatus(false, "Desconectado");
+        stopTick();
+      };
+    });
+  }
+
+  function leave(showToast=true){
+    stopTick();
+    if (ws){
+      try{ ws.close(); } catch {}
+    }
+    ws = null;
+    wsUrl = null;
+    roomState = null;
+    connected = false;
+    updateStatus(false, "Desconectado");
+    renderState();
+    if (showToast) toast("Saiu da sala.", "🧨");
+  }
+
+  function updateStatus(on, text){
+    els.dot.classList.remove("on","off");
+    els.dot.classList.add(on ? "on" : "off");
+    els.statusTxt.textContent = text;
+  }
+
+  function send(obj){
+    if (!ws || ws.readyState !== 1) return toast("Sem conexão. Entre em uma sala primeiro.", "📡");
+    ws.send(JSON.stringify(obj));
+  }
+
+  function toggleReady(){
+    const me = roomState?.players?.[playerId];
+    const next = !(me?.ready);
+    send({ type:"ready", ready: next });
+    sfx(next ? "ok" : "tick");
+  }
+
+  function vote(cardId){
+    send({ type:"vote", cardId });
+    sfx("pop");
+    // visual selection
+    [...els.cards.querySelectorAll(".c")].forEach(el => el.classList.toggle("sel", el.dataset.id === cardId));
+  }
+
+  function sendChat(){
+    const text = (els.chatText.value || "").trim();
+    if (!text) return;
+    send({ type:"chat", text });
+    els.chatText.value = "";
+    sfx("tick");
+  }
+
+  function renderState(){
+    // stage
+    const phase = roomState?.phase || "lobby";
+    const round = roomState?.round || 0;
+
+    if (!roomState){
+      els.stage.textContent = "🏁 Lobby";
+      els.timer.textContent = "—";
+      els.hint.textContent = "Crie uma sala ou entre com um código.";
+      els.players.innerHTML = "";
+      els.voteArea.style.display = "none";
+      els.chatLog.innerHTML = "";
+      els.btnReady.disabled = true;
+      els.btnStart.disabled = true;
+      els.bigCode.textContent = els.kpiRoom.textContent !== "—" ? els.kpiRoom.textContent : "—";
+      return;
+    }
+
+    els.btnReady.disabled = false;
+    const isHost = roomState.hostId === playerId;
+    els.btnStart.disabled = !isHost;
+
+    if (phase === "lobby"){
+      els.stage.textContent = "🏁 Lobby";
+      els.hint.textContent = isHost
+        ? "Você é o host! Marque Pronto e depois pode iniciar quando quiser."
+        : "Marque “Pronto”. O host vai iniciar o jogo.";
+      els.voteArea.style.display = "none";
+      els.timer.textContent = "—";
+      stopTick();
+      lastEndsAt = null;
+    } else if (phase === "vote"){
+      els.stage.textContent = `🗳️ Votação • Rodada ${round}/10`;
+      els.hint.textContent = "Escolha uma carta. Sem votar contra pessoas 😉";
+      els.voteArea.style.display = "block";
+      startTick();
+    } else {
+      els.stage.textContent = `🎪 ${phase} • Rodada ${round}/10`;
+      els.voteArea.style.display = "none";
+      startTick();
+    }
+
+    // players
+    const players = Object.values(roomState.players || {});
+    // Optional: show a friendly hint if >8
+    if (players.length > MAX_PLAYERS_HINT){
+      els.subtitle.textContent = `${players.length} jogadores conectados • ideal: 8`;
+    } else {
+      els.subtitle.textContent = `8 jogadores • social • blefe leve • votação por vantagens`;
+    }
+
+    els.players.innerHTML = players
+      .sort((a,b)=> (a.id===roomState.hostId? -1:0) - (b.id===roomState.hostId? -1:0) || a.nick.localeCompare(b.nick))
+      .map(p => {
+        const host = p.id === roomState.hostId;
+        const isMe = p.id === playerId;
+        const ready = !!p.ready;
+        const voted = p.vote != null;
+        const voteTxt = voted ? ("Voto: " + p.vote) : "Sem voto";
+        const badge = host ? `<span class="badge host">👑 Host</span>` : (ready ? `<span class="badge ok">✅ Pronto</span>` : `<span class="badge no">⏳ Não pronto</span>`);
+        const badge2 = phase==="vote" ? `<span class="badge ${voted?'ok':'no'}">🃏 ${voteTxt}</span>` : "";
+        return `
+          <div class="p">
+            <b>${escapeHtml(p.nick)} ${isMe ? " (você)" : ""}</b>
+            <small>⭐ Pontos: ${p.score ?? 0}</small>
+            ${badge}
+            ${badge2}
+          </div>
+        `;
+      }).join("");
+
+    // chat
+    const chat = roomState.chat || [];
+    els.chatLog.innerHTML = chat.map(m => {
+      const t = new Date(m.tsMs || Date.now());
+      const hh = String(t.getHours()).padStart(2,"0");
+      const mm = String(t.getMinutes()).padStart(2,"0");
+      return `<div class="msg"><b>[${hh}:${mm}] ${escapeHtml(m.nick)}:</b> ${escapeHtml(m.text)}</div>`;
+    }).join("") || `<div class="muted">Sem mensagens ainda… manda um “oi” 😄</div>`;
+    // keep scroll near bottom
+    els.chatLog.scrollTop = els.chatLog.scrollHeight;
+
+    // reflect my vote selection in UI
+    const myVote = roomState.players?.[playerId]?.vote;
+    [...els.cards.querySelectorAll(".c")].forEach(el => el.classList.toggle("sel", el.dataset.id === myVote));
+  }
+
+  function startTick(){
+    if (!roomState?.endsAtMs) return;
+    if (lastEndsAt !== roomState.endsAtMs){
+      lastEndsAt = roomState.endsAtMs;
+      // little celebration when a new timer starts
+      sfx("start");
+    }
+    if (tickTimer) return;
+    tickTimer = setInterval(() => {
+      const ends = roomState?.endsAtMs;
+      if (!ends) { els.timer.textContent = "—"; return; }
+      const ms = ends - Date.now();
+      const s = Math.max(0, Math.ceil(ms/1000));
+      els.timer.textContent = `⏱️ ${s}s`;
+      if (s === 10) sfx("warn");
+      if (s === 3) sfx("count3");
+      if (s === 0) {
+        // client-only fun feedback (backend ainda não resolve a rodada)
+        els.timer.textContent = "⏱️ 0s";
+        confettiBurst(12);
+        sfx("finish");
+        // keep running until backend changes endsAtMs
+      }
+    }, 250);
+  }
+  function stopTick(){
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = null;
+    els.timer.textContent = "—";
+  }
+
+  function renderCards(){
+    els.cards.innerHTML = CARDS.map(c => `
+      <div class="c" data-id="${c.id}">
+        <div class="pts">${c.pts}</div>
+        <h3>${c.title}</h3>
+        <p>${c.desc}</p>
+      </div>
+    `).join("");
+    [...els.cards.querySelectorAll(".c")].forEach(el => {
+      el.addEventListener("click", () => vote(el.dataset.id));
+    });
+  }
+
+  function copyInvite(){
+    const code = (els.bigCode.textContent || "").trim();
+    if (!code || code === "—") return toast("Nenhuma sala ainda. Crie uma sala primeiro.", "📎");
+    const link = location.href.split("#")[0];
+    const msg =
+`🎪 Casa de Jogos do Pingão
+Código da sala: ${code}
+Link do jogo: ${link}
+
+Abra o link, cole a URL do backend e entre com o código 😉`;
+
+    navigator.clipboard?.writeText(msg).then(()=>{
+      toast("Convite copiado! ✅", "📋");
+      sfx("ok");
+    }).catch(()=>{
+      toast("Não consegui copiar. Copie manualmente o código: " + code, "📋");
+      sfx("warn");
+    });
+  }
+
+  function toast(text, emoji="✨"){
+    els.toast.querySelector(".emoji").textContent = emoji;
+    els.toastText.textContent = text;
+    els.toast.classList.add("on");
+    setTimeout(()=> els.toast.classList.remove("on"), 2200);
+  }
+
+  // ---------- Sound (WebAudio simple) ----------
+  function sfx(name){
+    if (!soundOn) return;
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = ctx.currentTime;
+
+      const beep = (freq, t, type="sine", gain=0.08) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = type;
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(gain, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t); o.stop(t + 0.13);
+      };
+
+      const pop = (t) => { beep(660, t, "triangle", 0.07); beep(990, t+0.06, "sine", 0.06); };
+      const click = (t)=> { beep(280, t, "square", 0.05); };
+      const ok = (t)=> { beep(523, t, "sine", 0.06); beep(659, t+0.10, "sine", 0.06); };
+      const bad = (t)=> { beep(220, t, "sawtooth", 0.07); beep(180, t+0.10, "sawtooth", 0.06); };
+      const warn = (t)=> { beep(880, t, "square", 0.05); beep(880, t+0.16, "square", 0.05); };
+      const start = (t)=> { beep(392, t, "sine", 0.05); beep(494, t+0.10, "sine", 0.06); beep(659, t+0.20, "sine", 0.07); };
+      const finish = (t)=> { pop(t); pop(t+0.18); ok(t+0.36); };
+      const count3 = (t)=> { beep(660, t, "square", 0.04); beep(660, t+0.22, "square", 0.04); beep(660, t+0.44, "square", 0.04); };
+      const join = (t)=> { beep(330, t, "triangle", 0.06); beep(440, t+0.10, "triangle", 0.06); };
+
+      switch(name){
+        case "pop": pop(now); break;
+        case "click": click(now); break;
+        case "ok": ok(now); break;
+        case "bad": bad(now); break;
+        case "warn": warn(now); break;
+        case "start": start(now); break;
+        case "finish": finish(now); break;
+        case "count3": count3(now); break;
+        case "tick": beep(520, now, "triangle", 0.04); break;
+        case "join": join(now); break;
+        default: pop(now);
+      }
+
+      setTimeout(()=> ctx.close().catch(()=>{}), 600);
+    }catch{}
+  }
+
+  // ---------- Confetti ----------
+  function confettiBurst(n=18){
+    const root = els.confetti;
+    for (let i=0;i<n;i++){
+      const el = document.createElement("i");
+      const x = Math.random()*100;
+      const d = 0.9 + Math.random()*0.8;
+      el.style.left = x + "vw";
+      el.style.animationDuration = d + "s";
+      el.style.transform = `translateY(-10px) rotate(${Math.random()*200}deg)`;
+      el.style.background = randomColor();
+      el.style.width = (8 + Math.random()*8) + "px";
+      el.style.height = (10 + Math.random()*12) + "px";
+      root.appendChild(el);
+      setTimeout(()=> el.remove(), d*1000 + 400);
+    }
+  }
+  function randomColor(){
+    const colors = ["#ff2bd6","#6a5cff","#00d4ff","#00ff9a","#ffe600","#ff6b6b","#7cff4a","#ffd1f0"];
+    return colors[Math.floor(Math.random()*colors.length)];
+  }
+
+  // ---------- Utils ----------
+  function q(sel){ return document.querySelector(sel); }
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+  function getOrCreatePlayerId(){
+    let id = localStorage.getItem(LS.playerId);
+    if (!id){
+      id = (crypto?.randomUUID?.() || ("p_" + Math.random().toString(16).slice(2) + Date.now().toString(16))).replace(/-/g,"");
+      localStorage.setItem(LS.playerId, id);
+    }
+    return id;
+  }
+
+  // initial render (disconnected)
+  renderState();
+})();
+</script>
 </body>
 </html>
