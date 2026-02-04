@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferve a Cuca: Final</title>
+    <title>Ferve a Cuca: Chat Divertido</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; user-select: none; }
         
@@ -21,82 +21,37 @@
         .ativa { display: block; }
         .caixa { background: rgba(255, 255, 255, 0.95); color: #333; border-radius: 15px; padding: 25px; margin: 20px auto; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #FFD700; position: relative; z-index: 5; }
         input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; text-align: center; background: #f9f9f9; }
-        .btn-principal { background: linear-gradient(180deg, #D32F2F, #B71C1C); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
-        .btn-principal:active { transform: translateY(3px); box-shadow: none; }
         
-        /* BOTÃO DESISTIR - AZUL PARA INDICAR ESTRATÉGIA */
-        .btn-desistir { background: #37474F; color: #fff; padding: 10px; width: 100%; margin-top: 10px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; border-bottom: 2px solid #263238; }
-        .btn-desistir:hover { background: #455A64; }
-
-        .titulo-jogo { font-size: 45px; font-weight: 900; margin: 0; background: linear-gradient(to bottom, #FFD700, #FF8F00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(4px 4px 0px #000); letter-spacing: 2px; text-transform: uppercase; position: relative; z-index: 10; }
-        .subtitulo-jogo { font-size: 22px; color: #fff; text-shadow: 2px 2px 0 #000; margin-top: -5px; font-weight: bold; letter-spacing: 4px; position: relative; z-index: 10; }
-
-        .decoracao-cartas { position: absolute; top: 150px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0.4; }
-        .carta-decor { position: absolute; width: 100px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
-        .c1 { left: -20px; top: 50px; transform: rotate(-25deg); }
-        .c2 { right: -20px; top: 100px; transform: rotate(25deg); }
-        .c3 { left: 50%; top: 200px; transform: translate(-50%) rotate(10deg); width: 120px; }
-
-        #barra-tempo-container { width: 100%; height: 6px; background: #333; position: absolute; bottom: 0; left: 0; z-index: 100; }
-        #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
-        
+        /* CHAT E EMOJIS */
         .discordia-bg { background: linear-gradient(135deg, #4a0000, #000) !important; }
-        .chat-container { display: flex; flex-direction: column; height: 350px; width: 100%; max-width: 400px; }
+        .chat-container { display: flex; flex-direction: column; height: 380px; width: 100%; max-width: 400px; }
         .chat-box { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 5px; padding: 10px; text-align: left; margin-bottom: 5px; border: 1px solid #ff4081; }
         .chat-msg { margin-bottom: 5px; font-size: 13px; line-height: 1.4; }
         .chat-msg.sistema { color: #FFD700; font-style: italic; text-align: center; margin: 10px 0; background: rgba(255,215,0,0.1); padding: 5px; border-radius: 5px; }
+        
+        .emoji-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 5px; }
+        .emoji-btn { font-size: 20px; cursor: pointer; transition: transform 0.1s; border: none; background: none; }
+        .emoji-btn:active { transform: scale(1.3); }
+
         .input-chat-row { display: flex; gap: 5px; }
         .input-chat { flex: 1; padding: 10px; border-radius: 5px; border: none; font-size: 14px; text-align: left; }
         .btn-enviar-chat { background: #2196F3; color: white; border: none; padding: 0 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+
+        .btn-principal { background: linear-gradient(180deg, #D32F2F, #B71C1C); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
+        .btn-principal:active { transform: translateY(3px); box-shadow: none; }
         
-        .lista-doacao { margin-top: 10px; max-height: 200px; overflow-y: auto; border-top: 1px solid #555; padding-top: 10px; }
-        .item-doacao { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 8px; border-radius: 5px; text-align: left; }
-        .nome-pobre { font-weight: bold; color: #FFD700; font-size: 14px; }
-        .btn-group-doar { display: flex; gap: 5px; margin-top: 5px; }
-        .btn-doar { flex: 1; background: #d81b60; color: white; border: none; padding: 5px; border-radius: 3px; font-size: 11px; cursor: pointer; }
-
-        .btn-encerrar-host { background: #D50000; color: white; padding: 15px; width: 100%; font-weight: bold; border: 2px solid white; border-radius: 10px; margin-top: 10px; cursor: pointer; display: none; }
-        .msg-espera-host { color: #aaa; font-style: italic; margin-top: 10px; display: none; }
-
-        #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 30px; }
-        .tag-player { font-size: 12px; background: #222; padding: 5px 10px; border-radius: 15px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .tag-player.pronto { background: #2E7D32; border-color: #00E676; }
-        .tag-player.pulou { background: #880e4f; border-color: #ff4081; opacity: 0.8; }
-        .tag-player.desistiu { background: #555; border-color: #777; opacity: 0.7; }
-        .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; background: #333; }
+        .btn-desistir { background: #37474F; color: #fff; padding: 10px; width: 100%; margin-top: 10px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; border-bottom: 2px solid #263238; }
 
         #area-cartas { display: flex; justify-content: center; gap: 5px; margin: 20px 0; perspective: 1000px; }
         .carta-real { width: 75px; height: auto; cursor: pointer; transition: transform 0.2s; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5)); }
-        .carta-real:hover { transform: translateY(-10px); }
-        .carta-real:active { transform: scale(0.95); }
+        .sinal { width: 55px; height: 55px; font-size: 24px; margin: 3px; border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; }
         
-        .sinal { width: 55px; height: 55px; font-size: 24px; margin: 3px; border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; transition: all 0.1s; }
-        .sinal:active { transform: translateY(3px); border-bottom: none; }
-        
-        #visor-conta { font-size: 32px; background: #fff; color: #333; padding: 15px; margin: 15px 0; font-weight: bold; border-radius: 8px; min-height: 40px; border: 3px solid #ccc; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
-        #alvo-display { background: linear-gradient(45deg, #FFD700, #FFC107); color: #000; padding: 15px; font-weight: bold; font-size: 24px; border-radius: 8px; margin-bottom: 10px; border: 2px solid #FFA000; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
-        
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
-        .contador-zao { font-size: 100px; font-weight: bold; color: #FFD700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); margin: 20px 0; }
-        
-        #lista-lobby { text-align: left; }
-        .item-lobby { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; color: #333; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
         
         .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; max-height: 250px; overflow-y: auto; }
-        .box-regras h3 { color: #FFD700; margin-top: 15px; border-bottom: 1px solid #444; padding-bottom: 5px; font-size: 16px; display:flex; align-items:center; gap:5px;}
-        .box-regras ul { padding-left: 20px; margin: 5px 0; }
-        .box-regras li { margin-bottom: 5px; line-height: 1.4; }
-        .box-regras b { color: #fff; }
-
-        .legenda-pontos { font-size: 11px; color: #888; margin-top: 10px; background: #222; padding: 5px; border-radius: 5px; }
-
-        #lista-final { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; max-height: 200px; overflow-y: auto; }
-        .item-final { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .item-final.eliminado { color: #888; text-decoration: line-through; }
-        .item-final.campeao { color: #FFD700; font-weight: bold; }
-
-        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .aviso-host { background: #FFEBEE; color: #D32F2F; border: 2px solid #D32F2F; padding: 10px; border-radius: 8px; font-weight: bold; margin-top: 15px; animation: piscar 1.5s infinite; font-size: 14px; }
+        .btn-encerrar-host { background: #D50000; color: white; padding: 15px; width: 100%; font-weight: bold; border: 2px solid white; border-radius: 10px; margin-top: 10px; cursor: pointer; display: none; }
+        .msg-espera-host { color: #aaa; font-style: italic; margin-top: 10px; display: none; }
+        #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
     </style>
 </head>
 <body>
@@ -106,32 +61,36 @@
             <span style="font-size:12px; color:#aaa;">💰 Minhas Fichas: <span id="minhas-fichas-topo" style="color:#FFD700; font-weight:bold;">500</span></span>
             <span id="sala-nome-topo" style="font-size:12px; color:#aaa;"></span>
         </div>
-        <div id="barra-ranking" class="ranking-bar">
-            <div class="rank-item lider">🏆 Aguardando...</div>
-        </div>
-        <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
+        <div id="barra-ranking" class="ranking-bar"></div>
+        <div id="barra-tempo-container" style="width:100%; height:6px; background:#333; position:relative;"><div id="barra-tempo"></div></div>
     </div>
 
-    <div id="modal-negociacao" class="modal discordia-bg" style="justify-content: flex-start; padding-top: 40px; z-index: 1500;">
+    <div id="modal-negociacao" class="modal discordia-bg" style="justify-content: flex-start; padding-top: 40px;">
         <h2 style="color: #FFD700; margin: 0;">📢 SALA DA BAGUNÇA</h2>
-        <p style="font-size: 12px; color: #ff80ab; margin-top: 0;">Negocie, doe e sobreviva!</p>
+        <p style="font-size: 12px; color: #ff80ab; margin-top: 0;">Negocie e use emojis!</p>
         
         <div class="chat-container">
             <div id="chat-box" class="chat-box"></div>
+            
+            <div class="emoji-bar">
+                <button class="emoji-btn" onclick="addEmoji('😂')">😂</button>
+                <button class="emoji-btn" onclick="addEmoji('🤡')">🤡</button>
+                <button class="emoji-btn" onclick="addEmoji('💸')">💸</button>
+                <button class="emoji-btn" onclick="addEmoji('🤫')">🤫</button>
+                <button class="emoji-btn" onclick="addEmoji('🤝')">🤝</button>
+                <button class="emoji-btn" onclick="addEmoji('💀')">💀</button>
+            </div>
+
             <div class="input-chat-row">
-                <input type="text" id="input-chat" class="input-chat" placeholder="Digite sua mensagem...">
+                <input type="text" id="input-chat" class="input-chat" placeholder="Diga algo...">
                 <button class="btn-enviar-chat" onclick="enviarChatTexto()">Enviar</button>
             </div>
-            <div style="display:flex; gap:5px; margin: 10px 0; justify-content:center;">
-                <button class="btn-doar" style="background:#555" onclick="enviarChat('SOCORRO!')">🆘 SOCORRO!</button>
-                <button class="btn-doar" style="background:#555" onclick="enviarChat('VOU CAIR!')">📉 VOU CAIR</button>
-                <button class="btn-doar" style="background:#555" onclick="enviarChat('QUEM ME SALVA?')">🤝 AJUDA?</button>
-            </div>
-            <div id="lista-doacao" class="lista-doacao"></div>
+
+            <div id="lista-doacao" class="lista-doacao" style="margin-top:10px; max-height:120px; overflow-y:auto;"></div>
         </div>
 
-        <button id="btn-encerrar-host" class="btn-encerrar-host" onclick="encerrarDiscordia()">ENCERRAR NEGOCIAÇÃO E ELIMINAR</button>
-        <p id="msg-espera-host" class="msg-espera-host">Esperando o Host encerrar a bagunça...</p>
+        <button id="btn-encerrar-host" class="btn-encerrar-host" onclick="encerrarDiscordia()">ENCERRAR NEGOCIAÇÃO</button>
+        <p id="msg-espera-host" class="msg-espera-host">Aguardando o Host...</p>
     </div>
 
     <div id="modal-rodada" class="modal">
@@ -140,88 +99,41 @@
         <p id="txt-detalhe" style="font-size: 18px; color: #aaa;">...</p>
         <h3 id="txt-eliminacao" style="color: #FF5252; font-size: 24px; margin-top: 20px;"></h3>
         <p style="margin-top: 40px; color: #aaa;">Próxima rodada em:</p>
-        <div id="contador-regressivo" class="contador-zao">8</div>
-    </div>
-
-    <div id="modal-espera" class="modal">
-        <h1 style="font-size: 60px;">⏳</h1>
-        <h2>Jogo em Andamento!</h2>
-        <p>Aguarde o fim da rodada atual...</p>
-        <div style="margin-top: 20px; color: #FFD700; border: 1px dashed #FFD700; padding: 10px;">Você entrará na próxima mão!</div>
+        <div id="contador-regressivo" style="font-size:80px; font-weight:bold; color:#FFD700;">8</div>
     </div>
 
     <div id="modal-pulou" class="modal">
         <h1 style="font-size: 60px;">🚫</h1>
-        <h2>VOCÊ PULOU ESSA!</h2>
-        <p>Você foi generoso (ou bobo), doou fichas e agora perde a vez.</p>
+        <h2>VOCÊ PULA ESSA!</h2>
+        <p>Você doou fichas e está descansando.</p>
     </div>
 
     <div id="modal-gameover" class="modal" style="background: linear-gradient(135deg, #1b5e20, #000);">
         <h1 style="font-size: 80px;">🏆</h1>
-        <h1 style="color: #FFD700;">CAMPEÃO!</h1>
-        <h2 id="final-winner-name" style="font-size: 50px; margin: 10px 0; color: white; text-shadow: 0 0 10px gold;">...</h2>
-        <h3 id="final-fichas" style="background: white; color: black; padding: 10px 20px; border-radius: 50px;">Total: 💰 0</h3>
+        <h1 id="final-winner-name" style="color: #FFD700;">...</h1>
         <div id="lista-final"></div>
-        <br>
-        <button class="btn-principal" onclick="location.reload()">NOVO CAMPEONATO</button>
+        <button class="btn-principal" onclick="location.reload()">NOVO JOGO</button>
     </div>
 
     <div id="modal-eliminado" class="modal">
         <h1 style="font-size: 80px;">💀</h1>
-        <h2 style="color: #FF5252;">VOCÊ QUEBROU!</h2>
-        <p>Suas fichas acabaram.</p>
+        <h2 style="color: #FF5252;">VOCÊ FOI ELIMINADO!</h2>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
-        <div class="decoracao-cartas">
-            <img src="https://deckofcardsapi.com/static/img/AS.png" class="carta-decor c1">
-            <img src="https://deckofcardsapi.com/static/img/KD.png" class="carta-decor c2">
-            <img src="https://deckofcardsapi.com/static/img/JH.png" class="carta-decor c3">
-        </div>
-        <br><br>
         <h1 class="titulo-jogo">PINGÃO</h1>
-        <div class="subtitulo-jogo">FERVE A CUCA</div>
-        
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
-            <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
+            <input type="text" id="nome-sala" placeholder="Nome da Sala">
             <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
-
             <div class="box-regras">
-                <h2 style="text-align: center; color: #FFD700; margin-top: 0;">📜 MANUAL OFICIAL</h2>
-                
-                <h3>🎯 COMO JOGAR</h3>
+                <h3 style="color:#FFD700">📜 REGRAS RÁPIDAS</h3>
                 <ul>
-                    <li>Use <b>+3 cartas</b> e os sinais (+ - × ÷) para chegar perto do número <b>ALVO</b>.</li>
-                    <li>Quem chegar mais perto ganha a rodada.</li>
-                </ul>
-
-                <h3>⚡ PONTUAÇÃO (CORRIDA!)</h3>
-                <ul>
-                    <li>🚀 <b>0-20s:</b> +100 Fichas (THE FLASH)</li>
-                    <li>🏎️ <b>20-30s:</b> +80 Fichas</li>
-                    <li>🏃 <b>30-40s:</b> +30 Fichas</li>
-                    <li>⚠️ <b>40-50s:</b> <b style="color:#FF5252">-15 Fichas</b> (LENTO!)</li>
-                    <li>💀 <b>50s+:</b> <b style="color:#FF5252">-30 Fichas</b> (PREJUÍZO!)</li>
-                </ul>
-                
-                <h3>🏳️ DESISTÊNCIA (ESTRATÉGIA)</h3>
-                <ul>
-                    <li>Tá com medo de perder fichas por demora?</li>
-                    <li>Clique em <b>DESISTIR</b>. Você não ganha nada, mas <b>NÃO PERDE NADA</b>.</li>
-                    <li>Use isso para proteger suas fichas.</li>
-                </ul>
-
-                <h3>💀 ELIMINAÇÃO (MATA-MATA)</h3>
-                <ul>
-                    <li>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado do jogo!</li>
-                </ul>
-
-                <h3>📢 SALA DA BAGUNÇA</h3>
-                <ul>
-                    <li>Acontece antes da eliminação.</li>
-                    <li>Você pode <b>DOAR</b> fichas (50 a 200) para salvar alguém.</li>
-                    <li>⚠️ <b>ATENÇÃO:</b> Quem doa fichas <b>PULA A PRÓXIMA RODADA</b> (fica sem jogar).</li>
+                    <li>Alvo: Use 3 cartas para chegar perto.</li>
+                    <li>0-20s: +100 | 20-30s: +80 | 30-40s: +30</li>
+                    <li>40s+: ⚠️ <b style="color:red">Perde fichas!</b></li>
+                    <li>Desistir: Clique para não perder nada.</li>
+                    <li>Eliminação: A cada 5 rodadas o lanterna sai.</li>
                 </ul>
             </div>
         </div>
@@ -229,29 +141,20 @@
 
     <div id="tela-lobby" class="tela">
         <div class="caixa">
-            <div onclick="copiarLink()" style="background:#eee; padding:15px; border-radius:8px; cursor:pointer; font-size: 14px; border: 1px dashed #333;">
-                🔗 <b>Convidar</b>
-                <div id="link-texto" style="font-size:10px; color:#555; margin-top: 5px;"></div>
-            </div>
-            <div class="aviso-host">⚠️ ATENÇÃO HOST:<br>Espere todos entrarem!</div>
-            <div style="margin-top:20px; margin-bottom: 20px;">
-                <b style="color: #333;">Jogadores:</b>
-                <div id="lista-lobby" style="margin-top: 10px;"></div>
-            </div>
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="iniciarComSom()">DAR AS CARTAS</button>
+            <div id="lista-lobby"></div>
+            <button id="btn-iniciar" class="btn-principal" style="display:none;" onclick="iniciarComSom()">DAR AS CARTAS</button>
+            <p class="aviso-host">Host, espere todos entrarem!</p>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela" style="padding:0;">
-        <div style="padding: 10px;">
-            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:20px; display:inline-block; margin-bottom: 5px;">Rodada 1</div>
-        </div>
+        <div id="info-rodada" style="margin:10px; font-size:18px;">Rodada 1</div>
         <div id="painel-jogadores"></div>
         <div style="padding: 15px;">
             <div id="alvo-display">ALVO: ?</div>
             <div id="visor-conta">_</div>
             <div id="area-cartas"></div>
-            <div style="margin-top: 20px;">
+            <div>
                 <button class="sinal" onclick="tocarSom('click'); add('+')">+</button>
                 <button class="sinal" onclick="tocarSom('click'); add('-')">-</button>
                 <button class="sinal" onclick="tocarSom('click'); add('*')">×</button>
@@ -261,12 +164,8 @@
                 <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add('(')">(</button>
                 <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add(')')">)</button>
             </div>
-            <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
+            <button id="btn-enviar" class="btn-principal" onclick="enviar()">CONFIRMAR JOGADA</button>
             <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR (SALVAR FICHAS)</button>
-
-            <div class="legenda-pontos">
-                🚀0-20s: +100 | 🏃30-40s: +30 | <span style="color:#FF5252">⚠️40s+: -15</span> | <span style="color:#FF5252">💀50s+: -30</span>
-            </div>
         </div>
     </div>
 
@@ -287,252 +186,155 @@
             vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav'), 
             aplauso: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a'), 
             erro: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/explosion.mp3'),
-            sirene: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/thrust.mp3'),
-            msg: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav')
+            msg: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3') // Pop limpo para chat
         };
 
         function tocarSom(tipo) { try { const som = audioLibrary[tipo]; if(som) { som.currentTime = 0; som.play().catch(e => {}); } } catch(e) {} }
         function iniciarComSom() { tocarSom('click'); socket.send(JSON.stringify({type:'START'})); }
-
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            if(params.get('sala')) { document.getElementById('nome-sala').value = params.get('sala'); document.getElementById('div-sala').style.display = 'none'; }
-        }
+        function addEmoji(e) { document.getElementById('input-chat').value += e; document.getElementById('input-chat').focus(); }
 
         function entrar() {
             tocarSom('click');
             meuNome = document.getElementById('nome-player').value.trim();
             minhaSala = document.getElementById('nome-sala').value.trim();
-            if(!meuNome || !minhaSala) return alert("Preenche tudo!");
+            if(!meuNome || !minhaSala) return alert("Preencha seu nome e a sala!");
             document.getElementById('sala-nome-topo').innerText = `| Sala: ${minhaSala}`;
-            document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
             mudarTela('tela-lobby');
 
-            try {
-                socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
-                socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
-                socket.onmessage = (event) => {
-                    const data = JSON.parse(event.data);
+            socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
+            socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
 
-                    if (data.type === 'INFO_PLAYER') {
-                        souHost = data.isHost;
-                        document.querySelector('.aviso-host').style.display = souHost ? 'block' : 'none';
-                        document.getElementById('btn-encerrar-host').style.display = souHost ? 'block' : 'none';
-                        document.getElementById('msg-espera-host').style.display = souHost ? 'none' : 'block';
-                    }
+                if (data.type === 'INFO_PLAYER') {
+                    souHost = data.isHost;
+                    document.getElementById('btn-encerrar-host').style.display = souHost ? 'block' : 'none';
+                    document.getElementById('msg-espera-host').style.display = souHost ? 'none' : 'block';
+                }
 
-                    if (data.type === 'LISTA') {
-                        const qtdAntiga = document.querySelectorAll('.item-lobby').length;
-                        if(data.lista.length > qtdAntiga) tocarSom('entrou');
-                        atualizarListas(data.lista);
-                        atualizarRankingBar(data.lista);
-                        
-                        const eu = data.lista.find(p => p.nome === meuNome);
-                        if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
-                        if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
-                        
-                        const host = data.lista.find(p => p.isHost);
-                        if(host && host.nome === meuNome) souHost = true;
-                        if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
-                    }
+                if (data.type === 'LISTA') {
+                    atualizarRankingBar(data.lista);
+                    const lobby = document.getElementById('lista-lobby');
+                    lobby.innerHTML = "<b>Jogadores:</b><br>";
+                    data.lista.forEach(p => { lobby.innerHTML += `${p.nome} (💰${p.fichas}) ${p.isHost ? '👑' : ''}<br>`; });
+                    if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
+                    
+                    const painel = document.getElementById('painel-jogadores');
+                    painel.innerHTML = "";
+                    data.lista.forEach(p => {
+                        if(!p.eliminado) {
+                            let status = p.pronto ? '✅' : '🤔';
+                            if(p.pulou) status = '🚫';
+                            if(p.desistiu) status = '🏳️';
+                            painel.innerHTML += `<div class="tag-player">${p.nome} ${status}</div>`;
+                        }
+                    });
 
-                    if (data.type === 'INICIO_NEGOCIACAO') {
-                        esconderModais();
-                        tocarSom('sirene');
-                        document.getElementById('modal-negociacao').style.display = 'flex';
-                        setTimeout(() => { const box = document.getElementById('chat-box'); box.scrollTop = box.scrollHeight; }, 100);
-                    }
+                    const eu = data.lista.find(p => p.nome === meuNome);
+                    if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
+                    if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
 
-                    if (data.type === 'CHAT_UPDATE') {
-                        tocarSom('msg');
-                        const box = document.getElementById('chat-box');
-                        box.innerHTML = "";
-                        data.log.forEach(l => {
-                            if(l.sistema) box.innerHTML += `<div class="chat-msg sistema">${l.msg}</div>`;
-                            else box.innerHTML += `<div class="chat-msg"><b>${l.nome}:</b> ${l.msg}</div>`;
-                        });
-                        box.scrollTop = box.scrollHeight;
-                    }
+                    // Lista de doação na Bagunça
+                    const listaDoacao = document.getElementById('lista-doacao');
+                    listaDoacao.innerHTML = "";
+                    data.lista.filter(p => p.nome !== meuNome && !p.eliminado).forEach(p => {
+                        listaDoacao.innerHTML += `
+                            <div style="background:rgba(255,255,255,0.1); margin:5px; padding:5px; border-radius:5px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:12px;">${p.nome} (${p.fichas})</span>
+                                <div style="display:flex; gap:3px;">
+                                    <button class="btn-doar" onclick="doarFichas('${p.nome}', 50)">50</button>
+                                    <button class="btn-doar" onclick="doarFichas('${p.nome}', 100)">100</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
 
-                    if (data.type === 'PULOU_VEZ') {
-                        esconderModais();
-                        document.getElementById('modal-pulou').style.display = 'flex';
-                    }
+                if (data.type === 'INICIO_NEGOCIACAO') {
+                    esconderModais();
+                    document.getElementById('modal-negociacao').style.display = 'flex';
+                }
 
-                    if (data.type === 'SUA_MAO') {
-                        esconderModais();
-                        mudarTela('tela-jogo');
-                        const r = data.rodada;
-                        let txt = `Rodada ${r}`;
-                        if(r % 5 === 0) txt += " 💀 ELIMINAÇÃO!";
-                        document.getElementById('info-rodada').innerText = txt;
-                        if(r % 5 === 0) document.getElementById('info-rodada').style.background = "#D32F2F";
-                        else document.getElementById('info-rodada').style.background = "rgba(255,255,255,0.2)";
-                        limpar();
-                        alvoAtual = data.alvo;
-                        iniciarTimer(60);
-                        document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
-                        const area = document.getElementById('area-cartas');
-                        area.innerHTML = "";
-                        data.cartas.forEach(num => {
-                            let valorImg = num;
-                            if(num===1) valorImg="A"; if(num===10) valorImg="0"; if(num===11) valorImg="J"; if(num===12) valorImg="Q"; if(num===13) valorImg="K";
-                            const naipes = ['H', 'D', 'C', 'S'];
-                            const naipe = naipes[Math.floor(Math.random() * naipes.length)];
-                            const imgUrl = `https://deckofcardsapi.com/static/img/${valorImg}${naipe}.png`;
-                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="usarCarta('${num}')">`;
-                        });
-                        document.getElementById('btn-enviar').style.display = 'block';
-                        document.querySelector('.btn-desistir').style.display = 'block';
-                    }
+                if (data.type === 'CHAT_UPDATE') {
+                    tocarSom('msg');
+                    const box = document.getElementById('chat-box');
+                    box.innerHTML = "";
+                    data.log.forEach(l => {
+                        if(l.sistema) box.innerHTML += `<div class="chat-msg sistema">${l.msg}</div>`;
+                        else box.innerHTML += `<div class="chat-msg"><b>${l.nome}:</b> ${l.msg}</div>`;
+                    });
+                    box.scrollTop = box.scrollHeight;
+                }
 
-                    if (data.type === 'FIM_RODADA') {
-                        document.getElementById('modal-rodada').style.display = 'flex';
-                        let sinal = data.premio >= 0 ? "+" : "";
-                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                        document.getElementById('txt-premio').innerText = `${sinal}${data.premio} 💰`;
-                        if(data.premio < 0) document.getElementById('txt-premio').style.color = "#FF5252";
-                        else document.getElementById('txt-premio').style.color = "#FFD700";
-                        
-                        document.getElementById('txt-detalhe').innerText = `Res: ${data.valor} (Tempo: ${data.tempo}s)`;
-                        document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
-                        if(data.vencedor === meuNome && data.premio > 0) tocarSom('vitoria');
-                        else if(data.vencedor === meuNome && data.premio < 0) tocarSom('erro'); 
-                        if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
-                    }
+                if (data.type === 'SUA_MAO') {
+                    esconderModais();
+                    mudarTela('tela-jogo');
+                    alvoAtual = data.alvo;
+                    document.getElementById('info-rodada').innerText = `Rodada ${data.rodada}`;
+                    document.getElementById('alvo-display').innerText = `ALVO: ${data.alvo}`;
+                    limpar();
+                    iniciarTimer(60);
+                    const area = document.getElementById('area-cartas');
+                    area.innerHTML = "";
+                    data.cartas.forEach(num => {
+                        let valorImg = num === 1 ? 'A' : num === 10 ? '0' : num === 11 ? 'J' : num === 12 ? 'Q' : num === 13 ? 'K' : num;
+                        const naipes = ['H', 'D', 'C', 'S'];
+                        const imgUrl = `https://deckofcardsapi.com/static/img/${valorImg}${naipes[Math.floor(Math.random()*4)]}.png`;
+                        area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="usarCarta('${num}')">`;
+                    });
+                    document.getElementById('btn-enviar').style.display = 'block';
+                    document.querySelector('.btn-desistir').style.display = 'block';
+                }
 
-                    if (data.type === 'CONTAGEM') {
-                        document.getElementById('contador-regressivo').innerText = data.tempo;
-                        if(data.tempo <= 3) tocarSom('click');
-                    }
+                if (data.type === 'FIM_RODADA') {
+                    document.getElementById('modal-rodada').style.display = 'flex';
+                    document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
+                    document.getElementById('txt-premio').innerText = `${data.premio >= 0 ? '+' : ''}${data.premio} 💰`;
+                    document.getElementById('txt-detalhe').innerText = `Res: ${data.valor} (${data.tempo}s)`;
+                    document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
+                    if(data.vencedor === meuNome && data.premio > 0) tocarSom('vitoria');
+                    if(data.premio < 0 && data.vencedor === meuNome) tocarSom('erro');
+                }
 
-                    if (data.type === 'GAME_OVER') {
-                        esconderModais();
-                        tocarSom('aplauso');
-                        document.getElementById('modal-gameover').style.display = 'flex';
-                        document.getElementById('final-winner-name').innerText = data.vencedor;
-                        document.getElementById('final-fichas').innerText = "💰 " + data.totalFichas;
-                        const divLista = document.getElementById('lista-final');
-                        divLista.innerHTML = "";
-                        data.placar.forEach((p, idx) => {
-                            let classe = "item-final", icone = "";
-                            if (idx === 0) { classe += " campeao"; icone = "🥇"; }
-                            else if (p.eliminado) { classe += " eliminado"; icone = "💀"; }
-                            else { icone = "🥈"; }
-                            divLista.innerHTML += `<div class="${classe}"><span>${icone} ${p.nome}</span><span>${p.fichas}</span></div>`;
-                        });
-                    }
-                };
-            } catch (e) { alert("Erro de conexão!"); }
+                if (data.type === 'CONTAGEM') {
+                    document.getElementById('contador-regressivo').innerText = data.tempo;
+                }
+
+                if (data.type === 'GAME_OVER') {
+                    esconderModais();
+                    tocarSom('aplauso');
+                    document.getElementById('modal-gameover').style.display = 'flex';
+                    document.getElementById('final-winner-name').innerText = `CAMPEÃO: ${data.vencedor}`;
+                }
+                
+                if (data.type === 'PULOU_VEZ') {
+                    esconderModais();
+                    document.getElementById('modal-pulou').style.display = 'flex';
+                }
+            };
         }
 
         function atualizarRankingBar(lista) {
             const bar = document.getElementById('barra-ranking');
             bar.innerHTML = "";
             const sorted = [...lista].sort((a,b) => b.fichas - a.fichas);
-            const vivos = sorted.filter(p => !p.eliminado);
-            const ultimoVivo = vivos.length > 0 ? vivos[vivos.length - 1] : null;
-
             sorted.forEach((p, i) => {
-                let classe = "rank-item";
-                if(i === 0) classe += " lider";
-                if(p === ultimoVivo && vivos.length > 1) classe += " perigo"; 
+                let classe = "rank-item" + (i===0 ? " lider" : "");
                 if(p.eliminado) classe += " eliminado";
-                let icone = "👤";
-                if(i===0) icone = "👑";
-                if(p.eliminado) icone = "💀";
-                bar.innerHTML += `<div class="${classe}">${icone} ${p.nome}: ${p.fichas}</div>`;
+                bar.innerHTML += `<div class="${classe}">${p.nome}: ${p.fichas}</div>`;
             });
-        }
-
-        function atualizarListas(lista) {
-            const lobby = document.getElementById('lista-lobby');
-            const painel = document.getElementById('painel-jogadores');
-            const listaDoacao = document.getElementById('lista-doacao');
-            
-            lobby.innerHTML = "";
-            painel.innerHTML = "";
-            listaDoacao.innerHTML = "";
-            
-            const listaPobres = [...lista].sort((a,b) => a.fichas - b.fichas);
-            lista.sort((a,b) => b.fichas - a.fichas);
-
-            lista.forEach(p => {
-                let statusLobby = p.pronto ? '✅' : '⏳';
-                if(p.esperando) statusLobby = '🕐 Prox';
-                if(p.eliminado) statusLobby = '💀';
-                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰${p.fichas} ${statusLobby}</span></div>`;
-
-                if(!p.eliminado && !p.esperando) {
-                    let classePronto = p.pronto ? 'pronto' : '';
-                    if(p.pulou) classePronto = 'pulou';
-                    if(p.desistiu) classePronto = 'desistiu';
-
-                    let iconePronto = p.pronto ? '✅' : '🤔';
-                    if(p.pulou) iconePronto = '🚫';
-                    if(p.desistiu) iconePronto = '🏳️';
-
-                    painel.innerHTML += `<div class="tag-player ${classePronto}">${p.nome} ${iconePronto}</div>`;
-                }
-            });
-
-            listaPobres.forEach(p => {
-                if(!p.eliminado && p.nome !== meuNome) {
-                    listaDoacao.innerHTML += `
-                        <div class="item-doacao">
-                            <span class="nome-pobre">${p.nome} (${p.fichas})</span>
-                            <div class="btn-group-doar">
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 50)">50</button>
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 100)">100</button>
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 150)">150</button>
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 200)">200</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
-            else document.getElementById('btn-iniciar').style.display = 'none';
         }
 
         function iniciarTimer(segundos) {
             tempoRestante = segundos;
             const barra = document.getElementById('barra-tempo');
-            barra.style.width = '100%';
             if(timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 tempoRestante--;
                 barra.style.width = ((tempoRestante/60)*100) + '%';
-                if (tempoRestante <= 20) barra.style.background = "#FF5252";
-                else barra.style.background = "#00E676";
-
+                barra.style.background = tempoRestante <= 20 ? "#FF5252" : "#00E676";
                 if(tempoRestante <= 0) clearInterval(timerInterval);
             }, 1000);
-        }
-
-        function esconderModais() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-        function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
-        function usarCarta(num) { tocarSom('click'); qtdCartasUsadas++; add(num); }
-        
-        function enviar() {
-            if (qtdCartasUsadas < 3) { tocarSom('erro'); return alert("⚠️ Use pelo menos 3 cartas!"); }
-            try {
-                const res = eval(conta);
-                if(res===undefined) throw new Error();
-                const tempoGasto = 60 - tempoRestante;
-                socket.send(JSON.stringify({ type: 'JOGADA', nome: meuNome, valor: res, distancia: Math.abs(alvoAtual - res), tempo: tempoGasto }));
-                document.getElementById('btn-enviar').style.display = 'none';
-                document.querySelector('.btn-desistir').style.display = 'none';
-            } catch(e) { alert("Conta inválida!"); }
-        }
-
-        function desistir() {
-            if(confirm("Desistir dessa rodada? Você não perderá fichas, mas também não ganhará.")) {
-                socket.send(JSON.stringify({ type: 'DESISTIR', nome: meuNome }));
-                document.getElementById('btn-enviar').style.display = 'none';
-                document.querySelector('.btn-desistir').style.display = 'none';
-            }
         }
 
         function enviarChatTexto() {
@@ -542,23 +344,32 @@
                 document.getElementById('input-chat').value = "";
             }
         }
-        function enviarChat(msg) { socket.send(JSON.stringify({type: 'CHAT_MSG', nome: meuNome, msg: msg})); }
-        
-        function doarFichas(para, valor) { 
-            if(confirm(`Doar ${valor} para ${para}? Você perde ${valor} fichas e pula a vez!`)) {
-                socket.send(JSON.stringify({type: 'DOAR_FICHAS', de: meuNome, para: para, valor: valor})); 
-            }
-        }
 
-        function encerrarDiscordia() {
-            if(confirm("Encerrar negociação e eliminar o último?")) {
-                socket.send(JSON.stringify({type: 'ENCERRAR_DISCORDIA'}));
-            }
-        }
-
+        function usarCarta(num) { tocarSom('click'); qtdCartasUsadas++; add(num); }
         function add(v) { conta += v; document.getElementById('visor-conta').innerText = conta; }
         function limpar() { conta = ""; qtdCartasUsadas = 0; document.getElementById('visor-conta').innerText = "_"; }
+        function esconderModais() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
         function mudarTela(id) { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
+
+        function enviar() {
+            if (qtdCartasUsadas < 3) return alert("Use 3 cartas!");
+            try {
+                const res = eval(conta);
+                socket.send(JSON.stringify({ type: 'JOGADA', nome: meuNome, valor: res, distancia: Math.abs(alvoAtual - res), tempo: 60 - tempoRestante }));
+                document.getElementById('btn-enviar').style.display = 'none';
+            } catch(e) { alert("Conta inválida!"); }
+        }
+
+        function desistir() {
+            if(confirm("Desistir para não perder fichas?")) {
+                socket.send(JSON.stringify({ type: 'DESISTIR', nome: meuNome }));
+                document.getElementById('btn-enviar').style.display = 'none';
+                document.querySelector('.btn-desistir').style.display = 'none';
+            }
+        }
+
+        function doarFichas(para, valor) { socket.send(JSON.stringify({type: 'DOAR_FICHAS', de: meuNome, para: para, valor: valor})); }
+        function encerrarDiscordia() { socket.send(JSON.stringify({type: 'ENCERRAR_DISCORDIA'})); }
     </script>
 </body>
 </html>
