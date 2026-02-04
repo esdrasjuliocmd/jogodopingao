@@ -11,12 +11,16 @@
         .ativa { display: block; }
         .caixa { background: white; border: 3px solid #4ECDC4; border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 400px; box-shadow: 6px 6px 0 #4ECDC4; }
         input { width: 85%; padding: 12px; margin: 10px; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; }
+        
+        /* BOTÃO DE CONVITE */
+        .btn-convite { background: #FFE66D; color: #b34a4a; padding: 10px; border-radius: 10px; border: 2px dashed #FF6B6B; cursor: pointer; font-weight: bold; margin-bottom: 20px; width: 90%; }
+        
         .alvo { background: #FFE66D; margin: 15px; padding: 15px; border-radius: 15px; border: 3px dashed #FF6B6B; font-size: 24px; font-weight: bold; }
         .area-cartas { display: flex; justify-content: center; gap: 10px; margin: 20px; }
         .carta { width: 70px; height: 100px; background: white; border: 3px solid #4ECDC4; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; box-shadow: 4px 4px 0 #4ECDC4; font-weight: bold; }
         .sinal { padding: 15px 20px; font-size: 22px; margin: 5px; cursor: pointer; border: none; border-radius: 12px; background: #4ECDC4; color: white; font-weight: bold; box-shadow: 0 4px 0 #36918a; }
         .btn-principal { background: #4ECDC4; color: white; padding: 18px 45px; border: none; border-radius: 50px; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 0 #36918a; }
-        #relogio { font-size: 45px; color: #FF6B6B; font-weight: bold; margin: 10px; }
+        
         #visor-conta { font-size: 30px; margin: 20px; background: #f0f0f0; padding: 20px; border-radius: 15px; min-height: 45px; border: 3px solid #ccc; font-weight: bold; }
         #pausa { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #FF6B6B; color: white; z-index: 1000; flex-direction: column; justify-content: center; align-items: center; }
     </style>
@@ -25,7 +29,7 @@
 
     <div id="pausa">
         <h1>⏸️ PAUSA DO PINGÃO</h1>
-        <p style="font-size: 24px;">Busca o gelo que o Pingão espera!</p>
+        <p style="font-size: 24px;">Vai lá no cooler buscar uma que o Pingão espera!</p>
         <button class="btn-principal" style="background:#333" onclick="socket.send(JSON.stringify({type:'RESUME'}))">VOLTAR</button>
     </div>
 
@@ -42,13 +46,15 @@
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>🏠 Sala: <span id="sala-id">...</span></h1></div>
         <div class="caixa">
-            <p style="font-size: 20px;">Aguardando a galera... 🌭</p>
+            <button class="btn-convite" onclick="copiarConvite()">📋 CLIQUE AQUI PARA COPIAR CONVITE</button>
+            <p style="font-size: 18px;">Mande o nome da sala para a família entrar! 🌭</p>
+            <br>
             <button class="btn-principal" style="background:#FF6B6B; box-shadow: 0 5px 0 #b34a4a;" onclick="comecarJogo()">INICIAR DESAFIO!</button>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela">
-        <div class="topo"><h1 id="txt-topo">Bora Blefar!</h1><div id="relogio">90</div></div>
+        <div class="topo"><h1>Bora Blefar!</h1><div id="relogio" style="font-size: 30px;">90</div></div>
         <div class="alvo">🎯 ALVO: CHEGAR PERTO DE 11</div>
         <div id="visor-conta">_ ? _</div>
         <div class="area-cartas">
@@ -82,9 +88,8 @@
         function conectar() {
             const n = document.getElementById('nome-player').value;
             const s = document.getElementById('nome-sala').value;
-            if(!n || !s) return alert("Preenche tudo aí!");
+            if(!n || !s) return alert("Preenche os campos aí, Pingão!");
 
-            // Conexão com o seu Worker que você subiu pelo PowerShell
             socket = new WebSocket('wss://pingao-backend.esdrasjulio.workers.dev/');
 
             socket.onopen = () => {
@@ -101,6 +106,13 @@
             };
         }
 
+        function copiarConvite() {
+            const sala = document.getElementById('sala-id').innerText;
+            const texto = `Bora pro Desafio do Pingão! 🍻\nSite: https://jogodopingao.pages.dev\nSALA: ${sala}`;
+            navigator.clipboard.writeText(texto);
+            alert("✅ Convite copiado! Agora é só colar no WhatsApp da família.");
+        }
+
         function comecarJogo() {
             if(socket && socket.readyState === WebSocket.OPEN) {
                 socket.send(JSON.stringify({type:'START'}));
@@ -114,7 +126,7 @@
             try {
                 let r = eval(minhaConta);
                 alert("O Pingão viu!\nResultado: " + r + "\nDistância: " + Math.abs(11 - r));
-            } catch(e) { alert("Conta errada!"); }
+            } catch(e) { alert("Essa conta tá errada, revisa aí!"); }
         }
 
         function iniciarRelogio() {
