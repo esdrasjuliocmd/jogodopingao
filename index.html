@@ -3,119 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cassino Pingão</title>
+    <title>Ferve a Cuca</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; }
         
         .topo { background: #000; color: #FFD700; padding: 10px; border-bottom: 2px solid #FFD700; display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; font-size: 16px; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px;}
+        h1 { margin: 0; font-size: 14px; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px;}
         
         .tela { display: none; padding: 10px; }
         .ativa { display: block; }
         
         .caixa { background: #fff; color: #333; border-radius: 10px; padding: 20px; margin: 15px auto; max-width: 400px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
-        
         input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
-        
         .btn-principal { background: #B71C1C; color: white; padding: 15px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; border-bottom: 4px solid #7F0000; }
         
-        /* PLACAR DE FICHAS */
-        .chip { color: #FFD700; font-weight: bold; }
-        #lista-ingame { font-size: 11px; text-align: right; margin-right: 10px; }
-        .mini-jogador { display: block; border-bottom: 1px solid #333; padding: 2px 0; }
-        .eliminado-txt { text-decoration: line-through; color: #555; }
-        
-        /* BARRA DE TEMPO */
+        /* LAYOUT JOGO */
         #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
         #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
-
-        /* CARTAS */
+        
         #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
         .carta { width: 65px; height: 95px; background: white; color: black; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; font-weight: bold; border: 1px solid #999; }
         .carta.vermelha { color: #D32F2F; }
         .carta span { font-size: 12px; position: absolute; top: 2px; left: 4px; }
         
         .sinal { width: 50px; height: 50px; font-size: 24px; margin: 3px; border: none; border-radius: 50%; background: #424242; color: white; cursor: pointer; border: 1px solid #666; }
-        
         #visor-conta { font-size: 28px; background: #eee; color: #333; padding: 10px; margin: 10px 0; font-weight: bold; border-radius: 5px; min-height: 35px; border: 2px solid #aaa; }
-        
         #alvo-display { background: #FFD700; color: #000; padding: 10px; font-weight: bold; font-size: 20px; border-radius: 5px; margin-bottom: 10px; border: 2px solid #FFA000; }
         
-        #info-rodada { background: #333; color: white; font-size: 12px; padding: 5px; margin-bottom: 10px; border-radius: 20px; display: inline-block; }
-
         /* MODAIS */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
-        .vitoria-total { background: linear-gradient(45deg, #FFD700, #FF8F00); color: black; }
-
-        /* BOTÃO DE AJUDA */
-        .btn-ajuda { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #2196F3; color: white; border-radius: 50%; border: none; font-size: 24px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; z-index: 150; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
+        .contador-zao { font-size: 80px; font-weight: bold; color: #FFD700; margin: 20px 0; }
         
-        /* TEXTO DO MANUAL NO MODAL */
-        .manual-texto { text-align: left; font-size: 14px; line-height: 1.6; background: #222; padding: 15px; border-radius: 10px; max-height: 70vh; overflow-y: auto; }
-        .manual-texto h3 { color: #FFD700; margin-bottom: 5px; border-bottom: 1px solid #444; }
+        /* LISTAS */
+        #lista-lobby { text-align: left; }
+        .item-lobby { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+        .esperando { color: orange; font-style: italic; }
     </style>
 </head>
 <body>
 
     <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
 
-    <button class="btn-ajuda" onclick="document.getElementById('modal-manual').style.display='flex'">?</button>
-
-    <div id="modal-manual" class="modal" style="justify-content: start; padding-top: 50px;">
-        <h2 style="color: #FFD700;">📖 Regras do Jogo</h2>
-        <div class="manual-texto">
-            <h3>🃏 Valores</h3>
-            A=1, J=11, Q=12, K=13.<br>
-            Números 2 a 10 valem o normal.
-            
-            <h3>🎯 Objetivo</h3>
-            Use as 4 cartas e sinais (+ - × ÷) para chegar o mais perto possível do <b>ALVO</b>.
-            
-            <h3>💰 Fichas</h3>
-            Todos começam com 500.<br>
-            Vencedor da rodada ganha +100.
-            
-            <h3>💀 Eliminação</h3>
-            A cada <b>5 Rodadas</b>, quem tiver MENOS fichas é eliminado!<br>
-            O último sobrevivente leva tudo.
-        </div>
-        <button class="btn-principal" style="background:#444; margin-top: 20px;" onclick="document.getElementById('modal-manual').style.display='none'">FECHAR</button>
-    </div>
-
     <div id="modal-rodada" class="modal">
-        <h1 style="font-size: 40px;">🃏</h1>
-        <h2 id="txt-vencedor">...</h2>
-        <p id="txt-detalhe">...</p>
-        <h3 id="txt-eliminacao" style="color: #FF5252; margin-top: 20px;"></h3>
-        <p style="color: #FFD700; margin-top: 20px; font-size: 14px;">Próxima mão em instantes...</p>
+        <h2 id="txt-vencedor" style="color: #00E676;">...</h2>
+        <p id="txt-detalhe" style="font-size: 18px;">...</p>
+        <h3 id="txt-eliminacao" style="color: #FF5252;"></h3>
+        
+        <p style="margin-top: 30px; color: #aaa;">Próxima rodada em:</p>
+        <div id="contador-regressivo" class="contador-zao">8</div>
     </div>
 
-    <div id="modal-gameover" class="modal vitoria-total">
-        <h1 style="font-size: 60px;">👑</h1>
-        <h1>GRANDE VENCEDOR!</h1>
-        <h2 id="final-winner-name" style="font-size: 40px; margin: 10px 0;">PINGÃO</h2>
-        <p>Levou todas as fichas!</p>
+    <div id="modal-espera" class="modal">
+        <h1>⏳</h1>
+        <h2>Rodada em Andamento!</h2>
+        <p>Aguarde o fim da rodada atual...</p>
+        <div style="margin-top: 20px; color: #FFD700;">Você entrará na próxima!</div>
+    </div>
+
+    <div id="modal-gameover" class="modal" style="background: #2E7D32;">
+        <h1 style="font-size: 60px;">🏆</h1>
+        <h1>CAMPEÃO FERVE CUCA!</h1>
+        <h2 id="final-winner-name" style="font-size: 40px; margin: 10px 0; color: gold;">...</h2>
         <h3 id="final-fichas">Total: 💰 0</h3>
         <br>
-        <button class="btn-principal" style="background: black; color: gold;" onclick="location.reload()">NOVO CAMPEONATO</button>
+        <button class="btn-principal" onclick="location.reload()">NOVO JOGO</button>
     </div>
 
     <div id="modal-eliminado" class="modal">
         <h1 style="font-size: 50px;">💀</h1>
-        <h2>VOCÊ FOI ELIMINADO!</h2>
+        <h2>ELIMINADO!</h2>
         <p>Suas fichas acabaram.</p>
-        <p style="color: #aaa;">Você agora é espectador.</p>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
         <br><br>
-        <h1 style="font-size: 40px; color: #FFD700;">🎰</h1>
-        <h1 style="font-size: 24px;">Cassino Royale</h1>
-        <p style="font-size: 12px; color: #888;">Regra: A cada 5 rodadas, o último sai!</p>
+        <h1 style="font-size: 30px; color: #FFD700;">🤯</h1>
+        <h1 style="font-size: 24px;">Desafio do Pingão</h1>
+        <h2 style="font-size: 18px; color: #aaa;">FERVE A CUCA</h2>
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
-            <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
+            <button class="btn-principal" onclick="entrar()">ENTRAR</button>
         </div>
     </div>
 
@@ -123,28 +91,22 @@
         <div class="topo"><h1>Mesa: <span id="sala-titulo"></span></h1></div>
         <div class="caixa">
             <div onclick="copiarLink()" style="background:#eee; padding:10px; border-radius:5px; cursor:pointer; font-size: 12px;">
-                🔗 <b>Convidar Jogadores</b>
+                🔗 <b>Convidar Galera</b>
                 <div id="link-texto" style="font-size:10px; color:#555;"></div>
             </div>
-            <div style="margin-top:20px; text-align:left;">
-                <b>Jogadores (500 Fichas cada):</b>
+            <div style="margin-top:20px; margin-bottom: 20px;">
+                <b>Na Mesa (500 Fichas):</b>
                 <div id="lista-lobby"></div>
             </div>
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: #2E7D32;" onclick="socket.send(JSON.stringify({type:'START'}))">COMEÇAR CAMPEONATO</button>
-            <p id="msg-aguarde" style="color:#666; font-size: 12px;">O Host iniciará o jogo...</p>
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: #2E7D32;" onclick="socket.send(JSON.stringify({type:'START'}))">INICIAR PARTIDA</button>
+            <p id="msg-aguarde" style="color:#666; font-size: 12px;">Aguardando início...</p>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela">
         <div class="topo">
-            <div>
-                Fichas: <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span> 💰
-            </div>
-            <div id="lista-ingame"></div> 
-        </div>
-        
-        <div style="text-align:center; margin-top: 10px;">
-            <div id="info-rodada">Rodada 1</div>
+            <div>Fichas: <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span></div>
+            <div id="info-rodada" style="font-size: 12px;">Rodada 1</div>
         </div>
         
         <div id="alvo-display">ALVO: ?</div>
@@ -162,8 +124,7 @@
             <button class="sinal" style="background:#222" onclick="add(')')">)</button>
         </div>
 
-        <button id="btn-enviar" class="btn-principal" onclick="enviar()">APOSTAR (ENVIAR)</button>
-        <br>
+        <button id="btn-enviar" class="btn-principal" onclick="enviar()">ENVIAR CONTA</button>
         <div style="font-size: 10px; margin-top: 10px; opacity: 0.5;">A=1 | J=11 | Q=12 | K=13</div>
     </div>
 
@@ -202,28 +163,26 @@
                     const data = JSON.parse(event.data);
 
                     if (data.type === 'LISTA') {
-                        atualizarListas(data.lista);
+                        atualizarListaLobby(data.lista);
                         const eu = data.lista.find(p => p.nome === meuNome);
-                        if(eu && eu.eliminado) {
-                            document.getElementById('modal-eliminado').style.display = 'flex';
-                        } else if (eu) {
-                            document.getElementById('minhas-fichas').innerText = eu.fichas;
-                        }
+                        if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
+                        if(eu) document.getElementById('minhas-fichas').innerText = eu.fichas;
+                    }
+
+                    if (data.type === 'ESPERANDO_RODADA') {
+                        document.getElementById('modal-espera').style.display = 'flex';
                     }
 
                     if (data.type === 'SUA_MAO') {
                         esconderModais();
                         mudarTela('tela-jogo');
                         
-                        const rodada = data.rodada;
-                        const faltam = 5 - (rodada % 5);
-                        let textoRodada = `Rodada ${rodada}`;
-                        if((rodada % 5) === 0) textoRodada += " 💀 ELIMINAÇÃO!";
-                        else textoRodada += ` (${faltam} p/ eliminação)`;
-                        
-                        document.getElementById('info-rodada').innerText = textoRodada;
-                        if((rodada % 5) === 0) document.getElementById('info-rodada').style.background = "#D32F2F";
-                        else document.getElementById('info-rodada').style.background = "#333";
+                        const r = data.rodada;
+                        let txt = `Rodada ${r}`;
+                        if(r % 5 === 0) txt += " 💀 ELIMINAÇÃO!";
+                        document.getElementById('info-rodada').innerText = txt;
+                        if(r % 5 === 0) document.getElementById('info-rodada').style.color = "red";
+                        else document.getElementById('info-rodada').style.color = "white";
 
                         conta = "";
                         alvoAtual = data.alvo;
@@ -232,62 +191,49 @@
                         document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
                         document.getElementById('visor-conta').innerText = "_";
                         
-                        const areaCartas = document.getElementById('area-cartas');
-                        areaCartas.innerHTML = "";
+                        const area = document.getElementById('area-cartas');
+                        area.innerHTML = "";
                         data.cartas.forEach(num => {
-                            let visual = num;
-                            let cor = "black";
-                            if(num===1) visual="A";
-                            if(num===11) visual="J";
-                            if(num===12) visual="Q";
-                            if(num===13) visual="K";
+                            let visual = num, cor = "black";
+                            if(num===1) visual="A"; if(num===11) visual="J"; if(num===12) visual="Q"; if(num===13) visual="K";
                             if(Math.random()>0.5) cor="#D32F2F";
-
-                            areaCartas.innerHTML += `
-                                <div class="carta" style="color:${cor}" onclick="add('${num}')">
-                                    <span>${visual}</span>${visual}
-                                </div>`;
+                            area.innerHTML += `<div class="carta" style="color:${cor}" onclick="add('${num}')"><span>${visual}</span>${visual}</div>`;
                         });
                         document.getElementById('btn-enviar').style.display = 'block';
                     }
 
-                    if (data.type === 'ESPECTADOR') {
-                        esconderModais();
-                        document.getElementById('modal-eliminado').style.display = 'flex';
-                    }
-
                     if (data.type === 'FIM_RODADA') {
                         document.getElementById('modal-rodada').style.display = 'flex';
-                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Ganhou (+100 💰)`;
-                        document.getElementById('txt-detalhe').innerText = `Valor: ${data.valor} (Dist: ${data.dist})`;
+                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
+                        document.getElementById('txt-detalhe').innerText = `Resultado: ${data.valor} (Dif: ${data.dist})`;
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
+                    }
+
+                    if (data.type === 'CONTAGEM') {
+                        // AQUI ESTÁ A CONTAGEM REGRESSIVA GRANDE
+                        document.getElementById('contador-regressivo').innerText = data.tempo;
                     }
 
                     if (data.type === 'GAME_OVER') {
                         esconderModais();
                         document.getElementById('modal-gameover').style.display = 'flex';
                         document.getElementById('final-winner-name').innerText = data.vencedor;
-                        document.getElementById('final-fichas').innerText = "Total: 💰 " + data.totalFichas;
+                        document.getElementById('final-fichas').innerText = "💰 " + data.totalFichas;
                     }
                 };
             } catch (e) { alert("Erro de conexão!"); }
         }
 
-        function atualizarListas(lista) {
-            const lobby = document.getElementById('lista-lobby');
-            const ingame = document.getElementById('lista-ingame');
-            lobby.innerHTML = "";
-            ingame.innerHTML = "";
-            
+        function atualizarListaLobby(lista) {
+            const div = document.getElementById('lista-lobby');
+            div.innerHTML = "";
             lista.sort((a,b) => b.fichas - a.fichas);
-
             lista.forEach(p => {
-                const status = p.eliminado ? '💀' : (p.pronto ? '✅' : '⏳');
-                const classe = p.eliminado ? 'eliminado-txt' : '';
-                lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;" class="${classe}"><span>${p.nome}</span><span>💰${p.fichas}</span></div>`;
-                ingame.innerHTML += `<div class="mini-jogador ${classe}">${p.nome}: ${p.fichas} ${status}</div>`;
+                let status = p.pronto ? '✅' : '⏳';
+                if(p.esperando) status = '🕐 (Prox. Rodada)';
+                if(p.eliminado) status = '💀';
+                div.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>${p.fichas} ${status}</span></div>`;
             });
-
             document.getElementById('btn-iniciar').style.display = 'block';
             document.getElementById('msg-aguarde').style.display = 'none';
         }
@@ -296,28 +242,22 @@
             tempoRestante = segundos;
             const barra = document.getElementById('barra-tempo');
             barra.style.width = '100%';
-            
             if(timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 tempoRestante--;
-                const porcentagem = (tempoRestante / 60) * 100;
-                barra.style.width = porcentagem + '%';
+                barra.style.width = ((tempoRestante/60)*100) + '%';
                 if(tempoRestante <= 0) clearInterval(timerInterval);
             }, 1000);
         }
 
-        function esconderModais() {
-            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-        }
-
+        function esconderModais() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
         function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
         
         function enviar() {
             try {
                 const res = eval(conta);
-                if(res === undefined) throw new Error();
-                const dist = Math.abs(alvoAtual - res);
-                socket.send(JSON.stringify({type: 'JOGADA', nome: meuNome, valor: res, distancia: dist}));
+                if(res===undefined) throw new Error();
+                socket.send(JSON.stringify({type: 'JOGADA', nome: meuNome, valor: res, distancia: Math.abs(alvoAtual - res)}));
                 document.getElementById('btn-enviar').style.display = 'none';
             } catch(e) { alert("Conta inválida!"); }
         }
