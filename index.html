@@ -7,42 +7,12 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; user-select: none; }
         
-        /* TOPO FIXO COM RANKING */
-        .topo-fixo {
-            background: #111;
-            border-bottom: 2px solid #FFD700;
-            padding: 5px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
+        .topo-fixo { background: #111; border-bottom: 2px solid #FFD700; padding: 5px; position: sticky; top: 0; z-index: 1000; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         .topo-info { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        
-        /* BARRA DE RANKING */
-        .ranking-bar {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 5px;
-            background: #222;
-            white-space: nowrap;
-            scrollbar-width: none;
-        }
+        .ranking-bar { display: flex; gap: 10px; overflow-x: auto; padding: 5px; background: #222; white-space: nowrap; scrollbar-width: none; }
         .ranking-bar::-webkit-scrollbar { display: none; }
         
-        .rank-item {
-            font-size: 11px;
-            padding: 3px 8px;
-            background: #333;
-            border-radius: 10px;
-            border: 1px solid #444;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .rank-item { font-size: 11px; padding: 3px 8px; background: #333; border-radius: 10px; border: 1px solid #444; display: flex; align-items: center; gap: 5px; }
         .rank-item.lider { border-color: #FFD700; color: #FFD700; background: rgba(255, 215, 0, 0.1); }
         .rank-item.perigo { border-color: #FF5252; color: #FF5252; }
         .rank-item.eliminado { text-decoration: line-through; opacity: 0.5; }
@@ -66,7 +36,6 @@
         #barra-tempo-container { width: 100%; height: 6px; background: #333; position: absolute; bottom: 0; left: 0; z-index: 100; }
         #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
         
-        /* SALA DA BAGUNÇA */
         .discordia-bg { background: linear-gradient(135deg, #4a0000, #000) !important; }
         .chat-container { display: flex; flex-direction: column; height: 350px; width: 100%; max-width: 400px; }
         .chat-box { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 5px; padding: 10px; text-align: left; margin-bottom: 5px; border: 1px solid #ff4081; }
@@ -85,7 +54,6 @@
         .btn-encerrar-host { background: #D50000; color: white; padding: 15px; width: 100%; font-weight: bold; border: 2px solid white; border-radius: 10px; margin-top: 10px; cursor: pointer; display: none; }
         .msg-espera-host { color: #aaa; font-style: italic; margin-top: 10px; display: none; }
 
-        /* JOGO */
         #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 30px; }
         .tag-player { font-size: 12px; background: #222; padding: 5px 10px; border-radius: 15px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .tag-player.pronto { background: #2E7D32; border-color: #00E676; }
@@ -109,7 +77,6 @@
         #lista-lobby { text-align: left; }
         .item-lobby { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; color: #333; }
         
-        /* REGRAS DETALHADAS */
         .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; max-height: 250px; overflow-y: auto; }
         .box-regras h3 { color: #FFD700; margin-top: 15px; border-bottom: 1px solid #444; padding-bottom: 5px; font-size: 16px; display:flex; align-items:center; gap:5px;}
         .box-regras ul { padding-left: 20px; margin: 5px 0; }
@@ -358,6 +325,9 @@
                         
                         const host = data.lista.find(p => p.isHost);
                         if(host && host.nome === meuNome) souHost = true;
+                        
+                        // Garante que o botão de iniciar aparece pro host
+                        if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
                     }
 
                     if (data.type === 'INICIO_NEGOCIACAO') {
@@ -456,11 +426,9 @@
                 if(i === 0) classe += " lider";
                 if(p === ultimoVivo && vivos.length > 1) classe += " perigo"; 
                 if(p.eliminado) classe += " eliminado";
-                
                 let icone = "👤";
                 if(i===0) icone = "👑";
                 if(p.eliminado) icone = "💀";
-                
                 bar.innerHTML += `<div class="${classe}">${icone} ${p.nome}: ${p.fichas}</div>`;
             });
         }
