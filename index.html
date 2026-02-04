@@ -3,87 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pingão Pro</title>
+    <title>Cassino Pingão</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #2E7D32; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; }
         
-        .topo { background: #1B5E20; color: white; padding: 10px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 5px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; font-size: 18px; margin-left: 10px;}
+        .topo { background: #000; color: #FFD700; padding: 10px; border-bottom: 2px solid #FFD700; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 16px; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px;}
         
         .tela { display: none; padding: 10px; }
         .ativa { display: block; }
         
-        .caixa { background: #fff; color: #333; border-radius: 10px; padding: 20px; margin: 15px auto; max-width: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .caixa { background: #fff; color: #333; border-radius: 10px; padding: 20px; margin: 15px auto; max-width: 400px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
         
         input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
         
-        .btn-principal { background: #D32F2F; color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #B71C1C; }
+        .btn-principal { background: #B71C1C; color: white; padding: 15px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; border-bottom: 4px solid #7F0000; }
         
-        /* LISTA PEQUENA NO TOPO */
-        #lista-ingame { font-size: 12px; text-align: right; margin-right: 10px; }
-        .mini-jogador { display: block; }
+        /* PLACAR DE FICHAS */
+        .chip { color: #FFD700; font-weight: bold; }
+        #lista-ingame { font-size: 11px; text-align: right; margin-right: 10px; }
+        .mini-jogador { display: block; border-bottom: 1px solid #333; padding: 2px 0; }
+        .eliminado-txt { text-decoration: line-through; color: #555; }
         
         /* BARRA DE TEMPO */
-        #barra-tempo-container { width: 100%; height: 10px; background: #1B5E20; position: fixed; top: 0; left: 0; z-index: 100; }
-        #barra-tempo { width: 100%; height: 100%; background: #FFC107; transition: width 1s linear; }
+        #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
+        #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
 
         /* CARTAS */
         #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
-        .carta { width: 65px; height: 95px; background: white; color: black; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); position: relative; border: 1px solid #999; }
+        .carta { width: 65px; height: 95px; background: white; color: black; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; font-weight: bold; border: 1px solid #999; }
         .carta.vermelha { color: #D32F2F; }
         .carta span { font-size: 12px; position: absolute; top: 2px; left: 4px; }
         
-        .sinal { width: 50px; height: 50px; font-size: 24px; margin: 3px; border: none; border-radius: 50%; background: #FB8C00; color: white; cursor: pointer; box-shadow: 0 2px 0 #E65100; }
+        .sinal { width: 50px; height: 50px; font-size: 24px; margin: 3px; border: none; border-radius: 50%; background: #424242; color: white; cursor: pointer; border: 1px solid #666; }
         
-        #visor-conta { font-size: 28px; background: #fff; color: #333; padding: 10px; margin: 10px 0; font-weight: bold; border-radius: 8px; min-height: 35px; border: 2px solid #aaa; }
+        #visor-conta { font-size: 28px; background: #eee; color: #333; padding: 10px; margin: 10px 0; font-weight: bold; border-radius: 5px; min-height: 35px; border: 2px solid #aaa; }
         
-        #alvo-display { background: #FFC107; color: #333; padding: 10px; font-weight: bold; font-size: 22px; border-radius: 10px; margin-bottom: 10px; border: 2px solid #FFA000; }
+        #alvo-display { background: #FFD700; color: #000; padding: 10px; font-weight: bold; font-size: 20px; border-radius: 5px; margin-bottom: 10px; border: 2px solid #FFA000; }
         
-        /* MODAL DE VENCEDOR */
-        #modal-vencedor { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;}
+        #info-rodada { background: #333; color: white; font-size: 12px; padding: 5px; margin-bottom: 10px; border-radius: 20px; display: inline-block; }
+
+        /* MODAIS */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
+        .vitoria-total { background: linear-gradient(45deg, #FFD700, #FF8F00); color: black; }
     </style>
 </head>
 <body>
 
     <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
 
-    <div id="modal-vencedor">
-        <h1 style="font-size: 50px;">🏆</h1>
-        <h2 id="txt-vencedor">Fulano Venceu!</h2>
-        <p id="txt-detalhe">Chegou a 10 (Distância: 1)</p>
-        <p style="color: #FFC107; margin-top: 20px;">Próxima rodada em instantes...</p>
+    <div id="modal-rodada" class="modal">
+        <h1 style="font-size: 40px;">🃏</h1>
+        <h2 id="txt-vencedor">...</h2>
+        <p id="txt-detalhe">...</p>
+        <h3 id="txt-eliminacao" style="color: #FF5252; margin-top: 20px;"></h3>
+        <p style="color: #FFD700; margin-top: 20px; font-size: 14px;">Próxima mão em instantes...</p>
+    </div>
+
+    <div id="modal-gameover" class="modal vitoria-total">
+        <h1 style="font-size: 60px;">👑</h1>
+        <h1>GRANDE VENCEDOR!</h1>
+        <h2 id="final-winner-name" style="font-size: 40px; margin: 10px 0;">PINGÃO</h2>
+        <p>Levou todas as fichas!</p>
+        <h3 id="final-fichas">Total: 💰 0</h3>
+        <br>
+        <button class="btn-principal" style="background: black; color: gold;" onclick="location.reload()">NOVO CAMPEONATO</button>
+    </div>
+
+    <div id="modal-eliminado" class="modal">
+        <h1 style="font-size: 50px;">💀</h1>
+        <h2>VOCÊ FOI ELIMINADO!</h2>
+        <p>Suas fichas acabaram.</p>
+        <p style="color: #aaa;">Você agora é espectador.</p>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
         <br><br>
-        <h1 style="font-size: 30px;">♣️ Pingão ♦️</h1>
+        <h1 style="font-size: 40px; color: #FFD700;">🎰</h1>
+        <h1 style="font-size: 24px;">Cassino Royale</h1>
+        <p style="font-size: 12px; color: #888;">Regra: A cada 5 rodadas, o último sai!</p>
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
-            <button class="btn-principal" onclick="entrar()">ENTRAR</button>
+            <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>Mesa: <span id="sala-titulo"></span></h1></div>
         <div class="caixa">
-            <div onclick="copiarLink()" style="background:#E8F5E9; padding:10px; border-radius:5px; border:1px dashed #4CAF50; cursor:pointer;">
-                🔗 <b>Copiar Link</b>
+            <div onclick="copiarLink()" style="background:#eee; padding:10px; border-radius:5px; cursor:pointer; font-size: 12px;">
+                🔗 <b>Convidar Jogadores</b>
                 <div id="link-texto" style="font-size:10px; color:#555;"></div>
             </div>
             <div style="margin-top:20px; text-align:left;">
-                <b>Jogadores na mesa:</b>
+                <b>Jogadores (500 Fichas cada):</b>
                 <div id="lista-lobby"></div>
             </div>
-            <button id="btn-iniciar" class="btn-principal" style="display:none;" onclick="socket.send(JSON.stringify({type:'START'}))">DAR AS CARTAS! 🃏</button>
-            <p id="msg-aguarde" style="color:#666;">Esperando iniciar...</p>
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: #2E7D32;" onclick="socket.send(JSON.stringify({type:'START'}))">COMEÇAR CAMPEONATO</button>
+            <p id="msg-aguarde" style="color:#666; font-size: 12px;">O Host iniciará o jogo...</p>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela">
         <div class="topo">
-            <h1>Mesa de Jogo</h1>
-            <div id="lista-ingame"></div> </div>
+            <div>
+                Fichas: <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span> 💰
+            </div>
+            <div id="lista-ingame"></div> 
+        </div>
+        
+        <div style="text-align:center; margin-top: 10px;">
+            <div id="info-rodada">Rodada 1</div>
+        </div>
         
         <div id="alvo-display">ALVO: ?</div>
         <div id="visor-conta">_</div>
@@ -96,13 +128,13 @@
             <button class="sinal" onclick="add('/')">÷</button>
             <button class="sinal" style="background:#D32F2F" onclick="limpar()">C</button>
             <br>
-            <button class="sinal" style="background:#555" onclick="add('(')">(</button>
-            <button class="sinal" style="background:#555" onclick="add(')')">)</button>
+            <button class="sinal" style="background:#222" onclick="add('(')">(</button>
+            <button class="sinal" style="background:#222" onclick="add(')')">)</button>
         </div>
 
-        <button id="btn-enviar" class="btn-principal" onclick="enviar()">BATER (ENVIAR)</button>
+        <button id="btn-enviar" class="btn-principal" onclick="enviar()">APOSTAR (ENVIAR)</button>
         <br>
-        <div style="font-size: 11px; margin-top: 10px; opacity: 0.7;">A=1 | J=11 | Q=12 | K=13</div>
+        <div style="font-size: 10px; margin-top: 10px; opacity: 0.5;">A=1 | J=11 | Q=12 | K=13</div>
     </div>
 
     <script>
@@ -139,29 +171,33 @@
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
 
-                    // ATUALIZA AS LISTAS (LOBBY E IN-GAME)
+                    // ATUALIZA LISTAS
                     if (data.type === 'LISTA') {
-                        const lobby = document.getElementById('lista-lobby');
-                        const ingame = document.getElementById('lista-ingame');
-                        lobby.innerHTML = "";
-                        ingame.innerHTML = "";
-                        
-                        data.lista.forEach(p => {
-                            const icone = p.pronto ? '✅' : '⏳';
-                            // Lista Grande do Lobby
-                            lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${p.nome}</span><span>${icone}</span></div>`;
-                            // Lista Pequena do Jogo
-                            ingame.innerHTML += `<div class="mini-jogador">${p.nome} ${icone}</div>`;
-                        });
-                        
-                        document.getElementById('btn-iniciar').style.display = 'block';
-                        document.getElementById('msg-aguarde').style.display = 'none';
+                        atualizarListas(data.lista);
+                        const eu = data.lista.find(p => p.nome === meuNome);
+                        if(eu && eu.eliminado) {
+                            document.getElementById('modal-eliminado').style.display = 'flex';
+                        } else if (eu) {
+                            document.getElementById('minhas-fichas').innerText = eu.fichas;
+                        }
                     }
 
-                    // RECEBE AS CARTAS EXCLUSIVAS
+                    // MÃO DE CARTAS
                     if (data.type === 'SUA_MAO') {
-                        document.getElementById('modal-vencedor').style.display = 'none'; // Esconde vencedor anterior
+                        esconderModais();
                         mudarTela('tela-jogo');
+                        
+                        // Atualiza info da rodada
+                        const rodada = data.rodada;
+                        const faltam = 5 - (rodada % 5);
+                        let textoRodada = `Rodada ${rodada}`;
+                        if((rodada % 5) === 0) textoRodada += " 💀 ELIMINAÇÃO!";
+                        else textoRodada += ` (${faltam} p/ eliminação)`;
+                        
+                        document.getElementById('info-rodada').innerText = textoRodada;
+                        if((rodada % 5) === 0) document.getElementById('info-rodada').style.background = "#D32F2F";
+                        else document.getElementById('info-rodada').style.background = "#333";
+
                         conta = "";
                         alvoAtual = data.alvo;
                         iniciarTimer(60);
@@ -173,28 +209,68 @@
                         areaCartas.innerHTML = "";
                         data.cartas.forEach(num => {
                             let visual = num;
-                            let cor = "preta";
+                            let cor = "black";
                             if(num===1) visual="A";
                             if(num===11) visual="J";
                             if(num===12) visual="Q";
                             if(num===13) visual="K";
-                            if(Math.random()>0.5) cor="vermelha";
+                            if(Math.random()>0.5) cor="#D32F2F";
 
                             areaCartas.innerHTML += `
-                                <div class="carta ${cor}" onclick="add('${num}')">
+                                <div class="carta" style="color:${cor}" onclick="add('${num}')">
                                     <span>${visual}</span>${visual}
                                 </div>`;
                         });
                         document.getElementById('btn-enviar').style.display = 'block';
                     }
 
+                    // ESPECTADOR (QUEM MORREU)
+                    if (data.type === 'ESPECTADOR') {
+                        esconderModais();
+                        document.getElementById('modal-eliminado').style.display = 'flex';
+                    }
+
+                    // FIM DE UMA RODADA
                     if (data.type === 'FIM_RODADA') {
-                        document.getElementById('modal-vencedor').style.display = 'flex';
-                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                        document.getElementById('txt-detalhe').innerText = `Chegou a ${data.valor} (Distância: ${data.dist})`;
+                        document.getElementById('modal-rodada').style.display = 'flex';
+                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Ganhou (+100 💰)`;
+                        document.getElementById('txt-detalhe').innerText = `Valor: ${data.valor} (Dist: ${data.dist})`;
+                        document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
+                    }
+
+                    // VENCEDOR FINAL
+                    if (data.type === 'GAME_OVER') {
+                        esconderModais();
+                        document.getElementById('modal-gameover').style.display = 'flex';
+                        document.getElementById('final-winner-name').innerText = data.vencedor;
+                        document.getElementById('final-fichas').innerText = "Total: 💰 " + data.totalFichas;
                     }
                 };
             } catch (e) { alert("Erro de conexão!"); }
+        }
+
+        function atualizarListas(lista) {
+            const lobby = document.getElementById('lista-lobby');
+            const ingame = document.getElementById('lista-ingame');
+            lobby.innerHTML = "";
+            ingame.innerHTML = "";
+            
+            // Ordena por fichas
+            lista.sort((a,b) => b.fichas - a.fichas);
+
+            lista.forEach(p => {
+                const status = p.eliminado ? '💀' : (p.pronto ? '✅' : '⏳');
+                const classe = p.eliminado ? 'eliminado-txt' : '';
+                
+                lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;" class="${classe}">
+                    <span>${p.nome}</span><span>💰${p.fichas}</span>
+                </div>`;
+                
+                ingame.innerHTML += `<div class="mini-jogador ${classe}">${p.nome}: ${p.fichas} ${status}</div>`;
+            });
+
+            document.getElementById('btn-iniciar').style.display = 'block';
+            document.getElementById('msg-aguarde').style.display = 'none';
         }
 
         function iniciarTimer(segundos) {
@@ -207,15 +283,15 @@
                 tempoRestante--;
                 const porcentagem = (tempoRestante / 60) * 100;
                 barra.style.width = porcentagem + '%';
-                
-                if(tempoRestante <= 10) barra.style.background = 'red';
-                else barra.style.background = '#FFC107';
-
                 if(tempoRestante <= 0) clearInterval(timerInterval);
             }, 1000);
         }
 
-        function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Copiado!"); }
+        function esconderModais() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        }
+
+        function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
         
         function enviar() {
             try {
