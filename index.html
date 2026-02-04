@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O Desafio do Pingão</title>
     <style>
-        body { font-family: 'Comic Sans MS', sans-serif; background: #fdfdfd; text-align: center; margin: 0; padding-bottom: 50px; }
+        body { font-family: 'Comic Sans MS', sans-serif; background: #fdfdfd; text-align: center; margin: 0; padding-bottom: 50px; color: #333; }
         .topo { background: #FF6B6B; color: white; padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .tela { display: none; padding: 20px; }
         .ativa { display: block; }
         .caixa { background: white; border: 3px solid #4ECDC4; border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 400px; box-shadow: 6px 6px 0 #4ECDC4; }
         input { width: 85%; padding: 12px; margin: 10px; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; }
         
-        /* BOTÃO DE CONVITE */
-        .btn-convite { background: #FFE66D; color: #b34a4a; padding: 10px; border-radius: 10px; border: 2px dashed #FF6B6B; cursor: pointer; font-weight: bold; margin-bottom: 20px; width: 90%; }
-        
+        /* ÁREA DO LINK DINÂMICO */
+        .area-convite { background: #FFE66D; padding: 15px; border-radius: 15px; border: 2px dashed #FF6B6B; margin: 15px auto; max-width: 85%; font-size: 14px; word-break: break-all; }
+        .btn-copiar { background: #FF6B6B; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+
         .alvo { background: #FFE66D; margin: 15px; padding: 15px; border-radius: 15px; border: 3px dashed #FF6B6B; font-size: 24px; font-weight: bold; }
         .area-cartas { display: flex; justify-content: center; gap: 10px; margin: 20px; }
         .carta { width: 70px; height: 100px; background: white; border: 3px solid #4ECDC4; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; box-shadow: 4px 4px 0 #4ECDC4; font-weight: bold; }
@@ -29,25 +30,33 @@
 
     <div id="pausa">
         <h1>⏸️ PAUSA DO PINGÃO</h1>
-        <p style="font-size: 24px;">Vai lá no cooler buscar uma que o Pingão espera!</p>
+        <p style="font-size: 24px;">Vai lá buscar uma gelada que o Pingão espera!</p>
         <button class="btn-principal" style="background:#333" onclick="socket.send(JSON.stringify({type:'RESUME'}))">VOLTAR</button>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
         <div class="topo"><h1>😎 Desafio do Pingão</h1></div>
         <div class="caixa">
+            <h3 style="color: #FF6B6B;">Crie sua Sala</h3>
             <input type="text" id="nome-player" placeholder="Seu Nome">
-            <input type="text" id="nome-sala" placeholder="Nome da Sala">
-            <br><br>
-            <button class="btn-principal" onclick="conectar()">CRIAR / ENTRAR</button>
+            <input type="text" id="nome-sala" placeholder="Nome da Sala" oninput="gerarLink()">
+            
+            <div id="box-link" class="area-convite" style="display: none;">
+                <b>Convite para a família:</b><br>
+                <span id="link-texto"></span><br>
+                <button class="btn-copiar" onclick="copiarLink()">Copiar Link e Sala</button>
+            </div>
+
+            <br>
+            <button class="btn-principal" onclick="conectar()">ENTRAR NA SALA</button>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>🏠 Sala: <span id="sala-id">...</span></h1></div>
         <div class="caixa">
-            <button class="btn-convite" onclick="copiarConvite()">📋 CLIQUE AQUI PARA COPIAR CONVITE</button>
-            <p style="font-size: 18px;">Mande o nome da sala para a família entrar! 🌭</p>
+            <p style="font-size: 20px;">Aguardando a galera entrar... 🌭</p>
+            <p>Mande o convite acima no WhatsApp!</p>
             <br>
             <button class="btn-principal" style="background:#FF6B6B; box-shadow: 0 5px 0 #b34a4a;" onclick="comecarJogo()">INICIAR DESAFIO!</button>
         </div>
@@ -80,6 +89,27 @@
         let minhaConta = "";
         let tempo = 90;
 
+        // FUNÇÃO QUE GERA O LINK ENQUANTO VOCÊ DIGITA
+        function gerarLink() {
+            const sala = document.getElementById('nome-sala').value;
+            const box = document.getElementById('box-link');
+            const texto = document.getElementById('link-texto');
+            
+            if(sala.length > 2) {
+                box.style.display = "block";
+                texto.innerText = "Site: " + window.location.href + "\nSala: " + sala;
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        function copiarLink() {
+            const sala = document.getElementById('nome-sala').value;
+            const textoParaCopiar = `Bora pro Desafio do Pingão! 🍻\nSite: ${window.location.href}\nSALA: ${sala}`;
+            navigator.clipboard.writeText(textoParaCopiar);
+            alert("✅ Convite copiado! Manda lá no grupo da família.");
+        }
+
         function mostrarTela(id) {
             document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
             document.getElementById(id).classList.add('ativa');
@@ -104,13 +134,6 @@
                 if(d.type === 'PAUSE') document.getElementById('pausa').style.display = 'flex';
                 if(d.type === 'RESUME') document.getElementById('pausa').style.display = 'none';
             };
-        }
-
-        function copiarConvite() {
-            const sala = document.getElementById('sala-id').innerText;
-            const texto = `Bora pro Desafio do Pingão! 🍻\nSite: https://jogodopingao.pages.dev\nSALA: ${sala}`;
-            navigator.clipboard.writeText(texto);
-            alert("✅ Convite copiado! Agora é só colar no WhatsApp da família.");
         }
 
         function comecarJogo() {
