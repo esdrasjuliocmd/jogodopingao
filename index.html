@@ -21,7 +21,7 @@
         .btn-principal { background: linear-gradient(180deg, #D32F2F, #B71C1C); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
         .btn-principal:active { transform: translateY(3px); box-shadow: none; }
         
-        /* TÍTULO NOVO MAIS VIVO */
+        /* TÍTULO NOVO */
         .titulo-jogo {
             font-size: 45px;
             font-weight: 900;
@@ -32,6 +32,7 @@
             filter: drop-shadow(4px 4px 0px #000);
             letter-spacing: 2px;
             text-transform: uppercase;
+            position: relative; z-index: 10;
         }
         .subtitulo-jogo {
             font-size: 22px;
@@ -40,14 +41,15 @@
             margin-top: -5px;
             font-weight: bold;
             letter-spacing: 4px;
+            position: relative; z-index: 10;
         }
 
-        /* DECORAÇÃO */
-        .decoracao-cartas { position: absolute; top: -50px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
-        .carta-decor { position: absolute; width: 80px; opacity: 0.8; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
-        .c1 { left: 10%; top: 20%; transform: rotate(-15deg); }
-        .c2 { right: 10%; top: 30%; transform: rotate(15deg); }
-        .c3 { left: 50%; top: 10%; transform: translate(-50%) rotate(5deg); width: 100px; z-index: 2; }
+        /* DECORAÇÃO (MUDOU AQUI: MAIS BAIXO E SUAVE) */
+        .decoracao-cartas { position: absolute; top: 150px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0.4; }
+        .carta-decor { position: absolute; width: 100px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
+        .c1 { left: -20px; top: 50px; transform: rotate(-25deg); }
+        .c2 { right: -20px; top: 100px; transform: rotate(25deg); }
+        .c3 { left: 50%; top: 200px; transform: translate(-50%) rotate(10deg); width: 120px; }
 
         /* AVISO PISCANTE */
         @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
@@ -62,10 +64,6 @@
             animation: piscar 1.5s infinite;
             font-size: 14px;
         }
-
-        /* REGRAS */
-        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; }
-        .box-regras h3 { color: #FFD700; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
 
         /* BARRA DE TEMPO */
         #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
@@ -96,6 +94,10 @@
         
         #lista-lobby { text-align: left; }
         .item-lobby { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; color: #333; }
+        
+        /* REGRAS */
+        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; }
+        .box-regras h3 { color: #FFD700; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -134,16 +136,17 @@
     </div>
 
     <div id="tela-entrada" class="tela ativa">
+        
+        <br><br>
+        <h1 class="titulo-jogo">PINGÃO</h1>
+        <div class="subtitulo-jogo">FERVE A CUCA</div>
+        
         <div class="decoracao-cartas">
             <img src="https://deckofcardsapi.com/static/img/AS.png" class="carta-decor c1">
             <img src="https://deckofcardsapi.com/static/img/KD.png" class="carta-decor c2">
             <img src="https://deckofcardsapi.com/static/img/JH.png" class="carta-decor c3">
         </div>
 
-        <br><br>
-        <h1 class="titulo-jogo">PINGÃO</h1>
-        <div class="subtitulo-jogo">FERVE A CUCA</div>
-        
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
@@ -152,8 +155,9 @@
             <div class="box-regras">
                 <h3>📜 Regras</h3>
                 <ul>
-                    <li>🎯 <b>Objetivo:</b> Chegar perto do ALVO usando (+ - × ÷).</li>
+                    <li>🎯 <b>Objetivo:</b> Chegar perto do ALVO usando pelo menos <b>3 CARTAS</b>.</li>
                     <li>🃏 <b>Valores:</b> A=1, J=11, Q=12, K=13.</li>
+                    <li>💰 <b>Fichas:</b> Todos começam com 500. Vitória = +100.</li>
                     <li>💀 <b>Eliminação:</b> A cada 5 rodadas, o último sai!</li>
                 </ul>
             </div>
@@ -218,15 +222,14 @@
         let alvoAtual = 0;
         let tempoRestante = 60;
         let timerInterval;
+        let qtdCartasUsadas = 0; // CONTADOR DE CARTAS
 
-        // --- SISTEMA DE SONS ---
-        // Usando sons curtos e confiáveis da internet
         const audioLibrary = {
             click: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'),
-            entrou: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav'), // Som de notificação
-            vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav'), // Moeda
-            aplauso: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a'), // Game over
-            erro: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/explosion.mp3') // Eliminado
+            entrou: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav'), 
+            vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav'), 
+            aplauso: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a'), 
+            erro: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/explosion.mp3') 
         };
 
         function tocarSom(tipo) {
@@ -234,7 +237,7 @@
                 const som = audioLibrary[tipo];
                 if(som) {
                     som.currentTime = 0;
-                    som.play().catch(e => console.log("Audio bloqueado pelo navegador"));
+                    som.play().catch(e => console.log("Audio bloqueado"));
                 }
             } catch(e) {}
         }
@@ -243,7 +246,6 @@
             tocarSom('click');
             socket.send(JSON.stringify({type:'START'}));
         }
-        // -----------------------
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
@@ -272,10 +274,8 @@
                     const data = JSON.parse(event.data);
 
                     if (data.type === 'LISTA') {
-                        // Se o número de jogadores aumentou, toca som
                         const qtdAntiga = document.querySelectorAll('.item-lobby').length;
                         if(data.lista.length > qtdAntiga) tocarSom('entrou');
-
                         atualizarListas(data.lista);
                         const eu = data.lista.find(p => p.nome === meuNome);
                         if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
@@ -297,28 +297,23 @@
                         if(r % 5 === 0) document.getElementById('info-rodada').style.background = "#D32F2F";
                         else document.getElementById('info-rodada').style.background = "rgba(255,255,255,0.2)";
 
-                        conta = "";
+                        limpar(); // Reseta conta e contador
                         alvoAtual = data.alvo;
                         iniciarTimer(60);
                         
                         document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
-                        document.getElementById('visor-conta').innerText = "_";
                         
                         const area = document.getElementById('area-cartas');
                         area.innerHTML = "";
                         data.cartas.forEach(num => {
                             let valorImg = num;
-                            if(num===1) valorImg="A"; 
-                            if(num===10) valorImg="0";
-                            if(num===11) valorImg="J"; 
-                            if(num===12) valorImg="Q"; 
-                            if(num===13) valorImg="K";
-                            
+                            if(num===1) valorImg="A"; if(num===10) valorImg="0"; if(num===11) valorImg="J"; if(num===12) valorImg="Q"; if(num===13) valorImg="K";
                             const naipes = ['H', 'D', 'C', 'S'];
                             const naipe = naipes[Math.floor(Math.random() * naipes.length)];
                             const imgUrl = `https://deckofcardsapi.com/static/img/${valorImg}${naipe}.png`;
 
-                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="tocarSom('click'); add('${num}')">`;
+                            // CHAMA A FUNÇÃO USARCARTA
+                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="usarCarta('${num}')">`;
                         });
                         document.getElementById('btn-enviar').style.display = 'block';
                     }
@@ -328,14 +323,13 @@
                         document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
                         document.getElementById('txt-detalhe').innerText = `Resultado: ${data.valor} (Dif: ${data.dist})`;
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
-                        
                         if(data.vencedor === meuNome) tocarSom('vitoria');
                         if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
                     }
 
                     if (data.type === 'CONTAGEM') {
                         document.getElementById('contador-regressivo').innerText = data.tempo;
-                        if(data.tempo <= 3) tocarSom('click'); // Bip final
+                        if(data.tempo <= 3) tocarSom('click');
                     }
 
                     if (data.type === 'GAME_OVER') {
@@ -352,25 +346,20 @@
         function atualizarListas(lista) {
             const lobby = document.getElementById('lista-lobby');
             const painel = document.getElementById('painel-jogadores');
-            
             lobby.innerHTML = "";
             painel.innerHTML = "";
-            
             lista.sort((a,b) => b.fichas - a.fichas);
-
             lista.forEach(p => {
                 let statusLobby = p.pronto ? '✅' : '⏳';
                 if(p.esperando) statusLobby = '🕐 Prox';
                 if(p.eliminado) statusLobby = '💀';
                 lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰${p.fichas} ${statusLobby}</span></div>`;
-
                 if(!p.eliminado && !p.esperando) {
                     const classePronto = p.pronto ? 'pronto' : '';
                     const iconePronto = p.pronto ? '✅' : '🤔';
                     painel.innerHTML += `<div class="tag-player ${classePronto}">${p.nome} ${iconePronto}</div>`;
                 }
             });
-
             document.getElementById('btn-iniciar').style.display = 'block';
             document.getElementById('msg-aguarde').style.display = 'none';
         }
@@ -390,7 +379,18 @@
         function esconderModais() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
         function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
         
+        // --- LÓGICA DE 3 CARTAS ---
+        function usarCarta(num) {
+            tocarSom('click');
+            qtdCartasUsadas++;
+            add(num);
+        }
+
         function enviar() {
+            if (qtdCartasUsadas < 3) {
+                tocarSom('erro');
+                return alert("⚠️ REGRA NOVA:\nVocê precisa usar pelo menos 3 cartas na conta!");
+            }
             try {
                 const res = eval(conta);
                 if(res===undefined) throw new Error();
@@ -400,7 +400,13 @@
         }
 
         function add(v) { conta += v; document.getElementById('visor-conta').innerText = conta; }
-        function limpar() { conta = ""; document.getElementById('visor-conta').innerText = "_"; }
+        
+        function limpar() { 
+            conta = ""; 
+            qtdCartasUsadas = 0; // ZERA O CONTADOR
+            document.getElementById('visor-conta').innerText = "_"; 
+        }
+        
         function mudarTela(id) { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
     </script>
 </body>
