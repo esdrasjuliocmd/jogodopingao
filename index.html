@@ -3,11 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferve a Cuca: Sala da Bagunça</title>
+    <title>Ferve a Cuca: Final</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; user-select: none; }
-        .topo { background: linear-gradient(180deg, #000, #1a1a1a); color: #FFD700; padding: 10px; border-bottom: 3px solid #FFD700; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); position: relative; z-index: 10; }
-        .tela { display: none; padding: 10px; position: relative; z-index: 5; }
+        
+        /* TOPO FIXO COM RANKING */
+        .topo-fixo {
+            background: #111;
+            border-bottom: 2px solid #FFD700;
+            padding: 5px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .topo-info { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
+        
+        /* BARRA DE RANKING DESLIZANTE */
+        .ranking-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px;
+            background: #222;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+        }
+        .ranking-bar::-webkit-scrollbar { display: none; } /* Chrome */
+        
+        .rank-item {
+            font-size: 11px;
+            padding: 3px 8px;
+            background: #333;
+            border-radius: 10px;
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .rank-item.lider { border-color: #FFD700; color: #FFD700; background: rgba(255, 215, 0, 0.1); }
+        .rank-item.perigo { border-color: #FF5252; color: #FF5252; }
+        .rank-item.eliminado { text-decoration: line-through; opacity: 0.5; }
+
+        .tela { display: none; padding: 10px; position: relative; z-index: 5; margin-top: 10px; }
         .ativa { display: block; }
         .caixa { background: rgba(255, 255, 255, 0.95); color: #333; border-radius: 15px; padding: 25px; margin: 20px auto; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #FFD700; position: relative; z-index: 5; }
         input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; text-align: center; background: #f9f9f9; }
@@ -23,10 +63,10 @@
         .c2 { right: -20px; top: 100px; transform: rotate(25deg); }
         .c3 { left: 50%; top: 200px; transform: translate(-50%) rotate(10deg); width: 120px; }
 
-        #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
+        #barra-tempo-container { width: 100%; height: 6px; background: #333; position: absolute; bottom: 0; left: 0; z-index: 100; }
         #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
         
-        /* SALA DA DISCÓRDIA - AJUSTADA */
+        /* SALA DA BAGUNÇA */
         .discordia-bg { background: linear-gradient(135deg, #4a0000, #000) !important; }
         .chat-container { display: flex; flex-direction: column; height: 350px; width: 100%; max-width: 400px; }
         .chat-box { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 5px; padding: 10px; text-align: left; margin-bottom: 5px; border: 1px solid #ff4081; }
@@ -41,9 +81,7 @@
         .nome-pobre { font-weight: bold; color: #FFD700; font-size: 14px; }
         .btn-group-doar { display: flex; gap: 5px; margin-top: 5px; }
         .btn-doar { flex: 1; background: #d81b60; color: white; border: none; padding: 5px; border-radius: 3px; font-size: 11px; cursor: pointer; }
-        .btn-doar:hover { background: #ad1457; }
 
-        /* HOST CONTROLS */
         .btn-encerrar-host { background: #D50000; color: white; padding: 15px; width: 100%; font-weight: bold; border: 2px solid white; border-radius: 10px; margin-top: 10px; cursor: pointer; display: none; }
         .msg-espera-host { color: #aaa; font-style: italic; margin-top: 10px; display: none; }
 
@@ -75,7 +113,6 @@
         .box-regras h3 { color: #FFD700; margin-top: 10px; border-bottom: 1px solid #444; padding-bottom: 5px; font-size: 16px; }
         .legenda-pontos { font-size: 11px; color: #888; margin-top: 10px; background: #222; padding: 5px; border-radius: 5px; }
 
-        /* LISTA FINAL */
         #lista-final { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; max-height: 200px; overflow-y: auto; }
         .item-final { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .item-final.eliminado { color: #888; text-decoration: line-through; }
@@ -87,17 +124,27 @@
 </head>
 <body>
 
-    <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
+    <div class="topo-fixo">
+        <div class="topo-info">
+            <span style="font-size:12px; color:#aaa;">💰 Minhas Fichas: <span id="minhas-fichas-topo" style="color:#FFD700; font-weight:bold;">500</span></span>
+            <span id="sala-nome-topo" style="font-size:12px; color:#aaa;"></span>
+        </div>
+        
+        <div id="barra-ranking" class="ranking-bar">
+            <div class="rank-item lider">🏆 Aguardando...</div>
+        </div>
+        <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
+    </div>
 
-    <div id="modal-negociacao" class="modal discordia-bg" style="justify-content: flex-start; padding-top: 40px;">
-        <h2 style="color: #FFD700; margin: 0;">😈 SALA DA BAGUNÇA</h2>
+    <div id="modal-negociacao" class="modal discordia-bg" style="justify-content: flex-start; padding-top: 40px; z-index: 1500;">
+        <h2 style="color: #FFD700; margin: 0;">📢 SALA DA BAGUNÇA</h2>
         <p style="font-size: 12px; color: #ff80ab; margin-top: 0;">Só o Host encerra. Doe e perca a vez.</p>
         
         <div class="chat-container">
             <div id="chat-box" class="chat-box"></div>
             
             <div class="input-chat-row">
-                <input type="text" id="input-chat" class="input-chat" placeholder="Digite sua mentira aqui...">
+                <input type="text" id="input-chat" class="input-chat" placeholder="Digite sua mensagem...">
                 <button class="btn-enviar-chat" onclick="enviarChatTexto()">Enviar</button>
             </div>
 
@@ -172,14 +219,13 @@
                 <p>Usar <b>+3 cartas</b> e sinais para chegar no ALVO.</p>
                 <h3>⚡ Velocidade</h3>
                 <p>0-20s (100 pts) | 20-30s (80 pts) | 30-45s (30 pts)</p>
-                <h3>😈 Sala da Bagunça</h3>
+                <h3>📢 Sala da Bagunça</h3>
                 <p>Chat livre! Doe fichas (50 a 200) para salvar alguém. Quem doa <b>PERDE A VEZ</b>. Só o Host encerra.</p>
             </div>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
-        <div class="topo"><h1>Mesa: <span id="sala-titulo"></span></h1></div>
         <div class="caixa">
             <div onclick="copiarLink()" style="background:#eee; padding:15px; border-radius:8px; cursor:pointer; font-size: 14px; border: 1px dashed #333;">
                 🔗 <b>Convidar</b>
@@ -195,9 +241,8 @@
     </div>
 
     <div id="tela-jogo" class="tela" style="padding:0;">
-        <div class="topo" style="padding: 10px;">
-            <div style="font-size: 16px;">💰 <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span></div>
-            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:20px;">Rodada 1</div>
+        <div style="padding: 10px;">
+            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:20px; display:inline-block; margin-bottom: 5px;">Rodada 1</div>
         </div>
         <div id="painel-jogadores"></div>
         <div style="padding: 15px;">
@@ -236,7 +281,8 @@
             vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav'), 
             aplauso: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a'), 
             erro: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/explosion.mp3'),
-            sirene: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/thrust.mp3')
+            sirene: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/thrust.mp3'),
+            msg: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav') // Som de mensagem
         };
 
         function tocarSom(tipo) { try { const som = audioLibrary[tipo]; if(som) { som.currentTime = 0; som.play().catch(e => {}); } } catch(e) {} }
@@ -252,7 +298,7 @@
             meuNome = document.getElementById('nome-player').value.trim();
             minhaSala = document.getElementById('nome-sala').value.trim();
             if(!meuNome || !minhaSala) return alert("Preenche tudo!");
-            document.getElementById('sala-titulo').innerText = minhaSala;
+            document.getElementById('sala-nome-topo').innerText = `| Sala: ${minhaSala}`;
             document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
             mudarTela('tela-lobby');
 
@@ -264,26 +310,21 @@
 
                     if (data.type === 'INFO_PLAYER') {
                         souHost = data.isHost;
-                        if(souHost) {
-                            document.querySelector('.aviso-host').style.display = 'block';
-                            document.getElementById('btn-encerrar-host').style.display = 'block';
-                            document.getElementById('msg-espera-host').style.display = 'none';
-                        } else {
-                            document.querySelector('.aviso-host').style.display = 'none';
-                            document.getElementById('btn-encerrar-host').style.display = 'none';
-                            document.getElementById('msg-espera-host').style.display = 'block';
-                        }
+                        document.querySelector('.aviso-host').style.display = souHost ? 'block' : 'none';
+                        document.getElementById('btn-encerrar-host').style.display = souHost ? 'block' : 'none';
+                        document.getElementById('msg-espera-host').style.display = souHost ? 'none' : 'block';
                     }
 
                     if (data.type === 'LISTA') {
                         const qtdAntiga = document.querySelectorAll('.item-lobby').length;
                         if(data.lista.length > qtdAntiga) tocarSom('entrou');
                         atualizarListas(data.lista);
+                        atualizarRankingBar(data.lista); // Atualiza barra fixa
+                        
                         const eu = data.lista.find(p => p.nome === meuNome);
                         if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
-                        if(eu) document.getElementById('minhas-fichas').innerText = eu.fichas;
+                        if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
                         
-                        // Atualiza host se mudar
                         const host = data.lista.find(p => p.isHost);
                         if(host && host.nome === meuNome) souHost = true;
                     }
@@ -292,11 +333,11 @@
                         esconderModais();
                         tocarSom('sirene');
                         document.getElementById('modal-negociacao').style.display = 'flex';
-                        // Rola chat pro fim
                         setTimeout(() => { const box = document.getElementById('chat-box'); box.scrollTop = box.scrollHeight; }, 100);
                     }
 
                     if (data.type === 'CHAT_UPDATE') {
+                        tocarSom('msg'); // Som de nova mensagem
                         const box = document.getElementById('chat-box');
                         box.innerHTML = "";
                         data.log.forEach(l => {
@@ -372,6 +413,32 @@
             } catch (e) { alert("Erro de conexão!"); }
         }
 
+        // ATUALIZA A BARRA SUPERIOR FIXA
+        function atualizarRankingBar(lista) {
+            const bar = document.getElementById('barra-ranking');
+            bar.innerHTML = "";
+            
+            // Ordena: Mais fichas primeiro
+            const sorted = [...lista].sort((a,b) => b.fichas - a.fichas);
+            
+            // Pega o último não eliminado (para marcar de vermelho)
+            const vivos = sorted.filter(p => !p.eliminado);
+            const ultimoVivo = vivos.length > 0 ? vivos[vivos.length - 1] : null;
+
+            sorted.forEach((p, i) => {
+                let classe = "rank-item";
+                if(i === 0) classe += " lider";
+                if(p === ultimoVivo && vivos.length > 1) classe += " perigo"; // Lanterna
+                if(p.eliminado) classe += " eliminado";
+                
+                let icone = "👤";
+                if(i===0) icone = "👑";
+                if(p.eliminado) icone = "💀";
+                
+                bar.innerHTML += `<div class="${classe}">${icone} ${p.nome}: ${p.fichas}</div>`;
+            });
+        }
+
         function atualizarListas(lista) {
             const lobby = document.getElementById('lista-lobby');
             const painel = document.getElementById('painel-jogadores');
@@ -417,7 +484,6 @@
 
             if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
             else document.getElementById('btn-iniciar').style.display = 'none';
-            document.getElementById('msg-aguarde').style.display = souHost ? 'none' : 'block';
         }
 
         function iniciarTimer(segundos) {
