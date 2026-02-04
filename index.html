@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ferve a Cuca: Pingão</title>
+    <title>Pingão: Ferve a Cuca</title>
     <style>
         :root {
             --ouro: #FFD700;
@@ -13,100 +13,46 @@
             --verde: #2E7D32;
             --verde-neon: #00E676;
             --bg-mesa: #0f3818;
-            --preto-transparente: rgba(0, 0, 0, 0.4);
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
             background: var(--bg-mesa); 
-            text-align: center; 
-            margin: 0; 
-            padding-bottom: 50px; 
-            color: #fff; 
-            overflow-x: hidden; 
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent;
+            text-align: center; margin: 0; padding-bottom: 50px; color: #fff; 
+            overflow-x: hidden; user-select: none; -webkit-tap-highlight-color: transparent;
         }
         
-        /* Topo Fixo e Ranking Compacto */
         .topo-fixo { 
-            background: #111; 
-            border-bottom: 2px solid var(--ouro); 
-            padding: 5px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+            background: #111; border-bottom: 2px solid var(--ouro); padding: 5px; 
+            position: sticky; top: 0; z-index: 1000; display: flex; flex-direction: column; 
         }
-        .topo-info { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 2px 10px; 
-        }
+        .topo-info { display: flex; justify-content: space-between; align-items: center; padding: 2px 10px; }
+        
         .ranking-bar { 
-            display: flex; 
-            gap: 10px; 
-            overflow-x: auto; 
-            padding: 8px 5px; 
-            background: #222; 
-            white-space: nowrap; 
-            scrollbar-width: none; 
+            display: flex; gap: 10px; overflow-x: auto; padding: 8px 5px; background: #222; 
+            white-space: nowrap; scrollbar-width: none; 
         }
         .ranking-bar::-webkit-scrollbar { display: none; }
         
         .rank-item { 
-            font-size: 10px; 
-            padding: 3px 8px; 
-            background: #333; 
-            border-radius: 12px; 
-            border: 1px solid #444; 
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-            font-weight: bold;
+            font-size: 10px; padding: 3px 8px; background: #333; border-radius: 12px; 
+            border: 1px solid #444; font-weight: bold;
         }
-        .rank-item.lider { border-color: var(--ouro); color: var(--ouro); background: rgba(255, 215, 0, 0.1); }
 
-        /* Telas e Caixas Ajustadas para Celular */
-        .tela { display: none; padding: 10px; position: relative; z-index: 5; margin-top: 10px; }
+        .tela { display: none; padding: 10px; margin-top: 10px; }
         .ativa { display: block; }
+
         .caixa { 
-            background: rgba(255, 255, 255, 0.95); 
-            color: #333; 
-            border-radius: 15px; 
-            padding: 15px; 
-            margin: 10px auto; 
-            max-width: 90%; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            border: 2px solid var(--ouro); 
-            position: relative; 
-            z-index: 5; 
+            background: rgba(255, 255, 255, 0.95); color: #333; border-radius: 15px; 
+            padding: 15px; margin: 10px auto; max-width: 90%; 
+            border: 2px solid var(--ouro); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .titulo-jogo { 
-            font-size: 32px; 
-            font-weight: 900; 
-            margin: 0; 
-            background: linear-gradient(to bottom, var(--ouro), var(--ouro-dark)); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(2px 2px 0px #000); 
-            text-transform: uppercase; 
-        }
-        .subtitulo-jogo { 
-            font-size: 16px; 
-            color: #fff; 
-            text-shadow: 2px 2px 0 #000; 
-            margin-top: -5px; 
-            font-weight: bold; 
-            letter-spacing: 2px; 
-        }
+        .titulo-jogo { font-size: 32px; font-weight: 900; margin: 0; background: linear-gradient(to bottom, var(--ouro), var(--ouro-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(2px 2px 0px #000); }
+        .subtitulo-jogo { font-size: 16px; color: #fff; text-shadow: 2px 2px 0 #000; margin-top: -5px; font-weight: bold; letter-spacing: 2px; }
 
-        /* Botões e Inputs */
         input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
+        
         .btn-principal { 
             background: linear-gradient(180deg, var(--vermelho), var(--vermelho-dark)); 
             color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; 
@@ -114,20 +60,20 @@
         }
         .btn-principal:active { transform: translateY(3px); box-shadow: none; }
 
-        /* Gameplay - Elementos Reduzidos */
         #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; flex-wrap: wrap; }
-        .carta-real { width: 65px; height: auto; cursor: pointer; transition: transform 0.2s; border-radius: 5px; }
+        .carta-real { width: 65px; height: auto; cursor: pointer; transition: transform 0.1s; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.4)); }
         
         .sinal { 
             width: 46px; height: 46px; font-size: 20px; margin: 2px; border: none; 
             border-radius: 12px; background: #263238; color: white; font-weight: bold; 
             border-bottom: 4px solid #000; cursor: pointer;
         }
+        .sinal:active { transform: translateY(2px); border-bottom: none; }
 
         #visor-conta { 
             font-size: 24px; background: #fff; color: #333; padding: 10px; margin: 10px 0; 
             font-weight: bold; border-radius: 12px; min-height: 40px; border: 4px solid #ccc;
-            display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center; justify-content: center; letter-spacing: 2px;
         }
 
         #alvo-display { 
@@ -136,12 +82,7 @@
             margin-bottom: 10px; border: 3px solid #FFA000; 
         }
 
-        .chat-container { height: 250px; width: 100%; display: flex; flex-direction: column; }
-        .box-regras { background: #222; color: #ddd; padding: 15px; border-radius: 12px; font-size: 12px; max-height: 150px; overflow-y: auto; }
-
-        /* Modais */
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; padding: 20px; box-sizing: border-box;}
-        
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; padding: 20px; text-align: center; }
         .tag-player { font-size: 12px; background: #222; padding: 6px 12px; border-radius: 20px; border: 1px solid #555; }
         .tag-player.pronto { background: var(--verde); border-color: var(--verde-neon); }
     </style>
@@ -154,25 +95,17 @@
             <span id="sala-nome-topo" style="font-size:13px; color:#aaa; font-weight: bold;"></span>
         </div>
         <div id="barra-ranking" class="ranking-bar">
-            <div class="rank-item lider">🏆 Aguardando Mesa...</div>
+            <div class="rank-item lider">🏆 Aguardando...</div>
         </div>
-        <div id="barra-tempo-container" style="width: 100%; height: 6px; background: #333;"><div id="barra-tempo" style="width: 100%; height: 100%; background: var(--verde-neon);"></div></div>
+        <div style="width: 100%; height: 6px; background: #333;"><div id="barra-tempo" style="width: 100%; height: 100%; background: var(--verde-neon); transition: width 1s linear;"></div></div>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
-        <br><br>
-        <h1 class="titulo-jogo">PINGÃO</h1>
-        <div class="subtitulo-jogo">FERVE A CUCA</div>
-        
+        <br><h1 class="titulo-jogo">PINGÃO</h1><div class="subtitulo-jogo">FERVE A CUCA</div>
         <div class="caixa">
-            <input type="text" id="nome-player" placeholder="Seu Nome / Nick" maxlength="12">
+            <input type="text" id="nome-player" placeholder="Seu Nome" maxlength="12">
             <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
             <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
-
-            <div class="box-regras">
-                <h2 style="text-align: center; color: var(--ouro); margin: 0; font-size: 18px;">📜 REGRAS</h2>
-                <p>Combine 3+ cartas para chegar no ALVO. Quanto mais rápido, mais fichas você ganha!</p>
-            </div>
         </div>
     </div>
 
@@ -180,11 +113,11 @@
         <div class="caixa">
             <div onclick="copiarLink()" style="background:#f0f0f0; padding:15px; border-radius:10px; cursor:pointer; font-size: 14px; border: 2px dashed #999; color: #333;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="18" style="vertical-align:middle; margin-right:5px;"> 
-                <b>Convidar amigos para a mesa</b>
+                <b>Convidar amigos</b>
                 <div id="link-texto" style="font-size:10px; color:#666; margin-top: 8px; word-break: break-all;"></div>
             </div>
             <div id="lista-lobby" style="margin-top:20px; text-align: left; color: #333;"></div>
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: var(--verde);" onclick="iniciarComSom()">DISTRIBUIR CARTAS</button>
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: var(--verde);" onclick="socket.send(JSON.stringify({type:'START'}))">DISTRIBUIR CARTAS</button>
         </div>
     </div>
 
@@ -206,11 +139,10 @@
     </div>
 
     <div id="modal-rodada" class="modal">
-        <h2 id="txt-vencedor">...</h2>
-        <h3 id="txt-premio" style="font-size: 40px;"></h3>
-        <p id="txt-detalhe">...</p>
+        <h2 id="txt-vencedor" style="color: var(--verde-neon);"></h2>
+        <h3 id="txt-premio" style="font-size: 40px; color: var(--ouro);"></h3>
         <p>Próxima rodada em:</p>
-        <div id="contador-regressivo" style="font-size: 60px; color: var(--ouro);">8</div>
+        <div id="contador-regressivo" style="font-size: 60px; font-weight: bold;">8</div>
     </div>
 
     <script>
@@ -224,19 +156,14 @@
         let qtdCartasUsadas = 0;
         let souHost = false;
 
-        const audioLibrary = {
-            click: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'),
-            vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav')
-        };
-
-        function tocarSom(tipo) { try { audioLibrary[tipo].play().catch(e=>{}); } catch(e){} }
+        function tocarSom() { try { new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3').play(); } catch(e){} }
 
         function entrar() {
             meuNome = document.getElementById('nome-player').value.trim();
             minhaSala = document.getElementById('nome-sala').value.trim();
-            if(!meuNome || !minhaSala) return alert("Preencha nome e sala!");
+            if(!meuNome || !minhaSala) return alert("Preencha os campos!");
             
-            document.getElementById('sala-nome-topo').innerText = `| Mesa: ${minhaSala}`;
+            document.getElementById('sala-nome-topo').innerText = `| ${minhaSala}`;
             document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
             mudarTela('tela-lobby');
 
@@ -258,30 +185,28 @@
                     const area = document.getElementById('area-cartas'); area.innerHTML = "";
                     data.cartas.forEach(num => {
                         let v = num; if(v===1)v="A";if(v===11)v="J";if(v===12)v="Q";if(v===13)v="K";
-                        area.innerHTML += `<img src="https://deckofcardsapi.com/static/img/${v}S.png" class="carta-real" onclick="usarCarta('${num}')">`;
+                        const naipe = ['S','H','D','C'][Math.floor(Math.random()*4)];
+                        area.innerHTML += `<img src="https://deckofcardsapi.com/static/img/${v}${naipe}.png" class="carta-real" onclick="usarCarta(this, '${num}')">`;
                     });
                 }
                 if (data.type === 'FIM_RODADA') {
                     document.getElementById('modal-rodada').style.display = 'flex';
                     document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                    document.getElementById('txt-premio').innerText = `${data.premio} 💰`;
+                    document.getElementById('txt-premio').innerText = `${data.premio >= 0 ? '+' : ''}${data.premio} 💰`;
                 }
-                if (data.type === 'CONTAGEM') {
-                    document.getElementById('contador-regressivo').innerText = data.tempo;
-                }
+                if (data.type === 'CONTAGEM') document.getElementById('contador-regressivo').innerText = data.tempo;
             };
             socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
         }
 
-        // --- CORREÇÃO: Função que adiciona a carta à conta ---
-        function usarCarta(valor) {
-            tocarSom('click');
+        // --- FUNÇÃO DE CLIQUE NAS CARTAS (CORRIGIDA) ---
+        function usarCarta(elemento, valor) {
+            tocarSom();
             add(valor);
             qtdCartasUsadas++;
-            if (window.event && window.event.target) {
-                window.event.target.style.opacity = '0.3';
-                window.event.target.style.pointerEvents = 'none';
-            }
+            elemento.style.opacity = '0.2';
+            elemento.style.pointerEvents = 'none';
+            elemento.style.transform = 'scale(0.9)';
         }
 
         function add(v) { 
@@ -296,6 +221,7 @@
             document.querySelectorAll('.carta-real').forEach(c => {
                 c.style.opacity = '1';
                 c.style.pointerEvents = 'auto';
+                c.style.transform = 'scale(1)';
             });
         }
 
@@ -322,15 +248,19 @@
             const lobby = document.getElementById('lista-lobby'); lobby.innerHTML = "";
             const painel = document.getElementById('painel-jogadores'); painel.innerHTML = "";
             lista.forEach(p => {
-                lobby.innerHTML += `<div>👤 ${p.nome} - 💰 ${p.fichas}</div>`;
+                lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #eee;">👤 ${p.nome} - 💰 ${p.fichas}</div>`;
                 painel.innerHTML += `<div class="tag-player ${p.pronto?'pronto':''}">${p.nome}</div>`;
             });
         }
 
         function mudarTela(id) { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
         function esconderModais() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); document.getElementById('btn-enviar').style.display='block'; }
-        function iniciarComSom() { socket.send(JSON.stringify({type:'START'})); }
         function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
+
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            if(params.get('sala')) { document.getElementById('nome-sala').value = params.get('sala'); document.getElementById('div-sala').style.display = 'none'; }
+        }
     </script>
 </body>
 </html>
