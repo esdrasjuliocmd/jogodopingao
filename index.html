@@ -46,11 +46,41 @@
         /* MODAIS */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
         .vitoria-total { background: linear-gradient(45deg, #FFD700, #FF8F00); color: black; }
+
+        /* BOTÃO DE AJUDA */
+        .btn-ajuda { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #2196F3; color: white; border-radius: 50%; border: none; font-size: 24px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; z-index: 150; }
+        
+        /* TEXTO DO MANUAL NO MODAL */
+        .manual-texto { text-align: left; font-size: 14px; line-height: 1.6; background: #222; padding: 15px; border-radius: 10px; max-height: 70vh; overflow-y: auto; }
+        .manual-texto h3 { color: #FFD700; margin-bottom: 5px; border-bottom: 1px solid #444; }
     </style>
 </head>
 <body>
 
     <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
+
+    <button class="btn-ajuda" onclick="document.getElementById('modal-manual').style.display='flex'">?</button>
+
+    <div id="modal-manual" class="modal" style="justify-content: start; padding-top: 50px;">
+        <h2 style="color: #FFD700;">📖 Regras do Jogo</h2>
+        <div class="manual-texto">
+            <h3>🃏 Valores</h3>
+            A=1, J=11, Q=12, K=13.<br>
+            Números 2 a 10 valem o normal.
+            
+            <h3>🎯 Objetivo</h3>
+            Use as 4 cartas e sinais (+ - × ÷) para chegar o mais perto possível do <b>ALVO</b>.
+            
+            <h3>💰 Fichas</h3>
+            Todos começam com 500.<br>
+            Vencedor da rodada ganha +100.
+            
+            <h3>💀 Eliminação</h3>
+            A cada <b>5 Rodadas</b>, quem tiver MENOS fichas é eliminado!<br>
+            O último sobrevivente leva tudo.
+        </div>
+        <button class="btn-principal" style="background:#444; margin-top: 20px;" onclick="document.getElementById('modal-manual').style.display='none'">FECHAR</button>
+    </div>
 
     <div id="modal-rodada" class="modal">
         <h1 style="font-size: 40px;">🃏</h1>
@@ -171,7 +201,6 @@
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
 
-                    // ATUALIZA LISTAS
                     if (data.type === 'LISTA') {
                         atualizarListas(data.lista);
                         const eu = data.lista.find(p => p.nome === meuNome);
@@ -182,12 +211,10 @@
                         }
                     }
 
-                    // MÃO DE CARTAS
                     if (data.type === 'SUA_MAO') {
                         esconderModais();
                         mudarTela('tela-jogo');
                         
-                        // Atualiza info da rodada
                         const rodada = data.rodada;
                         const faltam = 5 - (rodada % 5);
                         let textoRodada = `Rodada ${rodada}`;
@@ -224,13 +251,11 @@
                         document.getElementById('btn-enviar').style.display = 'block';
                     }
 
-                    // ESPECTADOR (QUEM MORREU)
                     if (data.type === 'ESPECTADOR') {
                         esconderModais();
                         document.getElementById('modal-eliminado').style.display = 'flex';
                     }
 
-                    // FIM DE UMA RODADA
                     if (data.type === 'FIM_RODADA') {
                         document.getElementById('modal-rodada').style.display = 'flex';
                         document.getElementById('txt-vencedor').innerText = `${data.vencedor} Ganhou (+100 💰)`;
@@ -238,7 +263,6 @@
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
                     }
 
-                    // VENCEDOR FINAL
                     if (data.type === 'GAME_OVER') {
                         esconderModais();
                         document.getElementById('modal-gameover').style.display = 'flex';
@@ -255,17 +279,12 @@
             lobby.innerHTML = "";
             ingame.innerHTML = "";
             
-            // Ordena por fichas
             lista.sort((a,b) => b.fichas - a.fichas);
 
             lista.forEach(p => {
                 const status = p.eliminado ? '💀' : (p.pronto ? '✅' : '⏳');
                 const classe = p.eliminado ? 'eliminado-txt' : '';
-                
-                lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;" class="${classe}">
-                    <span>${p.nome}</span><span>💰${p.fichas}</span>
-                </div>`;
-                
+                lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between;" class="${classe}"><span>${p.nome}</span><span>💰${p.fichas}</span></div>`;
                 ingame.innerHTML += `<div class="mini-jogador ${classe}">${p.nome}: ${p.fichas} ${status}</div>`;
             });
 
