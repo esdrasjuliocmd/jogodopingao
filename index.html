@@ -17,10 +17,20 @@
         input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
         .btn-principal { background: #B71C1C; color: white; padding: 15px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; border-bottom: 4px solid #7F0000; }
         
-        /* LAYOUT JOGO */
+        /* BARRA DE TEMPO */
         #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
         #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
         
+        /* LISTA DE JOGADORES NA RODADA (NOVA) */
+        #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; background: #222; padding: 5px; border-bottom: 1px solid #444; min-height: 30px; }
+        .tag-player { font-size: 12px; background: #444; padding: 4px 8px; border-radius: 12px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; }
+        .tag-player.pronto { background: #1B5E20; color: #81C784; border-color: #00E676; }
+        .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; }
+        
+        /* BOTÃO DE REGRAS FLUTUANTE */
+        .btn-regras { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #2196F3; color: white; border-radius: 50%; font-size: 24px; font-weight: bold; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; z-index: 150; }
+
+        /* ESTILO JOGO */
         #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
         .carta { width: 65px; height: 95px; background: white; color: black; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; font-weight: bold; border: 1px solid #999; }
         .carta.vermelha { color: #D32F2F; }
@@ -34,21 +44,51 @@
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
         .contador-zao { font-size: 80px; font-weight: bold; color: #FFD700; margin: 20px 0; }
         
-        /* LISTAS */
+        /* MANUAL */
+        .manual-box { background: #333; padding: 20px; border-radius: 10px; max-width: 500px; text-align: left; max-height: 80vh; overflow-y: auto; border: 2px solid #FFD700; }
+        .manual-box h3 { color: #FFD700; border-bottom: 1px solid #555; padding-bottom: 5px; margin-top: 20px; }
+
+        /* LISTAS LOBBY */
         #lista-lobby { text-align: left; }
         .item-lobby { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
-        .esperando { color: orange; font-style: italic; }
     </style>
 </head>
 <body>
 
     <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
 
+    <button class="btn-regras" onclick="document.getElementById('modal-regras').style.display='flex'">?</button>
+
+    <div id="modal-regras" class="modal">
+        <div class="manual-box">
+            <h2 style="text-align: center; color: #FFD700;">📖 Regras Oficiais</h2>
+            
+            <h3>🃏 As Cartas</h3>
+            <ul>
+                <li><b>A (Ás)</b> = Vale 1</li>
+                <li><b>2 a 10</b> = Valor normal</li>
+                <li><b>J (Valete)</b> = Vale 11</li>
+                <li><b>Q (Dama)</b> = Vale 12</li>
+                <li><b>K (Rei)</b> = Vale 13</li>
+            </ul>
+
+            <h3>🎯 Como Jogar</h3>
+            <p>Use as 4 cartas e os sinais (+ - × ÷) para chegar o mais perto possível do <b>ALVO</b>.</p>
+
+            <h3>💰 Fichas & Prêmios</h3>
+            <p>Todos começam com 500 fichas.<br>Quem ganha a rodada leva +100.</p>
+
+            <h3>💀 Eliminação</h3>
+            <p>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado!<br>O último sobrevivente leva o pote todo.</p>
+            
+            <button class="btn-principal" style="background:#444;" onclick="document.getElementById('modal-regras').style.display='none'">FECHAR</button>
+        </div>
+    </div>
+
     <div id="modal-rodada" class="modal">
         <h2 id="txt-vencedor" style="color: #00E676;">...</h2>
         <p id="txt-detalhe" style="font-size: 18px;">...</p>
         <h3 id="txt-eliminacao" style="color: #FF5252;"></h3>
-        
         <p style="margin-top: 30px; color: #aaa;">Próxima rodada em:</p>
         <div id="contador-regressivo" class="contador-zao">8</div>
     </div>
@@ -62,7 +102,7 @@
 
     <div id="modal-gameover" class="modal" style="background: #2E7D32;">
         <h1 style="font-size: 60px;">🏆</h1>
-        <h1>CAMPEÃO FERVE CUCA!</h1>
+        <h1>CAMPEÃO!</h1>
         <h2 id="final-winner-name" style="font-size: 40px; margin: 10px 0; color: gold;">...</h2>
         <h3 id="final-fichas">Total: 💰 0</h3>
         <br>
@@ -73,6 +113,7 @@
         <h1 style="font-size: 50px;">💀</h1>
         <h2>ELIMINADO!</h2>
         <p>Suas fichas acabaram.</p>
+        <p style="font-size: 12px; color:#aaa;">(Mas você pode continuar assistindo)</p>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
@@ -99,33 +140,37 @@
                 <div id="lista-lobby"></div>
             </div>
             <button id="btn-iniciar" class="btn-principal" style="display:none; background: #2E7D32;" onclick="socket.send(JSON.stringify({type:'START'}))">INICIAR PARTIDA</button>
-            <p id="msg-aguarde" style="color:#666; font-size: 12px;">Aguardando início...</p>
+            <p id="msg-aguarde" style="color:#666; font-size: 12px;">Aguardando o Host iniciar...</p>
         </div>
     </div>
 
-    <div id="tela-jogo" class="tela">
-        <div class="topo">
-            <div>Fichas: <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span></div>
-            <div id="info-rodada" style="font-size: 12px;">Rodada 1</div>
+    <div id="tela-jogo" class="tela" style="padding:0;">
+        <div class="topo" style="padding: 5px 10px;">
+            <div style="font-size: 14px;">Fichas: <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span></div>
+            <div id="info-rodada" style="font-size: 12px; background:#333; padding:2px 8px; border-radius:10px;">Rodada 1</div>
         </div>
+
+        <div id="painel-jogadores"></div>
         
-        <div id="alvo-display">ALVO: ?</div>
-        <div id="visor-conta">_</div>
-        <div id="area-cartas"></div>
+        <div style="padding: 10px;">
+            <div id="alvo-display">ALVO: ?</div>
+            <div id="visor-conta">_</div>
+            <div id="area-cartas"></div>
 
-        <div>
-            <button class="sinal" onclick="add('+')">+</button>
-            <button class="sinal" onclick="add('-')">-</button>
-            <button class="sinal" onclick="add('*')">×</button>
-            <button class="sinal" onclick="add('/')">÷</button>
-            <button class="sinal" style="background:#D32F2F" onclick="limpar()">C</button>
-            <br>
-            <button class="sinal" style="background:#222" onclick="add('(')">(</button>
-            <button class="sinal" style="background:#222" onclick="add(')')">)</button>
+            <div>
+                <button class="sinal" onclick="add('+')">+</button>
+                <button class="sinal" onclick="add('-')">-</button>
+                <button class="sinal" onclick="add('*')">×</button>
+                <button class="sinal" onclick="add('/')">÷</button>
+                <button class="sinal" style="background:#D32F2F" onclick="limpar()">C</button>
+                <br>
+                <button class="sinal" style="background:#222" onclick="add('(')">(</button>
+                <button class="sinal" style="background:#222" onclick="add(')')">)</button>
+            </div>
+
+            <button id="btn-enviar" class="btn-principal" onclick="enviar()">ENVIAR CONTA</button>
+            <div style="font-size: 10px; margin-top: 10px; opacity: 0.5;">A=1 | J=11 | Q=12 | K=13</div>
         </div>
-
-        <button id="btn-enviar" class="btn-principal" onclick="enviar()">ENVIAR CONTA</button>
-        <div style="font-size: 10px; margin-top: 10px; opacity: 0.5;">A=1 | J=11 | Q=12 | K=13</div>
     </div>
 
     <script>
@@ -163,7 +208,7 @@
                     const data = JSON.parse(event.data);
 
                     if (data.type === 'LISTA') {
-                        atualizarListaLobby(data.lista);
+                        atualizarListas(data.lista);
                         const eu = data.lista.find(p => p.nome === meuNome);
                         if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
                         if(eu) document.getElementById('minhas-fichas').innerText = eu.fichas;
@@ -210,7 +255,6 @@
                     }
 
                     if (data.type === 'CONTAGEM') {
-                        // AQUI ESTÁ A CONTAGEM REGRESSIVA GRANDE
                         document.getElementById('contador-regressivo').innerText = data.tempo;
                     }
 
@@ -224,16 +268,30 @@
             } catch (e) { alert("Erro de conexão!"); }
         }
 
-        function atualizarListaLobby(lista) {
-            const div = document.getElementById('lista-lobby');
-            div.innerHTML = "";
+        function atualizarListas(lista) {
+            const lobby = document.getElementById('lista-lobby');
+            const painel = document.getElementById('painel-jogadores');
+            
+            lobby.innerHTML = "";
+            painel.innerHTML = "";
+            
             lista.sort((a,b) => b.fichas - a.fichas);
+
             lista.forEach(p => {
-                let status = p.pronto ? '✅' : '⏳';
-                if(p.esperando) status = '🕐 (Prox. Rodada)';
-                if(p.eliminado) status = '💀';
-                div.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>${p.fichas} ${status}</span></div>`;
+                // Lista do Lobby
+                let statusLobby = p.pronto ? '✅' : '⏳';
+                if(p.esperando) statusLobby = '🕐 Prox';
+                if(p.eliminado) statusLobby = '💀';
+                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>${p.fichas} ${statusLobby}</span></div>`;
+
+                // Lista do Jogo (Só mostra quem tá vivo e jogando)
+                if(!p.eliminado && !p.esperando) {
+                    const classePronto = p.pronto ? 'pronto' : '';
+                    const iconePronto = p.pronto ? '✅' : '🤔';
+                    painel.innerHTML += `<div class="tag-player ${classePronto}">${p.nome} ${iconePronto}</div>`;
+                }
             });
+
             document.getElementById('btn-iniciar').style.display = 'block';
             document.getElementById('msg-aguarde').style.display = 'none';
         }
