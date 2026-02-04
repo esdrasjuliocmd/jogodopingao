@@ -25,7 +25,7 @@
 
     <div id="pausa">
         <h1>⏸️ PAUSA DO PINGÃO</h1>
-        <p style="font-size: 24px;">Vou buscar um gelo e já volto!</p>
+        <p style="font-size: 24px;">Busca o gelo que o Pingão espera!</p>
         <button class="btn-principal" style="background:#333" onclick="socket.send(JSON.stringify({type:'RESUME'}))">VOLTAR</button>
     </div>
 
@@ -35,28 +35,28 @@
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <input type="text" id="nome-sala" placeholder="Nome da Sala">
             <br><br>
-            <button class="btn-principal" onclick="conectar()">ENTRAR NA SALA</button>
+            <button class="btn-principal" onclick="conectar()">CRIAR / ENTRAR</button>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>🏠 Sala: <span id="sala-id">...</span></h1></div>
         <div class="caixa">
-            <p>Aguardando a galera... 🌭</p>
+            <p style="font-size: 20px;">Aguardando a galera... 🌭</p>
             <button class="btn-principal" style="background:#FF6B6B; box-shadow: 0 5px 0 #b34a4a;" onclick="comecarJogo()">INICIAR DESAFIO!</button>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela">
-        <div class="topo"><h1>Bora Blefar!</h1><div id="relogio">90</div></div>
-        <div class="alvo">🎯 ALVO: <span id="num-alvo">11</span></div>
+        <div class="topo"><h1 id="txt-topo">Bora Blefar!</h1><div id="relogio">90</div></div>
+        <div class="alvo">🎯 ALVO: CHEGAR PERTO DE 11</div>
         <div id="visor-conta">_ ? _</div>
         <div class="area-cartas">
             <div class="carta" onclick="colocar('5')">5</div>
             <div class="carta" onclick="colocar('2')">2</div>
             <div class="carta" onclick="colocar('9')">9</div>
         </div>
-        <div class="botoes">
+        <div>
             <button class="sinal" onclick="colocar('+')">+</button>
             <button class="sinal" onclick="colocar('-')">-</button>
             <button class="sinal" onclick="colocar('*')">×</button>
@@ -64,7 +64,9 @@
             <button class="sinal" style="background:#ff4757" onclick="limpar()">Limpar</button>
         </div>
         <br>
-        <button class="btn-principal" onclick="enviar()">ENVIAR!</button>
+        <button class="btn-principal" onclick="enviar()">ENVIAR JOGADA!</button>
+        <br><br>
+        <button onclick="socket.send(JSON.stringify({type:'PAUSE'}))" style="border:none; background:none; color:#888; cursor:pointer;">Pausar</button>
     </div>
 
     <script>
@@ -80,8 +82,9 @@
         function conectar() {
             const n = document.getElementById('nome-player').value;
             const s = document.getElementById('nome-sala').value;
-            if(!n || !s) return alert("Preenche tudo!");
+            if(!n || !s) return alert("Preenche tudo aí!");
 
+            // Conexão com o seu Worker que você subiu pelo PowerShell
             socket = new WebSocket('wss://pingao-backend.esdrasjulio.workers.dev/');
 
             socket.onopen = () => {
@@ -92,32 +95,33 @@
 
             socket.onmessage = (e) => {
                 const d = JSON.parse(e.data);
-                if(d.type === 'START') { mostrarTela('tela-jogo'); iniciarContagem(); }
+                if(d.type === 'START') { mostrarTela('tela-jogo'); iniciarRelogio(); }
                 if(d.type === 'PAUSE') document.getElementById('pausa').style.display = 'flex';
                 if(d.type === 'RESUME') document.getElementById('pausa').style.display = 'none';
             };
-
-            socket.onerror = () => alert("Erro ao conectar! O servidor está fora do ar.");
         }
 
         function comecarJogo() {
-            if(socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({type:'START'}));
+            if(socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({type:'START'}));
+            }
         }
 
         function colocar(v) { minhaConta += v; document.getElementById('visor-conta').innerText = minhaConta; }
         function limpar() { minhaConta = ""; document.getElementById('visor-conta').innerText = "_ ? _"; }
-        
+
         function enviar() {
             try {
                 let r = eval(minhaConta);
-                alert("Resultado: " + r + "\nDistância: " + Math.abs(11 - r));
+                alert("O Pingão viu!\nResultado: " + r + "\nDistância: " + Math.abs(11 - r));
             } catch(e) { alert("Conta errada!"); }
         }
 
-        function iniciarContagem() {
+        function iniciarRelogio() {
             setInterval(() => {
                 if(document.getElementById('pausa').style.display !== 'flex' && tempo > 0) {
-                    tempo--; document.getElementById('relogio').innerText = tempo;
+                    tempo--;
+                    document.getElementById('relogio').innerText = tempo;
                 }
             }, 1000);
         }
