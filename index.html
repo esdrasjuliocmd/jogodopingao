@@ -24,6 +24,10 @@
         .btn-principal { background: linear-gradient(180deg, #D32F2F, #B71C1C); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
         .btn-principal:active { transform: translateY(3px); box-shadow: none; }
         
+        /* BOTÃO DESISTIR - AZUL PARA INDICAR ESTRATÉGIA */
+        .btn-desistir { background: #37474F; color: #fff; padding: 10px; width: 100%; margin-top: 10px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; border-bottom: 2px solid #263238; }
+        .btn-desistir:hover { background: #455A64; }
+
         .titulo-jogo { font-size: 45px; font-weight: 900; margin: 0; background: linear-gradient(to bottom, #FFD700, #FF8F00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(4px 4px 0px #000); letter-spacing: 2px; text-transform: uppercase; position: relative; z-index: 10; }
         .subtitulo-jogo { font-size: 22px; color: #fff; text-shadow: 2px 2px 0 #000; margin-top: -5px; font-weight: bold; letter-spacing: 4px; position: relative; z-index: 10; }
 
@@ -58,6 +62,7 @@
         .tag-player { font-size: 12px; background: #222; padding: 5px 10px; border-radius: 15px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .tag-player.pronto { background: #2E7D32; border-color: #00E676; }
         .tag-player.pulou { background: #880e4f; border-color: #ff4081; opacity: 0.8; }
+        .tag-player.desistiu { background: #555; border-color: #777; opacity: 0.7; }
         .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; background: #333; }
 
         #area-cartas { display: flex; justify-content: center; gap: 5px; margin: 20px 0; perspective: 1000px; }
@@ -199,25 +204,24 @@
                     <li>⚠️ <b>40-50s:</b> <b style="color:#FF5252">-15 Fichas</b> (LENTO!)</li>
                     <li>💀 <b>50s+:</b> <b style="color:#FF5252">-30 Fichas</b> (PREJUÍZO!)</li>
                 </ul>
+                
+                <h3>🏳️ DESISTÊNCIA (ESTRATÉGIA)</h3>
+                <ul>
+                    <li>Tá com medo de perder fichas por demora?</li>
+                    <li>Clique em <b>DESISTIR</b>. Você não ganha nada, mas <b>NÃO PERDE NADA</b>.</li>
+                    <li>Use isso para proteger suas fichas.</li>
+                </ul>
 
                 <h3>💀 ELIMINAÇÃO (MATA-MATA)</h3>
                 <ul>
-                    <li>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado!</li>
+                    <li>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado do jogo!</li>
                 </ul>
 
                 <h3>📢 SALA DA BAGUNÇA</h3>
                 <ul>
                     <li>Acontece antes da eliminação.</li>
                     <li>Você pode <b>DOAR</b> fichas (50 a 200) para salvar alguém.</li>
-                    <li>⚠️ <b>ATENÇÃO:</b> Quem doa fichas <b>PULA A PRÓXIMA RODADA</b>.</li>
-                </ul>
-                
-                <h3>🃏 VALOR DAS CARTAS</h3>
-                <ul>
-                    <li><b>A (Ás)</b> = 1</li>
-                    <li><b>J (Valete)</b> = 11</li>
-                    <li><b>Q (Dama)</b> = 12</li>
-                    <li><b>K (Rei)</b> = 13</li>
+                    <li>⚠️ <b>ATENÇÃO:</b> Quem doa fichas <b>PULA A PRÓXIMA RODADA</b> (fica sem jogar).</li>
                 </ul>
             </div>
         </div>
@@ -258,6 +262,8 @@
                 <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add(')')">)</button>
             </div>
             <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
+            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR (SALVAR FICHAS)</button>
+
             <div class="legenda-pontos">
                 🚀0-20s: +100 | 🏃30-40s: +30 | <span style="color:#FF5252">⚠️40s+: -15</span> | <span style="color:#FF5252">💀50s+: -30</span>
             </div>
@@ -377,6 +383,7 @@
                             area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="usarCarta('${num}')">`;
                         });
                         document.getElementById('btn-enviar').style.display = 'block';
+                        document.querySelector('.btn-desistir').style.display = 'block';
                     }
 
                     if (data.type === 'FIM_RODADA') {
@@ -390,7 +397,7 @@
                         document.getElementById('txt-detalhe').innerText = `Res: ${data.valor} (Tempo: ${data.tempo}s)`;
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
                         if(data.vencedor === meuNome && data.premio > 0) tocarSom('vitoria');
-                        else if(data.vencedor === meuNome && data.premio < 0) tocarSom('erro'); // Ganhou mas perdeu ficha
+                        else if(data.vencedor === meuNome && data.premio < 0) tocarSom('erro'); 
                         if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
                     }
 
@@ -459,8 +466,12 @@
                 if(!p.eliminado && !p.esperando) {
                     let classePronto = p.pronto ? 'pronto' : '';
                     if(p.pulou) classePronto = 'pulou';
+                    if(p.desistiu) classePronto = 'desistiu';
+
                     let iconePronto = p.pronto ? '✅' : '🤔';
                     if(p.pulou) iconePronto = '🚫';
+                    if(p.desistiu) iconePronto = '🏳️';
+
                     painel.innerHTML += `<div class="tag-player ${classePronto}">${p.nome} ${iconePronto}</div>`;
                 }
             });
@@ -493,7 +504,6 @@
             timerInterval = setInterval(() => {
                 tempoRestante--;
                 barra.style.width = ((tempoRestante/60)*100) + '%';
-                // Deixa a barra vermelha nos últimos 20s
                 if (tempoRestante <= 20) barra.style.background = "#FF5252";
                 else barra.style.background = "#00E676";
 
@@ -513,7 +523,16 @@
                 const tempoGasto = 60 - tempoRestante;
                 socket.send(JSON.stringify({ type: 'JOGADA', nome: meuNome, valor: res, distancia: Math.abs(alvoAtual - res), tempo: tempoGasto }));
                 document.getElementById('btn-enviar').style.display = 'none';
+                document.querySelector('.btn-desistir').style.display = 'none';
             } catch(e) { alert("Conta inválida!"); }
+        }
+
+        function desistir() {
+            if(confirm("Desistir dessa rodada? Você não perderá fichas, mas também não ganhará.")) {
+                socket.send(JSON.stringify({ type: 'DESISTIR', nome: meuNome }));
+                document.getElementById('btn-enviar').style.display = 'none';
+                document.querySelector('.btn-desistir').style.display = 'none';
+            }
         }
 
         function enviarChatTexto() {
