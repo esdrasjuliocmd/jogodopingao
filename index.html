@@ -191,25 +191,25 @@
                     <li>Quem chegar mais perto ganha a rodada.</li>
                 </ul>
 
-                <h3>⚡ PONTUAÇÃO (QUANTO MAIS RÁPIDO MELHOR)</h3>
+                <h3>⚡ PONTUAÇÃO (CORRIDA!)</h3>
                 <ul>
-                    <li>🚀 <b>0-20s:</b> +100 Fichas</li>
+                    <li>🚀 <b>0-20s:</b> +100 Fichas (THE FLASH)</li>
                     <li>🏎️ <b>20-30s:</b> +80 Fichas</li>
-                    <li>🏃 <b>30-45s:</b> +30 Fichas</li>
-                    <li>🐢 <b>+45s:</b> +15 Fichas</li>
+                    <li>🏃 <b>30-40s:</b> +30 Fichas</li>
+                    <li>⚠️ <b>40-50s:</b> <b style="color:#FF5252">-15 Fichas</b> (LENTO!)</li>
+                    <li>💀 <b>50s+:</b> <b style="color:#FF5252">-30 Fichas</b> (PREJUÍZO!)</li>
                 </ul>
 
                 <h3>💀 ELIMINAÇÃO (MATA-MATA)</h3>
                 <ul>
-                    <li>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado do jogo!</li>
+                    <li>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado!</li>
                 </ul>
 
                 <h3>📢 SALA DA BAGUNÇA</h3>
                 <ul>
                     <li>Acontece antes da eliminação.</li>
-                    <li>Chat liberado para negociação.</li>
                     <li>Você pode <b>DOAR</b> fichas (50 a 200) para salvar alguém.</li>
-                    <li>⚠️ <b>ATENÇÃO:</b> Quem doa fichas <b>PULA A PRÓXIMA RODADA</b> (fica sem jogar).</li>
+                    <li>⚠️ <b>ATENÇÃO:</b> Quem doa fichas <b>PULA A PRÓXIMA RODADA</b>.</li>
                 </ul>
                 
                 <h3>🃏 VALOR DAS CARTAS</h3>
@@ -258,7 +258,9 @@
                 <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add(')')">)</button>
             </div>
             <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
-            <div class="legenda-pontos">🚀0-20s: 100pts | 🏎️20-30s: 80pts | 🏃30-45s: 30pts</div>
+            <div class="legenda-pontos">
+                🚀0-20s: +100 | 🏃30-40s: +30 | <span style="color:#FF5252">⚠️40s+: -15</span> | <span style="color:#FF5252">💀50s+: -30</span>
+            </div>
         </div>
     </div>
 
@@ -325,8 +327,6 @@
                         
                         const host = data.lista.find(p => p.isHost);
                         if(host && host.nome === meuNome) souHost = true;
-                        
-                        // Garante que o botão de iniciar aparece pro host
                         if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
                     }
 
@@ -381,11 +381,16 @@
 
                     if (data.type === 'FIM_RODADA') {
                         document.getElementById('modal-rodada').style.display = 'flex';
+                        let sinal = data.premio >= 0 ? "+" : "";
                         document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                        document.getElementById('txt-premio').innerText = `+${data.premio} 💰`;
+                        document.getElementById('txt-premio').innerText = `${sinal}${data.premio} 💰`;
+                        if(data.premio < 0) document.getElementById('txt-premio').style.color = "#FF5252";
+                        else document.getElementById('txt-premio').style.color = "#FFD700";
+                        
                         document.getElementById('txt-detalhe').innerText = `Res: ${data.valor} (Tempo: ${data.tempo}s)`;
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
-                        if(data.vencedor === meuNome) tocarSom('vitoria');
+                        if(data.vencedor === meuNome && data.premio > 0) tocarSom('vitoria');
+                        else if(data.vencedor === meuNome && data.premio < 0) tocarSom('erro'); // Ganhou mas perdeu ficha
                         if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
                     }
 
@@ -488,6 +493,10 @@
             timerInterval = setInterval(() => {
                 tempoRestante--;
                 barra.style.width = ((tempoRestante/60)*100) + '%';
+                // Deixa a barra vermelha nos últimos 20s
+                if (tempoRestante <= 20) barra.style.background = "#FF5252";
+                else barra.style.background = "#00E676";
+
                 if(tempoRestante <= 0) clearInterval(timerInterval);
             }, 1000);
         }
