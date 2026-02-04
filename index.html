@@ -3,50 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pingão Baralho</title>
+    <title>Pingão Pro</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #2E7D32; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #2E7D32; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; }
         
-        .topo { background: #1B5E20; color: white; padding: 15px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 5px rgba(0,0,0,0.3); }
-        h1 { margin: 0; font-size: 22px; }
+        .topo { background: #1B5E20; color: white; padding: 10px; border-radius: 0 0 20px 20px; box-shadow: 0 4px 5px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 18px; margin-left: 10px;}
         
-        .tela { display: none; padding: 15px; }
+        .tela { display: none; padding: 10px; }
         .ativa { display: block; }
         
         .caixa { background: #fff; color: #333; border-radius: 10px; padding: 20px; margin: 15px auto; max-width: 400px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 18px; text-align: center; display: block; margin-left: auto; margin-right: auto; }
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
         
         .btn-principal { background: #D32F2F; color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #B71C1C; }
-        .btn-principal:active { transform: translateY(2px); box-shadow: none; }
         
-        .box-lista { background: #1B5E20; color: white; border-radius: 8px; padding: 10px; margin-top: 20px; text-align: left; border: 1px solid #4CAF50; }
-        .item-jogador { padding: 10px; border-bottom: 1px solid #4CAF50; font-size: 16px; display: flex; justify-content: space-between; }
+        /* LISTA PEQUENA NO TOPO */
+        #lista-ingame { font-size: 12px; text-align: right; margin-right: 10px; }
+        .mini-jogador { display: block; }
         
-        /* ESTILO DAS CARTAS DE BARALHO */
-        #area-cartas { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .carta { width: 65px; height: 90px; background: white; color: black; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); position: relative; border: 1px solid #ccc; }
-        .carta span { font-size: 12px; position: absolute; top: 2px; left: 4px; }
+        /* BARRA DE TEMPO */
+        #barra-tempo-container { width: 100%; height: 10px; background: #1B5E20; position: fixed; top: 0; left: 0; z-index: 100; }
+        #barra-tempo { width: 100%; height: 100%; background: #FFC107; transition: width 1s linear; }
+
+        /* CARTAS */
+        #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
+        .carta { width: 65px; height: 95px; background: white; color: black; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; font-weight: bold; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); position: relative; border: 1px solid #999; }
         .carta.vermelha { color: #D32F2F; }
-        .carta.preta { color: #000; }
-        .carta:active { transform: scale(0.95); background: #eee; }
+        .carta span { font-size: 12px; position: absolute; top: 2px; left: 4px; }
         
-        .sinal { width: 55px; height: 55px; font-size: 26px; margin: 4px; border: none; border-radius: 50%; background: #FB8C00; color: white; cursor: pointer; box-shadow: 0 2px 0 #E65100; }
+        .sinal { width: 50px; height: 50px; font-size: 24px; margin: 3px; border: none; border-radius: 50%; background: #FB8C00; color: white; cursor: pointer; box-shadow: 0 2px 0 #E65100; }
         
-        #visor-conta { font-size: 28px; background: #fff; color: #333; padding: 15px; margin: 15px 0; font-weight: bold; border-radius: 8px; min-height: 30px; }
+        #visor-conta { font-size: 28px; background: #fff; color: #333; padding: 10px; margin: 10px 0; font-weight: bold; border-radius: 8px; min-height: 35px; border: 2px solid #aaa; }
         
-        #alvo-display { background: #FFC107; color: #333; padding: 15px; font-weight: bold; font-size: 24px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #FFA000; }
+        #alvo-display { background: #FFC107; color: #333; padding: 10px; font-weight: bold; font-size: 22px; border-radius: 10px; margin-bottom: 10px; border: 2px solid #FFA000; }
+        
+        /* MODAL DE VENCEDOR */
+        #modal-vencedor { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;}
     </style>
 </head>
 <body>
 
+    <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
+
+    <div id="modal-vencedor">
+        <h1 style="font-size: 50px;">🏆</h1>
+        <h2 id="txt-vencedor">Fulano Venceu!</h2>
+        <p id="txt-detalhe">Chegou a 10 (Distância: 1)</p>
+        <p style="color: #FFC107; margin-top: 20px;">Próxima rodada em instantes...</p>
+    </div>
+
     <div id="tela-entrada" class="tela ativa">
-        <div class="topo"><h1>♣️ Pingão Cartas ♦️</h1></div>
+        <br><br>
+        <h1 style="font-size: 30px;">♣️ Pingão ♦️</h1>
         <div class="caixa">
-            <p>Seu Nome:</p>
-            <input type="text" id="nome-player">
-            <div id="div-sala"><p>Sala:</p><input type="text" id="nome-sala"></div>
-            <button class="btn-principal" onclick="entrar()">ENTRAR NA MESA</button>
+            <input type="text" id="nome-player" placeholder="Seu Nome">
+            <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
+            <button class="btn-principal" onclick="entrar()">ENTRAR</button>
         </div>
     </div>
 
@@ -54,25 +68,25 @@
         <div class="topo"><h1>Mesa: <span id="sala-titulo"></span></h1></div>
         <div class="caixa">
             <div onclick="copiarLink()" style="background:#E8F5E9; padding:10px; border-radius:5px; border:1px dashed #4CAF50; cursor:pointer;">
-                🔗 <b>Copiar convite</b>
+                🔗 <b>Copiar Link</b>
                 <div id="link-texto" style="font-size:10px; color:#555;"></div>
             </div>
-
-            <div class="box-lista">
-                <div id="lista-jogadores">Embaralhando...</div>
+            <div style="margin-top:20px; text-align:left;">
+                <b>Jogadores na mesa:</b>
+                <div id="lista-lobby"></div>
             </div>
-            
-            <button id="btn-iniciar" class="btn-principal" style="display:none;" onclick="iniciarJogo()">DAR AS CARTAS! 🃏</button>
+            <button id="btn-iniciar" class="btn-principal" style="display:none;" onclick="socket.send(JSON.stringify({type:'START'}))">DAR AS CARTAS! 🃏</button>
+            <p id="msg-aguarde" style="color:#666;">Esperando iniciar...</p>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela">
-        <div class="topo"><h2 id="status-jogo">Valendo!</h2></div>
+        <div class="topo">
+            <h1>Mesa de Jogo</h1>
+            <div id="lista-ingame"></div> </div>
         
         <div id="alvo-display">ALVO: ?</div>
-
         <div id="visor-conta">_</div>
-
         <div id="area-cartas"></div>
 
         <div>
@@ -81,14 +95,14 @@
             <button class="sinal" onclick="add('*')">×</button>
             <button class="sinal" onclick="add('/')">÷</button>
             <button class="sinal" style="background:#D32F2F" onclick="limpar()">C</button>
+            <br>
             <button class="sinal" style="background:#555" onclick="add('(')">(</button>
             <button class="sinal" style="background:#555" onclick="add(')')">)</button>
         </div>
 
         <button id="btn-enviar" class="btn-principal" onclick="enviar()">BATER (ENVIAR)</button>
-        <button id="btn-proxima" class="btn-principal" style="background:#388E3C; display:none;" onclick="iniciarJogo()">PRÓXIMA MÃO ➡️</button>
         <br>
-        <div style="font-size: 12px; margin-top: 10px;">Valores: A=1, J=11, Q=12, K=13</div>
+        <div style="font-size: 11px; margin-top: 10px; opacity: 0.7;">A=1 | J=11 | Q=12 | K=13</div>
     </div>
 
     <script>
@@ -97,6 +111,8 @@
         let meuNome = "";
         let minhaSala = "";
         let alvoAtual = 0;
+        let tempoRestante = 60;
+        let timerInterval;
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
@@ -123,64 +139,84 @@
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
 
+                    // ATUALIZA AS LISTAS (LOBBY E IN-GAME)
                     if (data.type === 'LISTA') {
-                        const div = document.getElementById('lista-jogadores');
-                        div.innerHTML = "";
+                        const lobby = document.getElementById('lista-lobby');
+                        const ingame = document.getElementById('lista-ingame');
+                        lobby.innerHTML = "";
+                        ingame.innerHTML = "";
+                        
                         data.lista.forEach(p => {
-                            div.innerHTML += `<div class="item-jogador"><span>${p.nome}</span> <span>${p.pronto ? '✅' : '⏳'}</span></div>`;
+                            const icone = p.pronto ? '✅' : '⏳';
+                            // Lista Grande do Lobby
+                            lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${p.nome}</span><span>${icone}</span></div>`;
+                            // Lista Pequena do Jogo
+                            ingame.innerHTML += `<div class="mini-jogador">${p.nome} ${icone}</div>`;
                         });
+                        
                         document.getElementById('btn-iniciar').style.display = 'block';
+                        document.getElementById('msg-aguarde').style.display = 'none';
                     }
 
-                    if (data.type === 'START') {
+                    // RECEBE AS CARTAS EXCLUSIVAS
+                    if (data.type === 'SUA_MAO') {
+                        document.getElementById('modal-vencedor').style.display = 'none'; // Esconde vencedor anterior
                         mudarTela('tela-jogo');
                         conta = "";
                         alvoAtual = data.alvo;
+                        iniciarTimer(60);
                         
                         document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
                         document.getElementById('visor-conta').innerText = "_";
                         
-                        // DESENHA AS CARTAS (CONVERTE NÚMERO PARA J, Q, K, A)
                         const areaCartas = document.getElementById('area-cartas');
                         areaCartas.innerHTML = "";
                         data.cartas.forEach(num => {
                             let visual = num;
-                            let classeCor = "preta"; // Padrão
-                            
-                            // Traduz Números para Letras
-                            if(num === 1) visual = "A";
-                            if(num === 11) visual = "J";
-                            if(num === 12) visual = "Q";
-                            if(num === 13) visual = "K";
-                            
-                            // Cores aleatórias para ficar bonito (Vermelho ou Preto)
-                            if(Math.random() > 0.5) classeCor = "vermelha";
+                            let cor = "preta";
+                            if(num===1) visual="A";
+                            if(num===11) visual="J";
+                            if(num===12) visual="Q";
+                            if(num===13) visual="K";
+                            if(Math.random()>0.5) cor="vermelha";
 
-                            // Cria o HTML da carta. Nota: O onclick envia o NÚMERO, não a letra!
                             areaCartas.innerHTML += `
-                                <div class="carta ${classeCor}" onclick="add('${num}')">
-                                    <span>${visual}</span>
-                                    ${visual}
+                                <div class="carta ${cor}" onclick="add('${num}')">
+                                    <span>${visual}</span>${visual}
                                 </div>`;
                         });
-
                         document.getElementById('btn-enviar').style.display = 'block';
-                        document.getElementById('btn-proxima').style.display = 'none';
-                        document.getElementById('status-jogo').innerText = "Valendo!";
                     }
 
                     if (data.type === 'FIM_RODADA') {
-                        document.getElementById('status-jogo').innerText = `🏆 ${data.vencedor} venceu!`;
-                        document.getElementById('btn-enviar').style.display = 'none';
-                        document.getElementById('btn-proxima').style.display = 'block';
+                        document.getElementById('modal-vencedor').style.display = 'flex';
+                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
+                        document.getElementById('txt-detalhe').innerText = `Chegou a ${data.valor} (Distância: ${data.dist})`;
                     }
                 };
             } catch (e) { alert("Erro de conexão!"); }
         }
 
-        function iniciarJogo() { socket.send(JSON.stringify({type: 'START'})); }
-        function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Copiado!"); }
+        function iniciarTimer(segundos) {
+            tempoRestante = segundos;
+            const barra = document.getElementById('barra-tempo');
+            barra.style.width = '100%';
+            
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                tempoRestante--;
+                const porcentagem = (tempoRestante / 60) * 100;
+                barra.style.width = porcentagem + '%';
+                
+                if(tempoRestante <= 10) barra.style.background = 'red';
+                else barra.style.background = '#FFC107';
 
+                if(tempoRestante <= 0) clearInterval(timerInterval);
+            }, 1000);
+        }
+
+        function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Copiado!"); }
+        
         function enviar() {
             try {
                 const res = eval(conta);
@@ -188,7 +224,6 @@
                 const dist = Math.abs(alvoAtual - res);
                 socket.send(JSON.stringify({type: 'JOGADA', nome: meuNome, valor: res, distancia: dist}));
                 document.getElementById('btn-enviar').style.display = 'none';
-                document.getElementById('status-jogo').innerText = "Aguardando...";
             } catch(e) { alert("Conta inválida!"); }
         }
 
