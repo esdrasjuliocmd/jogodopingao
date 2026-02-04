@@ -3,173 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferve a Cuca</title>
+    <title>Ferve a Cuca: Cassino Royale</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; }
         
-        .topo { background: #000; color: #FFD700; padding: 10px; border-bottom: 2px solid #FFD700; display: flex; justify-content: space-between; align-items: center; }
+        /* TOPO */
+        .topo { background: linear-gradient(180deg, #000, #1a1a1a); color: #FFD700; padding: 10px; border-bottom: 3px solid #FFD700; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); position: relative; z-index: 10; }
         h1 { margin: 0; font-size: 14px; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px;}
         
-        .tela { display: none; padding: 10px; }
+        .tela { display: none; padding: 10px; position: relative; z-index: 5; }
         .ativa { display: block; }
         
-        .caixa { background: #fff; color: #333; border-radius: 10px; padding: 20px; margin: 15px auto; max-width: 400px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
-        .btn-principal { background: #B71C1C; color: white; padding: 15px; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; border-bottom: 4px solid #7F0000; }
+        /* CAIXAS */
+        .caixa { background: rgba(255, 255, 255, 0.95); color: #333; border-radius: 15px; padding: 25px; margin: 20px auto; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #FFD700; position: relative; z-index: 5; }
         
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; text-align: center; background: #f9f9f9; }
+        
+        .btn-principal { background: linear-gradient(180deg, #D32F2F, #B71C1C); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
+        .btn-principal:active { transform: translateY(3px); box-shadow: none; }
+        
+        /* DECORAÇÃO TELA INICIAL */
+        .decoracao-cartas { position: absolute; top: -50px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+        .carta-decor { position: absolute; width: 80px; opacity: 0.8; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
+        .c1 { left: 10%; top: 20%; transform: rotate(-15deg); }
+        .c2 { right: 10%; top: 30%; transform: rotate(15deg); }
+        .c3 { left: 50%; top: 10%; transform: translate(-50%) rotate(5deg); width: 100px; z-index: 2; }
+
+        /* REGRAS NA TELA INICIAL */
+        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; }
+        .box-regras h3 { color: #FFD700; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .box-regras li { margin-bottom: 5px; }
+
         /* BARRA DE TEMPO */
         #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
         #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
         
-        /* LISTA DE JOGADORES NA RODADA (NOVA) */
-        #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; background: #222; padding: 5px; border-bottom: 1px solid #444; min-height: 30px; }
-        .tag-player { font-size: 12px; background: #444; padding: 4px 8px; border-radius: 12px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; }
-        .tag-player.pronto { background: #1B5E20; color: #81C784; border-color: #00E676; }
-        .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; }
-        
-        /* BOTÃO DE REGRAS FLUTUANTE */
-        .btn-regras { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #2196F3; color: white; border-radius: 50%; font-size: 24px; font-weight: bold; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5); cursor: pointer; z-index: 150; }
+        /* LISTA DE JOGADORES NA RODADA */
+        #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 30px; }
+        .tag-player { font-size: 12px; background: #222; padding: 5px 10px; border-radius: 15px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .tag-player.pronto { background: #2E7D32; border-color: #00E676; }
+        .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; background: #333; }
 
-        /* ESTILO JOGO */
-        #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; }
-        .carta { width: 65px; height: 95px; background: white; color: black; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; font-weight: bold; border: 1px solid #999; }
-        .carta.vermelha { color: #D32F2F; }
-        .carta span { font-size: 12px; position: absolute; top: 2px; left: 4px; }
+        /* CARTAS REAIS */
+        #area-cartas { display: flex; justify-content: center; gap: 5px; margin: 20px 0; perspective: 1000px; }
+        .carta-real { width: 75px; height: auto; cursor: pointer; transition: transform 0.2s; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5)); }
+        .carta-real:hover { transform: translateY(-10px); }
+        .carta-real:active { transform: scale(0.95); }
         
-        .sinal { width: 50px; height: 50px; font-size: 24px; margin: 3px; border: none; border-radius: 50%; background: #424242; color: white; cursor: pointer; border: 1px solid #666; }
-        #visor-conta { font-size: 28px; background: #eee; color: #333; padding: 10px; margin: 10px 0; font-weight: bold; border-radius: 5px; min-height: 35px; border: 2px solid #aaa; }
-        #alvo-display { background: #FFD700; color: #000; padding: 10px; font-weight: bold; font-size: 20px; border-radius: 5px; margin-bottom: 10px; border: 2px solid #FFA000; }
+        /* CONTROLES */
+        .sinal { width: 55px; height: 55px; font-size: 24px; margin: 3px; border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; transition: all 0.1s; }
+        .sinal:active { transform: translateY(3px); border-bottom: none; }
+        
+        #visor-conta { font-size: 32px; background: #fff; color: #333; padding: 15px; margin: 15px 0; font-weight: bold; border-radius: 8px; min-height: 40px; border: 3px solid #ccc; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
+        #alvo-display { background: linear-gradient(45deg, #FFD700, #FFC107); color: #000; padding: 15px; font-weight: bold; font-size: 24px; border-radius: 8px; margin-bottom: 10px; border: 2px solid #FFA000; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
         
         /* MODAIS */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
-        .contador-zao { font-size: 80px; font-weight: bold; color: #FFD700; margin: 20px 0; }
+        .contador-zao { font-size: 100px; font-weight: bold; color: #FFD700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); margin: 20px 0; }
         
-        /* MANUAL */
-        .manual-box { background: #333; padding: 20px; border-radius: 10px; max-width: 500px; text-align: left; max-height: 80vh; overflow-y: auto; border: 2px solid #FFD700; }
-        .manual-box h3 { color: #FFD700; border-bottom: 1px solid #555; padding-bottom: 5px; margin-top: 20px; }
-
         /* LISTAS LOBBY */
         #lista-lobby { text-align: left; }
-        .item-lobby { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+        .item-lobby { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; color: #333; }
     </style>
 </head>
 <body>
 
     <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
 
-    <button class="btn-regras" onclick="document.getElementById('modal-regras').style.display='flex'">?</button>
-
-    <div id="modal-regras" class="modal">
-        <div class="manual-box">
-            <h2 style="text-align: center; color: #FFD700;">📖 Regras Oficiais</h2>
-            
-            <h3>🃏 As Cartas</h3>
-            <ul>
-                <li><b>A (Ás)</b> = Vale 1</li>
-                <li><b>2 a 10</b> = Valor normal</li>
-                <li><b>J (Valete)</b> = Vale 11</li>
-                <li><b>Q (Dama)</b> = Vale 12</li>
-                <li><b>K (Rei)</b> = Vale 13</li>
-            </ul>
-
-            <h3>🎯 Como Jogar</h3>
-            <p>Use as 4 cartas e os sinais (+ - × ÷) para chegar o mais perto possível do <b>ALVO</b>.</p>
-
-            <h3>💰 Fichas & Prêmios</h3>
-            <p>Todos começam com 500 fichas.<br>Quem ganha a rodada leva +100.</p>
-
-            <h3>💀 Eliminação</h3>
-            <p>A cada <b>5 RODADAS</b>, quem tiver MENOS fichas é eliminado!<br>O último sobrevivente leva o pote todo.</p>
-            
-            <button class="btn-principal" style="background:#444;" onclick="document.getElementById('modal-regras').style.display='none'">FECHAR</button>
-        </div>
-    </div>
-
     <div id="modal-rodada" class="modal">
-        <h2 id="txt-vencedor" style="color: #00E676;">...</h2>
-        <p id="txt-detalhe" style="font-size: 18px;">...</p>
-        <h3 id="txt-eliminacao" style="color: #FF5252;"></h3>
-        <p style="margin-top: 30px; color: #aaa;">Próxima rodada em:</p>
+        <h2 id="txt-vencedor" style="color: #00E676; font-size: 30px;">...</h2>
+        <p id="txt-detalhe" style="font-size: 20px;">...</p>
+        <h3 id="txt-eliminacao" style="color: #FF5252; font-size: 24px;"></h3>
+        <p style="margin-top: 40px; color: #aaa;">Próxima rodada em:</p>
         <div id="contador-regressivo" class="contador-zao">8</div>
     </div>
 
     <div id="modal-espera" class="modal">
-        <h1>⏳</h1>
-        <h2>Rodada em Andamento!</h2>
+        <h1 style="font-size: 60px;">⏳</h1>
+        <h2>Jogo em Andamento!</h2>
         <p>Aguarde o fim da rodada atual...</p>
-        <div style="margin-top: 20px; color: #FFD700;">Você entrará na próxima!</div>
+        <div style="margin-top: 20px; color: #FFD700; border: 1px dashed #FFD700; padding: 10px;">Você entrará na próxima mão!</div>
     </div>
 
-    <div id="modal-gameover" class="modal" style="background: #2E7D32;">
-        <h1 style="font-size: 60px;">🏆</h1>
-        <h1>CAMPEÃO!</h1>
-        <h2 id="final-winner-name" style="font-size: 40px; margin: 10px 0; color: gold;">...</h2>
-        <h3 id="final-fichas">Total: 💰 0</h3>
-        <br>
-        <button class="btn-principal" onclick="location.reload()">NOVO JOGO</button>
+    <div id="modal-gameover" class="modal" style="background: linear-gradient(135deg, #1b5e20, #000);">
+        <h1 style="font-size: 80px;">🏆</h1>
+        <h1 style="color: #FFD700;">CAMPEÃO!</h1>
+        <h2 id="final-winner-name" style="font-size: 50px; margin: 10px 0; color: white; text-shadow: 0 0 10px gold;">...</h2>
+        <h3 id="final-fichas" style="background: white; color: black; padding: 10px 20px; border-radius: 50px;">Total: 💰 0</h3>
+        <br><br>
+        <button class="btn-principal" onclick="location.reload()">NOVO CAMPEONATO</button>
     </div>
 
     <div id="modal-eliminado" class="modal">
-        <h1 style="font-size: 50px;">💀</h1>
-        <h2>ELIMINADO!</h2>
+        <h1 style="font-size: 80px;">💀</h1>
+        <h2 style="color: #FF5252;">VOCÊ QUEBROU!</h2>
         <p>Suas fichas acabaram.</p>
-        <p style="font-size: 12px; color:#aaa;">(Mas você pode continuar assistindo)</p>
+        <p style="font-size: 14px; color:#aaa; margin-top: 20px;">Fique torcendo (ou secando) os outros!</p>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
+        <div class="decoracao-cartas">
+            <img src="https://deckofcardsapi.com/static/img/AS.png" class="carta-decor c1">
+            <img src="https://deckofcardsapi.com/static/img/KD.png" class="carta-decor c2">
+            <img src="https://deckofcardsapi.com/static/img/JH.png" class="carta-decor c3">
+        </div>
+
         <br><br>
-        <h1 style="font-size: 30px; color: #FFD700;">🤯</h1>
-        <h1 style="font-size: 24px;">Desafio do Pingão</h1>
-        <h2 style="font-size: 18px; color: #aaa;">FERVE A CUCA</h2>
+        <h1 style="font-size: 40px; color: #FFD700; text-shadow: 2px 2px 0 #000;">🎰 PINGÃO</h1>
+        <h2 style="font-size: 20px; color: #fff; letter-spacing: 3px; margin-top: -10px;">FERVE A CUCA</h2>
+        
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
-            <button class="btn-principal" onclick="entrar()">ENTRAR</button>
+            <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
+
+            <div class="box-regras">
+                <h3>📜 Regras Rápidas</h3>
+                <ul>
+                    <li>🎯 <b>Objetivo:</b> Usar as cartas (+ - × ÷) para chegar no ALVO.</li>
+                    <li>🃏 <b>Valores:</b> A=1, J=11, Q=12, K=13.</li>
+                    <li>💰 <b>Fichas:</b> Todos começam com 500. Vitória = +100.</li>
+                    <li>💀 <b>Mata-Mata:</b> A cada 5 rodadas, o lanterninha é eliminado!</li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>Mesa: <span id="sala-titulo"></span></h1></div>
         <div class="caixa">
-            <div onclick="copiarLink()" style="background:#eee; padding:10px; border-radius:5px; cursor:pointer; font-size: 12px;">
-                🔗 <b>Convidar Galera</b>
-                <div id="link-texto" style="font-size:10px; color:#555;"></div>
+            <div onclick="copiarLink()" style="background:#eee; padding:15px; border-radius:8px; cursor:pointer; font-size: 14px; border: 1px dashed #333;">
+                🔗 <b>Toque para Convidar</b>
+                <div id="link-texto" style="font-size:10px; color:#555; margin-top: 5px;"></div>
             </div>
+            
             <div style="margin-top:20px; margin-bottom: 20px;">
-                <b>Na Mesa (500 Fichas):</b>
-                <div id="lista-lobby"></div>
+                <b style="color: #333;">Jogadores na Mesa:</b>
+                <div id="lista-lobby" style="margin-top: 10px;"></div>
             </div>
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: #2E7D32;" onclick="socket.send(JSON.stringify({type:'START'}))">INICIAR PARTIDA</button>
-            <p id="msg-aguarde" style="color:#666; font-size: 12px;">Aguardando o Host iniciar...</p>
+            
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="socket.send(JSON.stringify({type:'START'}))">DAR AS CARTAS</button>
+            <p id="msg-aguarde" style="color:#666; font-size: 12px;">O Host iniciará o jogo...</p>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela" style="padding:0;">
-        <div class="topo" style="padding: 5px 10px;">
-            <div style="font-size: 14px;">Fichas: <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span></div>
-            <div id="info-rodada" style="font-size: 12px; background:#333; padding:2px 8px; border-radius:10px;">Rodada 1</div>
+        <div class="topo" style="padding: 10px;">
+            <div style="font-size: 16px;">💰 <span id="minhas-fichas" style="color:#FFD700; font-weight:bold;">500</span></div>
+            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:20px;">Rodada 1</div>
         </div>
 
         <div id="painel-jogadores"></div>
         
-        <div style="padding: 10px;">
+        <div style="padding: 15px;">
             <div id="alvo-display">ALVO: ?</div>
             <div id="visor-conta">_</div>
+            
             <div id="area-cartas"></div>
 
-            <div>
+            <div style="margin-top: 20px;">
                 <button class="sinal" onclick="add('+')">+</button>
                 <button class="sinal" onclick="add('-')">-</button>
                 <button class="sinal" onclick="add('*')">×</button>
                 <button class="sinal" onclick="add('/')">÷</button>
-                <button class="sinal" style="background:#D32F2F" onclick="limpar()">C</button>
+                <button class="sinal" style="background:#D32F2F; border-bottom-color: #7F0000;" onclick="limpar()">C</button>
                 <br>
-                <button class="sinal" style="background:#222" onclick="add('(')">(</button>
-                <button class="sinal" style="background:#222" onclick="add(')')">)</button>
+                <button class="sinal" style="background:#424242; border-bottom-color: #222;" onclick="add('(')">(</button>
+                <button class="sinal" style="background:#424242; border-bottom-color: #222;" onclick="add(')')">)</button>
             </div>
 
-            <button id="btn-enviar" class="btn-principal" onclick="enviar()">ENVIAR CONTA</button>
-            <div style="font-size: 10px; margin-top: 10px; opacity: 0.5;">A=1 | J=11 | Q=12 | K=13</div>
+            <button id="btn-enviar" class="btn-principal" onclick="enviar()">CONFIRMAR JOGADA</button>
         </div>
     </div>
 
@@ -226,8 +229,8 @@
                         let txt = `Rodada ${r}`;
                         if(r % 5 === 0) txt += " 💀 ELIMINAÇÃO!";
                         document.getElementById('info-rodada').innerText = txt;
-                        if(r % 5 === 0) document.getElementById('info-rodada').style.color = "red";
-                        else document.getElementById('info-rodada').style.color = "white";
+                        if(r % 5 === 0) document.getElementById('info-rodada').style.background = "#D32F2F";
+                        else document.getElementById('info-rodada').style.background = "rgba(255,255,255,0.2)";
 
                         conta = "";
                         alvoAtual = data.alvo;
@@ -239,10 +242,22 @@
                         const area = document.getElementById('area-cartas');
                         area.innerHTML = "";
                         data.cartas.forEach(num => {
-                            let visual = num, cor = "black";
-                            if(num===1) visual="A"; if(num===11) visual="J"; if(num===12) visual="Q"; if(num===13) visual="K";
-                            if(Math.random()>0.5) cor="#D32F2F";
-                            area.innerHTML += `<div class="carta" style="color:${cor}" onclick="add('${num}')"><span>${visual}</span>${visual}</div>`;
+                            // Lógica para pegar imagem da carta real
+                            // API DeckOfCards: A=Ace, 0=10, J=Jack, Q=Queen, K=King
+                            let valorImg = num;
+                            if(num===1) valorImg="A"; 
+                            if(num===10) valorImg="0";
+                            if(num===11) valorImg="J"; 
+                            if(num===12) valorImg="Q"; 
+                            if(num===13) valorImg="K";
+                            
+                            // Naipes Aleatórios (H=Copas, D=Ouros, C=Paus, S=Espadas)
+                            const naipes = ['H', 'D', 'C', 'S'];
+                            const naipe = naipes[Math.floor(Math.random() * naipes.length)];
+                            const imgUrl = `https://deckofcardsapi.com/static/img/${valorImg}${naipe}.png`;
+
+                            // O valor que vai pra conta é o numérico (num), a imagem é só enfeite
+                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="add('${num}')">`;
                         });
                         document.getElementById('btn-enviar').style.display = 'block';
                     }
@@ -278,13 +293,11 @@
             lista.sort((a,b) => b.fichas - a.fichas);
 
             lista.forEach(p => {
-                // Lista do Lobby
                 let statusLobby = p.pronto ? '✅' : '⏳';
                 if(p.esperando) statusLobby = '🕐 Prox';
                 if(p.eliminado) statusLobby = '💀';
-                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>${p.fichas} ${statusLobby}</span></div>`;
+                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰${p.fichas} ${statusLobby}</span></div>`;
 
-                // Lista do Jogo (Só mostra quem tá vivo e jogando)
                 if(!p.eliminado && !p.esperando) {
                     const classePronto = p.pronto ? 'pronto' : '';
                     const iconePronto = p.pronto ? '✅' : '🤔';
