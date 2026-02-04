@@ -12,9 +12,9 @@
         .caixa { background: white; border: 3px solid #4ECDC4; border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 400px; box-shadow: 6px 6px 0 #4ECDC4; }
         input { width: 85%; padding: 12px; margin: 10px; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; }
         
-        /* ÁREA DO LINK DINÂMICO */
-        .area-convite { background: #FFE66D; padding: 15px; border-radius: 15px; border: 2px dashed #FF6B6B; margin: 15px auto; max-width: 85%; font-size: 14px; word-break: break-all; }
-        .btn-copiar { background: #FF6B6B; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        /* ÁREA DO CONVITE DIRETO */
+        .area-convite { background: #FFE66D; padding: 15px; border-radius: 15px; border: 2px dashed #FF6B6B; margin: 15px auto; max-width: 85%; font-size: 14px; }
+        .btn-copiar { background: #FF6B6B; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
 
         .alvo { background: #FFE66D; margin: 15px; padding: 15px; border-radius: 15px; border: 3px dashed #FF6B6B; font-size: 24px; font-weight: bold; }
         .area-cartas { display: flex; justify-content: center; gap: 10px; margin: 20px; }
@@ -30,33 +30,33 @@
 
     <div id="pausa">
         <h1>⏸️ PAUSA DO PINGÃO</h1>
-        <p style="font-size: 24px;">Vai lá buscar uma gelada que o Pingão espera!</p>
+        <p style="font-size: 24px;">Vai lá no cooler que o Pingão espera!</p>
         <button class="btn-principal" style="background:#333" onclick="socket.send(JSON.stringify({type:'RESUME'}))">VOLTAR</button>
     </div>
 
     <div id="tela-entrada" class="tela ativa">
         <div class="topo"><h1>😎 Desafio do Pingão</h1></div>
         <div class="caixa">
-            <h3 style="color: #FF6B6B;">Crie sua Sala</h3>
+            <h3 id="titulo-entrada">Crie ou Entre na Sala</h3>
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <input type="text" id="nome-sala" placeholder="Nome da Sala" oninput="gerarLink()">
             
             <div id="box-link" class="area-convite" style="display: none;">
-                <b>Convite para a família:</b><br>
-                <span id="link-texto"></span><br>
-                <button class="btn-copiar" onclick="copiarLink()">Copiar Link e Sala</button>
+                <b>Link Mágico para a família:</b><br>
+                <small id="link-exibicao"></small><br>
+                <button class="btn-copiar" onclick="copiarLink()">Copiar Link de Convite 🚀</button>
             </div>
 
             <br>
-            <button class="btn-principal" onclick="conectar()">ENTRAR NA SALA</button>
+            <button class="btn-principal" onclick="conectar()">ENTRAR NO JOGO</button>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
         <div class="topo"><h1>🏠 Sala: <span id="sala-id">...</span></h1></div>
         <div class="caixa">
-            <p style="font-size: 20px;">Aguardando a galera entrar... 🌭</p>
-            <p>Mande o convite acima no WhatsApp!</p>
+            <p style="font-size: 20px;">Aguardando a galera... 🌭</p>
+            <p>Mande o link para o pessoal entrar direto!</p>
             <br>
             <button class="btn-principal" style="background:#FF6B6B; box-shadow: 0 5px 0 #b34a4a;" onclick="comecarJogo()">INICIAR DESAFIO!</button>
         </div>
@@ -80,8 +80,6 @@
         </div>
         <br>
         <button class="btn-principal" onclick="enviar()">ENVIAR JOGADA!</button>
-        <br><br>
-        <button onclick="socket.send(JSON.stringify({type:'PAUSE'}))" style="border:none; background:none; color:#888; cursor:pointer;">Pausar</button>
     </div>
 
     <script>
@@ -89,15 +87,27 @@
         let minhaConta = "";
         let tempo = 90;
 
-        // FUNÇÃO QUE GERA O LINK ENQUANTO VOCÊ DIGITA
+        // AO CARREGAR: Verifica se já tem sala no link
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const salaNoLink = params.get('sala');
+            if(salaNoLink) {
+                document.getElementById('nome-sala').value = salaNoLink;
+                document.getElementById('titulo-entrada').innerText = "Você foi convidado para a sala: " + salaNoLink;
+                document.getElementById('nome-sala').style.backgroundColor = "#e8f5e9";
+            }
+        };
+
+        // GERA O LINK MÁGICO
         function gerarLink() {
             const sala = document.getElementById('nome-sala').value;
             const box = document.getElementById('box-link');
-            const texto = document.getElementById('link-texto');
+            const exibicao = document.getElementById('link-exibicao');
             
             if(sala.length > 2) {
+                const linkMagico = window.location.origin + window.location.pathname + "?sala=" + encodeURIComponent(sala);
                 box.style.display = "block";
-                texto.innerText = "Site: " + window.location.href + "\nSala: " + sala;
+                exibicao.innerText = linkMagico;
             } else {
                 box.style.display = "none";
             }
@@ -105,9 +115,11 @@
 
         function copiarLink() {
             const sala = document.getElementById('nome-sala').value;
-            const textoParaCopiar = `Bora pro Desafio do Pingão! 🍻\nSite: ${window.location.href}\nSALA: ${sala}`;
-            navigator.clipboard.writeText(textoParaCopiar);
-            alert("✅ Convite copiado! Manda lá no grupo da família.");
+            const linkMagico = window.location.origin + window.location.pathname + "?sala=" + encodeURIComponent(sala);
+            const textoFinal = `Bora pro Desafio do Pingão! 🍻\nClica no link e coloca seu nome:\n${linkMagico}`;
+            
+            navigator.clipboard.writeText(textoFinal);
+            alert("✅ Link Mágico copiado! Só colar no Zap.");
         }
 
         function mostrarTela(id) {
@@ -118,7 +130,7 @@
         function conectar() {
             const n = document.getElementById('nome-player').value;
             const s = document.getElementById('nome-sala').value;
-            if(!n || !s) return alert("Preenche os campos aí, Pingão!");
+            if(!n || !s) return alert("Preenche o nome e a sala, Pingão!");
 
             socket = new WebSocket('wss://pingao-backend.esdrasjulio.workers.dev/');
 
@@ -148,15 +160,14 @@
         function enviar() {
             try {
                 let r = eval(minhaConta);
-                alert("O Pingão viu!\nResultado: " + r + "\nDistância: " + Math.abs(11 - r));
-            } catch(e) { alert("Essa conta tá errada, revisa aí!"); }
+                alert("Resultado: " + r + "\nDistância: " + Math.abs(11 - r));
+            } catch(e) { alert("Conta errada!"); }
         }
 
         function iniciarRelogio() {
             setInterval(() => {
                 if(document.getElementById('pausa').style.display !== 'flex' && tempo > 0) {
-                    tempo--;
-                    document.getElementById('relogio').innerText = tempo;
+                    tempo--; document.getElementById('relogio').innerText = tempo;
                 }
             }, 1000);
         }
