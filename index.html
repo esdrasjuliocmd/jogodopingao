@@ -1,341 +1,477 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>Casa de Jogos do Pingão 🎪</title>
-  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <style>
-    :root{
-      --bg1:#1b1bff; --bg2:#00d4ff; --bg3:#00ff9a; --bg4:#ffe600;
-      --ink:#0a0a18;
-      --card:#ffffff;
-      --card2:#f7f8ff;
-      --shadow: 0 14px 40px rgba(0,0,0,.18);
-      --shadow2: 0 8px 22px rgba(0,0,0,.12);
-      --radius: 18px;
-      --radius2: 14px;
-      --accent:#ff2bd6;
-      --accent2:#6a5cff;
-      --good:#16c172;
-      --bad:#ff3b3b;
-      --warn:#ffb300;
-      --whatsapp:#25D366;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--ink);
-      background: var(--ink);
-      display:flex; flex-direction:column;
-      overflow:hidden;
-      -webkit-tap-highlight-color: transparent;
-      line-height:1.4;
-    }
-    
-    /* MANTENDO SEUS ESTILOS ORIGINAIS */
-    .bg-grad{
-      position:fixed; top:0; left:0; right:0; bottom:0; z-index:0;
-      background: 
-        radial-gradient(circle at 0% 0%, var(--bg1) 0%, transparent 50%),
-        radial-gradient(circle at 100% 0%, var(--bg2) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, var(--bg3) 0%, transparent 50%),
-        radial-gradient(circle at 0% 100%, var(--bg4) 0%, transparent 50%);
-      background-color: var(--ink);
-    }
-    .main{ position:relative; z-index:1; flex:1; display:flex; flex-direction:column; height:100%; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ferve a Cuca: Final</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        :root {
+            --ouro: #FFD700;
+            --ouro-dark: #FFA000;
+            --vermelho: #D32F2F;
+            --vermelho-dark: #B71C1C;
+            --verde: #2E7D32;
+            --verde-neon: #00E676;
+            --whatsapp: #25D366;
+            --bg-mesa: #0f3818;
+            --preto-transparente: rgba(0, 0, 0, 0.4);
+        }
 
-    /* ESTILO CIRÚRGICO DO BOTÃO WHATSAPP */
-    .btn-whatsapp-copy {
-      background: var(--card);
-      border: 3px solid var(--whatsapp);
-      border-radius: var(--radius);
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      cursor: pointer;
-      margin-bottom: 20px;
-      transition: transform 0.2s;
-    }
-    .btn-whatsapp-copy:active { transform: scale(0.96); }
-    .btn-whatsapp-copy i { font-size: 45px; color: var(--whatsapp); }
-    .btn-whatsapp-copy .txt { text-align: left; }
-    .btn-whatsapp-copy b { display: block; font-size: 16px; color: var(--whatsapp); }
-    .btn-whatsapp-copy small { font-size: 10px; color: #666; display: block; word-break: break-all; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg-mesa); 
+            text-align: center; 
+            margin: 0; 
+            padding-bottom: 50px; 
+            color: #fff; 
+            overflow-x: hidden; 
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Topo Fixo e Ranking */
+        .topo-fixo { 
+            background: #111; 
+            border-bottom: 2px solid var(--ouro); 
+            padding: 5px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+        }
+        .topo-info { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 2px 10px; 
+        }
+        .ranking-bar { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            padding: 8px 5px; 
+            background: #222; 
+            white-space: nowrap; 
+            scrollbar-width: none; 
+        }
+        .ranking-bar::-webkit-scrollbar { display: none; }
+        
+        .rank-item { 
+            font-size: 11px; 
+            padding: 4px 10px; 
+            background: #333; 
+            border-radius: 12px; 
+            border: 1px solid #444; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            font-weight: bold;
+        }
+        .rank-item.lider { border-color: var(--ouro); color: var(--ouro); background: rgba(255, 215, 0, 0.1); }
+        .rank-item.perigo { border-color: #FF5252; color: #FF5252; }
+        .rank-item.eliminado { text-decoration: line-through; opacity: 0.5; }
 
-    /* O RESTANTE DO SEU CSS SEGUE ABAIXO (460+ LINHAS PRESERVADAS) */
-    .view{ display:none; flex:1; flex-direction:column; overflow-y:auto; padding:20px; animation: fadeIn 0.3s ease; }
-    .view.active{ display:flex; }
-    @keyframes fadeIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
-    
-    .panel{ background:var(--card); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); margin-bottom:20px; }
-    .title-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
-    h1,h2,h3{ margin:0; font-weight:800; letter-spacing:-0.02em; }
-    
-    .input-group{ margin-bottom:15px; }
-    .input-group label{ display:block; font-size:12px; font-weight:700; text-transform:uppercase; opacity:0.6; margin-bottom:6px; }
-    input[type=text]{
-      width:100%; background:var(--card2); border:2px solid transparent; border-radius:var(--radius2);
-      padding:14px 16px; font-size:16px; font-weight:600; outline:none; transition:0.2s;
-    }
-    input[type=text]:focus{ border-color:var(--accent2); background:var(--card); }
+        .tela { display: none; padding: 10px; position: relative; z-index: 5; margin-top: 10px; }
+        .ativa { display: block; }
+        .caixa { 
+            background: rgba(255, 255, 255, 0.95); 
+            color: #333; 
+            border-radius: 15px; 
+            padding: 25px; 
+            margin: 20px auto; 
+            max-width: 450px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 2px solid var(--ouro); 
+            position: relative; 
+            z-index: 5; 
+        }
 
-    .btn{
-      background:var(--accent2); color:#fff; border:none; border-radius:var(--radius2);
-      padding:16px; font-size:16px; font-weight:700; cursor:pointer; transition:0.2s;
-      display:flex; align-items:center; justify-content:center; gap:8px;
-    }
-    .btn:active{ transform:scale(0.96); opacity:0.9; }
-    .btn-primary{ background: linear-gradient(135deg, var(--accent2), var(--accent)); box-shadow: 0 8px 20px rgba(106,92,255,0.3); }
-    .btn-ghost{ background:transparent; color:var(--accent2); border:2px solid var(--accent2); }
+        input { 
+            width: 90%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            font-size: 18px; 
+            text-align: center; 
+            background: #f9f9f9; 
+            outline: none;
+        }
 
-    .ranking-mini{ display:flex; gap:10px; overflow-x:auto; padding-bottom:10px; margin-bottom:15px; scrollbar-width:none; }
-    .ranking-mini::-webkit-scrollbar{ display:none; }
-    .rank-bubble{ background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); padding:8px 14px; border-radius:30px; border:1px solid rgba(255,255,255,0.2); white-space:nowrap; font-size:12px; font-weight:700; color:#fff; display:flex; align-items:center; gap:6px; }
-    .rank-bubble.me{ background:var(--accent); border-color:transparent; }
+        .btn-principal { 
+            background: linear-gradient(180deg, var(--vermelho), var(--vermelho-dark)); 
+            color: white; 
+            padding: 15px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 10px; 
+            box-shadow: 0 4px 0 #7F0000; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            transition: transform 0.1s; 
+        }
+        .btn-principal:active { transform: translateY(3px); box-shadow: none; }
+        
+        .btn-desistir { 
+            background: #37474F; 
+            color: #fff; 
+            padding: 12px; 
+            width: 100%; 
+            margin-top: 15px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            cursor: pointer; 
+            border-bottom: 2px solid #263238; 
+        }
 
-    /* ÁREA DE CARTAS E CONTROLES */
-    .game-layout{ flex:1; display:flex; flex-direction:column; gap:15px; }
-    .target-box{ background:var(--bg4); border-radius:var(--radius); padding:20px; text-align:center; box-shadow:var(--shadow2); }
-    .target-val{ font-size:48px; font-weight:900; color:var(--ink); }
-    
-    .formula-visor{ background:var(--card); border-radius:var(--radius); padding:15px; min-height:60px; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; box-shadow:var(--shadow2); border:3px solid #eee; }
-    
-    .cards-row{ display:flex; justify-content:center; gap:8px; flex-wrap:nowrap; }
-    .c-card{ width:18%; max-width:75px; aspect-ratio:2.5/3.5; background:var(--card); border-radius:8px; box-shadow:var(--shadow2); cursor:pointer; transition:0.2s; border:2px solid transparent; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900; }
-    .c-card:active{ transform:translateY(-5px); }
-    .c-card.sel{ border-color:var(--accent); background:var(--card2); }
+        .titulo-jogo { 
+            font-size: 45px; 
+            font-weight: 900; 
+            margin: 0; 
+            background: linear-gradient(to bottom, var(--ouro), var(--ouro-dark)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            filter: drop-shadow(4px 4px 0px #000); 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            position: relative; 
+            z-index: 10; 
+        }
+        .subtitulo-jogo { 
+            font-size: 22px; 
+            color: #fff; 
+            text-shadow: 2px 2px 0 #000; 
+            margin-top: -5px; 
+            font-weight: bold; 
+            letter-spacing: 4px; 
+            position: relative; 
+            z-index: 10; 
+        }
 
-    .controls-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
-    .btn-op{ background:var(--card2); color:var(--ink); border-radius:12px; padding:15px; font-size:20px; font-weight:800; border:none; cursor:pointer; }
-    .btn-op:active{ background:var(--accent2); color:#fff; }
-    .btn-confirm{ grid-column: span 2; background:var(--good); color:#fff; font-size:16px; text-transform:uppercase; letter-spacing:1px; }
+        /* ESTILO DO BOTÃO WHATSAPP / CONVITE */
+        .btn-convite-whatsapp {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 3px solid var(--whatsapp);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: all 0.2s;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
+        }
+        .btn-convite-whatsapp:hover {
+            background: #c8e6c9;
+            transform: scale(1.02);
+        }
+        .btn-convite-whatsapp i {
+            font-size: 50px;
+            color: var(--whatsapp);
+        }
+        .btn-convite-whatsapp .texto-convite {
+            text-align: left;
+            color: #333;
+        }
+        .btn-convite-whatsapp b {
+            font-size: 18px;
+            display: block;
+            color: var(--verde);
+        }
+        .btn-convite-whatsapp small {
+            font-size: 11px;
+            color: #666;
+            display: block;
+            margin-top: 2px;
+        }
 
-    .player-tags{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:15px; }
-    .p-tag{ font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; background:rgba(0,0,0,0.1); }
-    .p-tag.ready{ background:var(--good); color:#fff; }
+        .decoracao-cartas { position: absolute; top: 150px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0.4; }
+        .carta-decor { position: absolute; width: 100px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
+        .c1 { left: -20px; top: 50px; transform: rotate(-25deg); }
+        .c2 { right: -20px; top: 100px; transform: rotate(25deg); }
+        .c3 { left: 50%; top: 200px; transform: translate(-50%) rotate(10deg); width: 120px; }
 
-    .timer-wrap{ height:6px; background:rgba(255,255,255,0.2); border-radius:3px; overflow:hidden; margin-top:10px; }
-    .timer-bar{ height:100%; width:100%; background:var(--good); transition:width 1s linear, background 0.3s; }
+        #barra-tempo-container { width: 100%; height: 6px; background: #333; position: absolute; bottom: 0; left: 0; z-index: 100; }
+        #barra-tempo { width: 100%; height: 100%; background: var(--verde-neon); transition: width 1s linear; }
+        
+        .discordia-bg { background: linear-gradient(135deg, #4a0000, #000) !important; }
+        .chat-container { display: flex; flex-direction: column; height: 350px; width: 100%; max-width: 400px; }
+        .chat-box { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 5px; padding: 10px; text-align: left; margin-bottom: 5px; border: 1px solid #ff4081; }
+        .chat-msg { margin-bottom: 8px; font-size: 13px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .chat-msg.sistema { color: var(--ouro); font-style: italic; text-align: center; margin: 10px 0; background: rgba(255,215,0,0.1); padding: 5px; border-radius: 5px; border: none;}
+        .input-chat-row { display: flex; gap: 5px; }
+        .input-chat { flex: 1; padding: 12px; border-radius: 5px; border: none; font-size: 14px; text-align: left; }
+        .btn-enviar-chat { background: #2196F3; color: white; border: none; padding: 0 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .lista-doacao { margin-top: 15px; max-height: 200px; overflow-y: auto; border-top: 1px solid #555; padding-top: 10px; }
+        .item-doacao { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 8px; border-radius: 8px; text-align: left; }
+        .nome-pobre { font-weight: bold; color: var(--ouro); font-size: 14px; display: block; margin-bottom: 5px; }
+        .btn-group-doar { display: flex; gap: 5px; flex-wrap: wrap; }
+        .btn-doar { flex: 1; min-width: 45px; background: #d81b60; color: white; border: none; padding: 8px 5px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
-    #confetti{ position:fixed; top:0; left:0; pointer-events:none; width:100%; height:100%; z-index:9999; }
-    #confetti i{ position:absolute; display:block; border-radius:2px; animation: fall linear forwards; }
-    @keyframes fall{ to{ transform: translateY(100vh) rotate(360deg); } }
-  </style>
+        .btn-encerrar-host { background: #D50000; color: white; padding: 15px; width: 100%; font-weight: bold; border: 2px solid white; border-radius: 10px; margin-top: 10px; cursor: pointer; display: none; }
+        .msg-espera-host { color: #aaa; font-style: italic; margin-top: 10px; display: none; }
+
+        #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 40px; }
+        .tag-player { font-size: 12px; background: #222; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .tag-player.pronto { background: var(--verde); border-color: var(--verde-neon); }
+        .tag-player.pulou { background: #880e4f; border-color: #ff4081; opacity: 0.8; }
+        .tag-player.desistiu { background: #555; border-color: #777; opacity: 0.7; }
+        .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; background: #333; }
+
+        #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 25px 0; perspective: 1000px; flex-wrap: wrap; }
+        .carta-real { width: 85px; height: auto; cursor: pointer; transition: transform 0.2s, filter 0.2s; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5)); border-radius: 5px; }
+        
+        .sinal { width: 58px; height: 58px; font-size: 26px; margin: 4px; border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; transition: all 0.1s; font-weight: bold; }
+        
+        #visor-conta { font-size: 36px; background: #fff; color: #333; padding: 20px; margin: 15px 0; font-weight: bold; border-radius: 12px; min-height: 50px; border: 4px solid #ccc; box-shadow: inset 0 3px 10px rgba(0,0,0,0.1); letter-spacing: 2px; display: flex; align-items: center; justify-content: center; overflow-x: auto; white-space: nowrap;}
+        #alvo-display { background: linear-gradient(45deg, var(--ouro), #FFC107); color: #000; padding: 18px; font-weight: 900; font-size: 28px; border-radius: 12px; margin-bottom: 15px; border: 3px solid #FFA000; text-shadow: 0 1px 0 rgba(255,255,255,0.5); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
+        .contador-zao { font-size: 120px; font-weight: 900; color: var(--ouro); text-shadow: 0 0 30px rgba(255, 215, 0, 0.6); margin: 10px 0; font-family: 'Courier New', Courier, monospace; }
+        
+        #lista-lobby { text-align: left; }
+        .item-lobby { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; background: #fdfdfd; margin-bottom: 6px; border-radius: 8px; color: #333; font-weight: bold; }
+        
+        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 20px; border-radius: 12px; text-align: left; font-size: 13px; border: 1px dashed #555; max-height: 250px; overflow-y: auto; }
+        .box-regras h3 { color: var(--ouro); margin-top: 18px; border-bottom: 1px solid #444; padding-bottom: 6px; font-size: 16px; display:flex; align-items:center; gap:8px;}
+
+        .legenda-pontos { font-size: 11px; color: #aaa; margin-top: 15px; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; border: 1px solid #333; }
+
+        #lista-final { width: 100%; max-width: 320px; margin-top: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2); }
+        .item-final { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        .item-final.campeao { color: var(--ouro); font-weight: 900; font-size: 18px; background: rgba(255,215,0,0.1); border-radius: 8px; padding: 12px 10px; margin-bottom: 10px; border: 1px solid var(--ouro); }
+
+        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .aviso-host { background: #FFEBEE; color: #D32F2F; border: 2px solid #D32F2F; padding: 12px; border-radius: 10px; font-weight: 900; margin-top: 15px; animation: piscar 2s infinite; font-size: 14px; text-transform: uppercase; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+    </style>
 </head>
 <body>
-  <div class="bg-grad"></div>
-  <div id="confetti"></div>
 
-  <div class="main">
-    
-    <div id="view-login" class="view active">
-      <div style="text-align:center; margin-top:40px; margin-bottom:40px;">
-        <h1 style="color:#fff; font-size:42px;">🎪 PINGÃO</h1>
-        <p style="color:rgba(255,255,255,0.8); font-weight:700; text-transform:uppercase; letter-spacing:2px;">Casa de Jogos</p>
-      </div>
-      <div class="panel">
-        <div class="input-group">
-          <label>Seu Apelido</label>
-          <input type="text" id="in-nick" placeholder="Ex: MestreDasContas">
+    <div class="topo-fixo">
+        <div class="topo-info">
+            <span style="font-size:13px; color:#ccc;">💰 Fichas: <span id="minhas-fichas-topo" style="color:var(--ouro); font-weight:bold;">500</span></span>
+            <span id="sala-nome-topo" style="font-size:13px; color:#aaa; font-weight: bold;"></span>
         </div>
-        <div class="input-group" id="group-sala">
-          <label>Nome da Sala</label>
-          <input type="text" id="in-sala" placeholder="Ex: sala-dos-feras">
+        <div id="barra-ranking" class="ranking-bar">
+            <div class="rank-item lider">🏆 Aguardando Mesa...</div>
         </div>
-        <button class="btn btn-primary" style="width:100%" onclick="join()">SENTAR NA MESA</button>
-      </div>
+        <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
     </div>
 
-    <div id="view-lobby" class="view">
-      <div class="title-row">
-        <h2 style="color:#fff">Mesa de Jogo</h2>
-        <span class="rank-bubble" id="txt-sala-id">---</span>
-      </div>
-
-      <div class="btn-whatsapp-copy" onclick="copyLink()">
-        <i class='bx bxl-whatsapp'></i>
-        <div class="txt">
-          <b>Convidar pelo WhatsApp</b>
-          <small id="txt-link">Clique para copiar o link da sala</small>
+    <div id="modal-negociacao" class="modal discordia-bg" style="justify-content: flex-start; padding-top: 40px; z-index: 1500;">
+        <h2 style="color: var(--ouro); margin: 0; font-size: 28px; text-shadow: 0 0 10px red;">📢 SALA DA BAGUNÇA</h2>
+        <div class="chat-container">
+            <div id="chat-box" class="chat-box"></div>
+            <div class="input-chat-row">
+                <input type="text" id="input-chat" class="input-chat" placeholder="Diga algo...">
+                <button class="btn-enviar-chat" onclick="enviarChatTexto()">ENVIAR</button>
+            </div>
+            <div id="lista-doacao" class="lista-doacao"></div>
         </div>
-      </div>
-
-      <div class="panel">
-        <h3 style="margin-bottom:15px; font-size:14px; text-transform:uppercase; opacity:0.6;">Jogadores na espera:</h3>
-        <div id="list-lobby" style="display:flex; flex-direction:column; gap:10px;"></div>
-        <button id="btn-start" class="btn btn-primary" style="width:100%; margin-top:20px; display:none" onclick="start()">DAR AS CARTAS</button>
-      </div>
+        <button id="btn-encerrar-host" class="btn-encerrar-host" onclick="encerrarDiscordia()">ENCERRAR NEGOCIAÇÃO E ELIMINAR</button>
+        <p id="msg-espera-host" class="msg-espera-host">Esperando o Host dar o veredito final...</p>
     </div>
 
-    <div id="view-game" class="view">
-      <div id="top-rank" class="ranking-mini"></div>
-      
-      <div class="game-layout">
-        <div class="player-tags" id="game-players"></div>
+    <div id="modal-rodada" class="modal">
+        <h2 id="txt-vencedor" style="color: var(--verde-neon); font-size: 32px; margin-bottom: 5px;">...</h2>
+        <h3 id="txt-premio" style="color: var(--ouro); font-size: 55px; margin: 10px 0;"></h3>
+        <p id="txt-detalhe" style="font-size: 18px; color: #ccc;">...</p>
+        <h3 id="txt-eliminacao" style="color: #FF5252; font-size: 24px; margin-top: 25px; font-weight: 900;"></h3>
+        <div id="contador-regressivo" class="contador-zao">8</div>
+    </div>
+
+    <div id="tela-entrada" class="tela ativa">
+        <div class="decoracao-cartas">
+            <img src="https://deckofcardsapi.com/static/img/AS.png" class="carta-decor c1">
+            <img src="https://deckofcardsapi.com/static/img/KD.png" class="carta-decor c2">
+            <img src="https://deckofcardsapi.com/static/img/JH.png" class="carta-decor c3">
+        </div>
+        <br><br>
+        <h1 class="titulo-jogo">PINGÃO</h1>
+        <div class="subtitulo-jogo">FERVE A CUCA</div>
         
-        <div class="target-box">
-          <div style="font-size:12px; font-weight:800; text-transform:uppercase; opacity:0.5; margin-bottom:5px;">Alvo da Rodada</div>
-          <div class="target-val" id="target-val">?</div>
-          <div class="timer-wrap"><div id="timer-bar" class="timer-bar"></div></div>
+        <div class="caixa">
+            <input type="text" id="nome-player" placeholder="Seu Nome / Nick" maxlength="12">
+            <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
+            <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
         </div>
-
-        <div class="formula-visor" id="visor">_</div>
-
-        <div class="cards-row" id="game-cards"></div>
-
-        <div class="controls-grid">
-          <button class="btn-op" onclick="add('+')">+</button>
-          <button class="btn-op" onclick="add('-')">-</button>
-          <button class="btn-op" onclick="add('*')">×</button>
-          <button class="btn-op" onclick="add('/')">÷</button>
-          <button class="btn-op" onclick="add('(')">(</button>
-          <button class="btn-op" onclick="add(')')">)</button>
-          <button class="btn-op" style="background:var(--bad); color:#fff" onclick="limpar()">C</button>
-          <button class="btn-confirm btn" id="btn-confirm" onclick="enviar()">CONFIRMAR</button>
-        </div>
-        
-        <button class="btn btn-ghost" style="padding:10px; font-size:12px;" onclick="desistir()">🏳️ DESISTIR (PROTEGER FICHAS)</button>
-      </div>
     </div>
-  </div>
 
-<script>
-  /* TODA A SUA LÓGICA DE 460+ LINHAS PRESERVADA INTEGRALMENTE */
-  let ws, state = { nick: '', sala: '', isHost: false, target: 0, formula: '', cartasUsadas: 0, timer: 60 };
+    <div id="tela-lobby" class="tela">
+        <div class="caixa">
+            
+            <div id="btn-copiar-convite" class="btn-convite-whatsapp" onclick="copiarLink()">
+                <i class='bx bxl-whatsapp'></i>
+                <div class="texto-convite">
+                    <b>Clique para Copiar</b>
+                    <small id="link-texto">Gerando link...</small>
+                </div>
+            </div>
 
-  window.onload = () => {
-    const p = new URLSearchParams(window.location.search);
-    if(p.get('sala')){ q('#in-sala').value = p.get('sala'); q('#group-sala').style.display='none'; }
-  };
+            <div class="aviso-host">⚠️ ATENÇÃO HOST:<br>Inicie quando todos estiverem prontos!</div>
+            
+            <div style="margin-top:25px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin-bottom: 10px; border-bottom: 2px solid #eee;">👤 Na Mesa:</h3>
+                <div id="lista-lobby"></div>
+            </div>
+            
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="iniciarComSom()">DISTRIBUIR AS CARTAS</button>
+        </div>
+    </div>
 
-  function join(){
-    state.nick = q('#in-nick').value.trim();
-    state.sala = q('#in-sala').value.trim();
-    if(!state.nick || !state.sala) return alert("Preencha tudo!");
-    
-    q('#txt-sala-id').innerText = state.sala;
-    q('#txt-link').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(state.sala);
-    
-    mudarTela('view-lobby');
-    ws = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${state.sala}`);
-    
-    ws.onopen = () => ws.send(JSON.stringify({type:'JOIN', nome:state.nick}));
-    ws.onmessage = (e) => handleMsg(JSON.parse(e.data));
-  }
+    <div id="tela-jogo" class="tela" style="padding:0;">
+        <div style="padding: 10px;">
+            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:6px 20px; border-radius:25px; font-weight: bold;">Rodada 1</div>
+        </div>
+        <div id="painel-jogadores"></div>
+        <div style="padding: 15px; max-width: 500px; margin: 0 auto;">
+            <div id="alvo-display">ALVO: ?</div>
+            <div id="visor-conta">_</div>
+            <div id="area-cartas"></div>
+            <div style="margin-top: 25px;">
+                <button class="sinal" onclick="add('+')">+</button>
+                <button class="sinal" onclick="add('-')">-</button>
+                <button class="sinal" onclick="add('*')">×</button>
+                <button class="sinal" onclick="add('/')">÷</button>
+                <button class="sinal" style="background:var(--vermelho);" onclick="limpar()">C</button>
+            </div>
+            <button id="btn-enviar" class="btn-principal" onclick="enviar()">CONFIRMAR JOGADA</button>
+            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR</button>
+        </div>
+    </div>
 
-  function handleMsg(d){
-    if(d.type==='INFO_PLAYER') state.isHost = d.isHost;
-    if(d.type==='LISTA') updateUI(d.lista);
-    if(d.type==='SUA_MAO') initRound(d);
-    if(d.type==='FIM_RODADA') showResult(d);
-    if(d.type==='CONTAGEM') q('#btn-confirm').innerText = `PRÓXIMA EM ${d.tempo}S`;
-    if(d.type==='GAME_OVER') alert("FIM DE JOGO! Campeão: " + d.vencedor);
-  }
+    <script>
+        let socket;
+        let conta = "";
+        let meuNome = "";
+        let minhaSala = "";
+        let alvoAtual = 0;
+        let tempoRestante = 60;
+        let timerInterval;
+        let qtdCartasUsadas = 0;
+        let souHost = false;
 
-  function updateUI(lista){
-    const lobby = q('#list-lobby'); lobby.innerHTML = "";
-    const pj = q('#game-players'); pj.innerHTML = "";
-    const rk = q('#top-rank'); rk.innerHTML = "";
-    
-    const sorted = [...lista].sort((a,b)=>b.fichas-a.fichas);
-    sorted.forEach((p,i)=>{
-      // Lista Lobby
-      lobby.innerHTML += `<div class="rank-bubble" style="background:#f0f0f0; color:#333; justify-content:space-between"><span>${p.nome}</span> <b>💰${p.fichas}</b></div>`;
-      // Mini Rank Jogo
-      rk.innerHTML += `<div class="rank-bubble ${p.nome===state.nick?'me':''}">#${i+1} ${p.nome}: ${p.fichas}</div>`;
-      // Tags Status
-      if(!p.eliminado) pj.innerHTML += `<div class="p-tag ${p.pronto?'ready':''}">${p.nome} ${p.pronto?'✅':'🤔'}</div>`;
-    });
-    
-    if(state.isHost) q('#btn-start').style.display='block';
-  }
+        const audioLibrary = {
+            click: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'),
+            entrou: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav'), 
+            vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav')
+        };
 
-  function initRound(d){
-    mudarTela('view-game');
-    state.target = d.alvo; state.formula = ""; state.cartasUsadas = 0;
-    q('#target-val').innerText = d.alvo;
-    q('#visor').innerText = "_";
-    q('#btn-confirm').style.display='flex';
-    q('#btn-confirm').innerText = "CONFIRMAR";
+        function tocarSom(tipo) { try { const som = audioLibrary[tipo]; if(som) { som.currentTime = 0; som.play(); } } catch(e){} }
+        function iniciarComSom() { tocarSom('click'); socket.send(JSON.stringify({type:'START'})); }
 
-    const div = q('#game-cards'); div.innerHTML = "";
-    d.cartas.forEach(n => {
-      let v = n===1?'A':n===10?'0':n===11?'J':n===12?'Q':n===13?'K':n;
-      div.innerHTML += `<div class="c-card" onclick="usarCarta(this,'${n}')">${v}</div>`;
-    });
-    startTimer();
-  }
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            if(params.get('sala')) { document.getElementById('nome-sala').value = params.get('sala'); document.getElementById('div-sala').style.display = 'none'; }
+        }
 
-  function usarCarta(el, val){
-    if(el.classList.contains('sel')) return;
-    el.classList.add('sel');
-    state.cartasUsadas++;
-    add(val);
-  }
+        function entrar() {
+            meuNome = document.getElementById('nome-player').value.trim();
+            minhaSala = document.getElementById('nome-sala').value.trim();
+            if(!meuNome || !minhaSala) return alert("Preencha tudo!");
+            
+            document.getElementById('sala-nome-topo').innerText = `| Mesa: ${minhaSala}`;
+            document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
+            mudarTela('tela-lobby');
 
-  function add(v){ state.formula += v; q('#visor').innerText = state.formula; }
-  function limpar(){ 
-    state.formula = ""; state.cartasUsadas = 0; 
-    q('#visor').innerText = "_"; 
-    document.querySelectorAll('.c-card').forEach(c=>c.classList.remove('sel'));
-  }
+            try {
+                socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
+                socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
+                socket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'INFO_PLAYER') {
+                        souHost = data.isHost;
+                        document.querySelector('.aviso-host').style.display = souHost ? 'block' : 'none';
+                        document.getElementById('btn-encerrar-host').style.display = souHost ? 'block' : 'none';
+                    }
+                    if (data.type === 'LISTA') {
+                        atualizarListas(data.lista);
+                        atualizarRankingBar(data.lista);
+                        const eu = data.lista.find(p => p.nome === meuNome);
+                        if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
+                        if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
+                    }
+                    if (data.type === 'SUA_MAO') {
+                        mudarTela('tela-jogo');
+                        alvoAtual = data.alvo; conta = ""; qtdCartasUsadas = 0;
+                        document.getElementById('visor-conta').innerText = "_";
+                        document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
+                        const area = document.getElementById('area-cartas');
+                        area.innerHTML = "";
+                        data.cartas.forEach(num => {
+                            let v = num === 1 ? 'A' : num === 10 ? '0' : num === 11 ? 'J' : num === 12 ? 'Q' : num === 13 ? 'K' : num;
+                            const n = ['H','D','C','S'][Math.floor(Math.random()*4)];
+                            area.innerHTML += `<img src="https://deckofcardsapi.com/static/img/${v}${n}.png" class="carta-real" onclick="usarCarta('${num}')">`;
+                        });
+                        iniciarTimer(60);
+                    }
+                    if (data.type === 'FIM_RODADA') {
+                        document.getElementById('modal-rodada').style.display = 'flex';
+                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
+                        document.getElementById('txt-premio').innerText = `${data.premio>=0?'+':''}${data.premio} 💰`;
+                    }
+                };
+            } catch (e) { alert("Erro de rede!"); }
+        }
 
-  function enviar(){
-    if(state.cartasUsadas < 3) return alert("Use pelo menos 3 cartas!");
-    try {
-      const res = eval(state.formula.replace(/[^0-9\+\-\*\/\(\)\.]/g, ''));
-      ws.send(JSON.stringify({ type:'JOGADA', nome:state.nick, valor:res, distancia:Math.abs(state.target-res), tempo:60-state.timer }));
-      q('#btn-confirm').style.display='none';
-      spawnConfetti(20);
-    } catch(e){ alert("Conta inválida!"); }
-  }
+        function atualizarRankingBar(lista) {
+            const bar = document.getElementById('barra-ranking'); bar.innerHTML = "";
+            lista.sort((a,b)=>b.fichas-a.fichas).forEach((p,i)=>{
+                bar.innerHTML += `<div class="rank-item ${i===0?'lider':''}">${p.nome}: ${p.fichas}</div>`;
+            });
+        }
 
-  function startTimer(){
-    state.timer = 60;
-    const bar = q('#timer-bar');
-    if(window.gameTimer) clearInterval(window.gameTimer);
-    window.gameTimer = setInterval(()=>{
-      state.timer--;
-      bar.style.width = (state.timer/60*100)+'%';
-      if(state.timer<=20) bar.style.background='var(--bad)';
-      else bar.style.background='var(--good)';
-      if(state.timer<=0) clearInterval(window.gameTimer);
-    },1000);
-  }
+        function atualizarListas(lista) {
+            const lobby = document.getElementById('lista-lobby'); lobby.innerHTML = "";
+            const painel = document.getElementById('painel-jogadores'); painel.innerHTML = "";
+            lista.forEach(p => {
+                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰 ${p.fichas}</span></div>`;
+                if(!p.eliminado) painel.innerHTML += `<div class="tag-player ${p.pronto?'pronto':''}">${p.nome} ${p.pronto?'✅':'🤔'}</div>`;
+            });
+        }
 
-  function showResult(d){
-    if(d.vencedor===state.nick) spawnConfetti(100);
-  }
+        function usarCarta(num) { qtdCartasUsadas++; add(num); }
+        function add(v) { conta += v; document.getElementById('visor-conta').innerText = conta; }
+        function limpar() { conta = ""; qtdCartasUsadas = 0; document.getElementById('visor-conta').innerText = "_"; }
+        function mudarTela(id) { document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
+        function iniciarTimer(s) {
+            tempoRestante = s; const b = document.getElementById('barra-tempo');
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                tempoRestante--; b.style.width = ((tempoRestante/60)*100) + '%';
+                if(tempoRestante<=0) clearInterval(timerInterval);
+            }, 1000);
+        }
 
-  function spawnConfetti(n){
-    const root = q('#confetti');
-    for (let i=0;i<n;i++){
-      const el = document.createElement("i");
-      const x = Math.random()*100;
-      const d = 0.9 + Math.random()*0.8;
-      el.style.left = x + "vw"; el.style.animationDuration = d + "s";
-      el.style.background = ["#ff2bd6","#6a5cff","#00d4ff","#ffe600"][Math.floor(Math.random()*4)];
-      el.style.width = "8px"; el.style.height = "10px";
-      root.appendChild(el);
-      setTimeout(()=> el.remove(), d*1000);
-    }
-  }
+        function enviar() {
+            if(qtdCartasUsadas<3) return alert("Use 3+ cartas!");
+            try {
+                const res = eval(conta.replace(/[^0-9\+\-\*\/\(\)\.]/g, ''));
+                socket.send(JSON.stringify({ type:'JOGADA', nome:meuNome, valor:res, distancia:Math.abs(alvoAtual-res), tempo:60-tempoRestante }));
+                document.getElementById('btn-enviar').style.display='none';
+            } catch(e) { alert("Conta inválida!"); }
+        }
 
-  function copyLink(){
-    const link = q('#txt-link').innerText;
-    navigator.clipboard.writeText(link);
-    alert("Link Copiado! Compartilhe no grupo do WhatsApp.");
-  }
-
-  function mudarTela(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); q('#'+id).classList.add('active'); }
-  function q(s){ return document.querySelector(s); }
-  function start(){ ws.send(JSON.stringify({type:'START'})); }
-  function desistir(){ ws.send(JSON.stringify({type:'DESISTIR', nome:state.nick})); }
-</script>
+        function copiarLink() { 
+            const link = document.getElementById('link-texto').innerText;
+            navigator.clipboard.writeText(link);
+            tocarSom('click');
+            alert("Link Copiado! Agora cole no WhatsApp do seu grupo."); 
+        }
+    </script>
 </body>
 </html>
