@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferve a Cuca: Speed Edition</title>
+    <title>Ferve a Cuca: Final</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; user-select: none; }
         .topo { background: linear-gradient(180deg, #000, #1a1a1a); color: #FFD700; padding: 10px; border-bottom: 3px solid #FFD700; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); position: relative; z-index: 10; }
@@ -50,11 +50,18 @@
         
         #lista-lobby { text-align: left; }
         .item-lobby { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; color: #333; }
-        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; }
-        .box-regras h3 { color: #FFD700; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        
+        /* REGRAS NA TELA INICIAL */
+        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; max-height: 300px; overflow-y: auto; }
+        .box-regras h3 { color: #FFD700; margin-top: 10px; border-bottom: 1px solid #444; padding-bottom: 5px; font-size: 16px; }
+        .box-regras ul { padding-left: 20px; }
+        .box-regras li { margin-bottom: 5px; }
 
-        /* NOVA LEGENDA DE PONTOS */
-        .legenda-pontos { font-size: 11px; color: #888; margin-top: 10px; background: #222; padding: 5px; border-radius: 5px; }
+        /* LISTA FINAL DE JOGADORES */
+        #lista-final { width: 100%; max-width: 300px; margin-top: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; max-height: 200px; overflow-y: auto; }
+        .item-final { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .item-final.eliminado { color: #888; text-decoration: line-through; }
+        .item-final.campeao { color: #FFD700; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -65,9 +72,7 @@
         <h2 id="txt-vencedor" style="color: #00E676; font-size: 30px;">...</h2>
         <h3 id="txt-premio" style="color: #FFD700; font-size: 50px; margin: 0;"></h3>
         <p id="txt-detalhe" style="font-size: 18px; color: #aaa;">...</p>
-        
         <h3 id="txt-eliminacao" style="color: #FF5252; font-size: 24px; margin-top: 20px;"></h3>
-        
         <p style="margin-top: 40px; color: #aaa;">Próxima rodada em:</p>
         <div id="contador-regressivo" class="contador-zao">8</div>
     </div>
@@ -82,9 +87,12 @@
     <div id="modal-gameover" class="modal" style="background: linear-gradient(135deg, #1b5e20, #000);">
         <h1 style="font-size: 80px;">🏆</h1>
         <h1 style="color: #FFD700;">CAMPEÃO!</h1>
-        <h2 id="final-winner-name" style="font-size: 50px; margin: 10px 0; color: white; text-shadow: 0 0 10px gold;">...</h2>
+        <h2 id="final-winner-name" style="font-size: 40px; margin: 10px 0; color: white; text-shadow: 0 0 10px gold;">...</h2>
         <h3 id="final-fichas" style="background: white; color: black; padding: 10px 20px; border-radius: 50px;">Total: 💰 0</h3>
-        <br><br>
+        
+        <div id="lista-final"></div>
+
+        <br>
         <button class="btn-principal" onclick="location.reload()">NOVO CAMPEONATO</button>
     </div>
 
@@ -104,18 +112,37 @@
         <br><br>
         <h1 class="titulo-jogo">PINGÃO</h1>
         <div class="subtitulo-jogo">FERVE A CUCA</div>
+        
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
             <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
             <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
+
             <div class="box-regras">
-                <h3>💰 Pontuação por Velocidade</h3>
+                <h3 style="margin-top:0;">📖 REGRAS OFICIAIS</h3>
+                
+                <h3>🎯 Objetivo</h3>
+                <p>Usar <b>pelo menos 3 cartas</b> e os sinais (+ - × ÷) para chegar o mais perto possível do número <b>ALVO</b>.</p>
+
+                <h3>🃏 Valores das Cartas</h3>
                 <ul>
-                    <li>🚀 <b>0-20s:</b> 100 Fichas</li>
-                    <li>🏎️ <b>20-30s:</b> 80 Fichas</li>
-                    <li>🏃 <b>30-45s:</b> 30 Fichas</li>
+                    <li><b>A (Ás)</b> = 1</li>
+                    <li><b>J (Valete)</b> = 11</li>
+                    <li><b>Q (Dama)</b> = 12</li>
+                    <li><b>K (Rei)</b> = 13</li>
+                    <li>Outros = Valor normal</li>
+                </ul>
+
+                <h3>⚡ Pontuação por Velocidade</h3>
+                <ul>
+                    <li>🚀 <b>0 a 20s:</b> 100 Fichas</li>
+                    <li>🏎️ <b>21 a 30s:</b> 80 Fichas</li>
+                    <li>🏃 <b>31 a 45s:</b> 30 Fichas</li>
                     <li>🐢 <b>+45s:</b> 15 Fichas</li>
                 </ul>
+
+                <h3>💀 Eliminação</h3>
+                <p>Todos começam com 500 fichas. A cada <b>5 RODADAS</b>, o jogador com MENOS fichas é eliminado!</p>
             </div>
         </div>
     </div>
@@ -127,11 +154,14 @@
                 🔗 <b>Toque para Convidar</b>
                 <div id="link-texto" style="font-size:10px; color:#555; margin-top: 5px;"></div>
             </div>
+            
             <div class="aviso-host">⚠️ ATENÇÃO HOST:<br>Espere todos entrarem antes de clicar em iniciar!</div>
+
             <div style="margin-top:20px; margin-bottom: 20px;">
                 <b style="color: #333;">Jogadores na Mesa:</b>
                 <div id="lista-lobby" style="margin-top: 10px;"></div>
             </div>
+            
             <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="iniciarComSom()">DAR AS CARTAS</button>
             <p id="msg-aguarde" style="color:#666; font-size: 12px;">Aguardando o Host iniciar...</p>
         </div>
@@ -162,10 +192,6 @@
             </div>
 
             <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
-            
-            <div class="legenda-pontos">
-                🚀0-20s: 100pts | 🏎️20-30s: 80pts | 🏃30-45s: 30pts | 🐢+45s: 15pts
-            </div>
         </div>
     </div>
 
@@ -219,9 +245,12 @@
 
             try {
                 socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
+
                 socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
+
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
+
                     if (data.type === 'LISTA') {
                         const qtdAntiga = document.querySelectorAll('.item-lobby').length;
                         if(data.lista.length > qtdAntiga) tocarSom('entrou');
@@ -230,8 +259,11 @@
                         if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
                         if(eu) document.getElementById('minhas-fichas').innerText = eu.fichas;
                     }
-                    if (data.type === 'ESPERANDO_RODADA') document.getElementById('modal-espera').style.display = 'flex';
-                    
+
+                    if (data.type === 'ESPERANDO_RODADA') {
+                        document.getElementById('modal-espera').style.display = 'flex';
+                    }
+
                     if (data.type === 'SUA_MAO') {
                         esconderModais();
                         mudarTela('tela-jogo');
@@ -263,10 +295,8 @@
                     if (data.type === 'FIM_RODADA') {
                         document.getElementById('modal-rodada').style.display = 'flex';
                         document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                        // MOSTRA O PRÊMIO
                         document.getElementById('txt-premio').innerText = `+${data.premio} 💰`;
                         document.getElementById('txt-detalhe').innerText = `Resultado: ${data.valor} (Dif: ${data.dist}) em ${data.tempo}s`;
-                        
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
                         if(data.vencedor === meuNome) tocarSom('vitoria');
                         if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
@@ -283,6 +313,24 @@
                         document.getElementById('modal-gameover').style.display = 'flex';
                         document.getElementById('final-winner-name').innerText = data.vencedor;
                         document.getElementById('final-fichas').innerText = "💰 " + data.totalFichas;
+                        
+                        // GERA A LISTA FINAL DE JOGADORES NO GAMEOVER
+                        const divLista = document.getElementById('lista-final');
+                        divLista.innerHTML = "";
+                        data.placar.forEach((p, idx) => {
+                            let classe = "item-final";
+                            let icone = "";
+                            if (idx === 0) { classe += " campeao"; icone = "🥇"; }
+                            else if (p.eliminado) { classe += " eliminado"; icone = "💀"; }
+                            else { icone = "🥈"; }
+                            
+                            divLista.innerHTML += `
+                                <div class="${classe}">
+                                    <span>${icone} ${p.nome}</span>
+                                    <span>${p.fichas}</span>
+                                </div>
+                            `;
+                        });
                     }
                 };
             } catch (e) { alert("Erro de conexão!"); }
@@ -331,7 +379,6 @@
             try {
                 const res = eval(conta);
                 if(res===undefined) throw new Error();
-                // AQUI ENVIA O TEMPO GASTO PARA O SERVIDOR CALCULAR PONTOS
                 const tempoGasto = 60 - tempoRestante;
                 socket.send(JSON.stringify({
                     type: 'JOGADA', 
