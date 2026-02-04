@@ -58,8 +58,8 @@
         .ranking-bar::-webkit-scrollbar { display: none; }
         
         .rank-item { 
-            font-size: 11px; 
-            padding: 4px 10px; 
+            font-size: 10px; /* Alterado de 11px */
+            padding: 3px 8px; /* Alterado de 4px 10px */
             background: #333; 
             border-radius: 12px; 
             border: 1px solid #444; 
@@ -79,9 +79,9 @@
             background: rgba(255, 255, 255, 0.95); 
             color: #333; 
             border-radius: 15px; 
-            padding: 25px; 
-            margin: 20px auto; 
-            max-width: 450px; 
+            padding: 15px; /* Alterado de 25px */
+            margin: 10px auto; /* Alterado de 20px auto */
+            max-width: 90%; /* Alterado de 450px */
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             border: 2px solid var(--ouro); 
             position: relative; 
@@ -136,25 +136,25 @@
 
         /* Estética do Logo */
         .titulo-jogo { 
-            font-size: 45px; 
+            font-size: 32px; /* Alterado de 45px */
             font-weight: 900; 
             margin: 0; 
             background: linear-gradient(to bottom, var(--ouro), var(--ouro-dark)); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
-            filter: drop-shadow(4px 4px 0px #000); 
+            filter: drop-shadow(2px 2px 0px #000); /* Sombra reduzida */
             letter-spacing: 2px; 
             text-transform: uppercase; 
             position: relative; 
             z-index: 10; 
         }
         .subtitulo-jogo { 
-            font-size: 22px; 
+            font-size: 16px; /* Alterado de 22px */
             color: #fff; 
             text-shadow: 2px 2px 0 #000; 
             margin-top: -5px; 
             font-weight: bold; 
-            letter-spacing: 4px; 
+            letter-spacing: 2px; /* Alterado de 4px */
             position: relative; 
             z-index: 10; 
         }
@@ -172,7 +172,7 @@
         
         /* Sala da Discórdia / Chat */
         .discordia-bg { background: linear-gradient(135deg, #4a0000, #000) !important; }
-        .chat-container { display: flex; flex-direction: column; height: 350px; width: 100%; max-width: 400px; }
+        .chat-container { display: flex; flex-direction: column; height: 250px; /* Alterado de 350px */ width: 100%; max-width: 400px; }
         .chat-box { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 5px; padding: 10px; text-align: left; margin-bottom: 5px; border: 1px solid #ff4081; }
         .chat-msg { margin-bottom: 8px; font-size: 13px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
         .chat-msg.sistema { color: var(--ouro); font-style: italic; text-align: center; margin: 10px 0; background: rgba(255,215,0,0.1); padding: 5px; border-radius: 5px; border: none;}
@@ -200,15 +200,15 @@
 
         /* Gameplay - Cartas e Visor */
         #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 25px 0; perspective: 1000px; flex-wrap: wrap; }
-        .carta-real { width: 85px; height: auto; cursor: pointer; transition: transform 0.2s, filter 0.2s; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5)); border-radius: 5px; }
+        .carta-real { width: 65px; /* Alterado de 85px */ height: auto; cursor: pointer; transition: transform 0.2s, filter 0.2s; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5)); border-radius: 5px; }
         .carta-real:hover { transform: translateY(-10px) rotate(2deg); filter: brightness(1.1) drop-shadow(0 10px 15px rgba(0,0,0,0.4)); }
         .carta-real:active { transform: scale(0.9); }
         
-        .sinal { width: 58px; height: 58px; font-size: 26px; margin: 4px; border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; transition: all 0.1s; font-weight: bold; }
+        .sinal { width: 46px; /* Alterado de 58px */ height: 46px; /* Alterado de 58px */ font-size: 20px; /* Alterado de 26px */ margin: 2px; /* Alterado de 4px */ border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; transition: all 0.1s; font-weight: bold; }
         .sinal:active { transform: translateY(3px); border-bottom: none; }
         
-        #visor-conta { font-size: 36px; background: #fff; color: #333; padding: 20px; margin: 15px 0; font-weight: bold; border-radius: 12px; min-height: 50px; border: 4px solid #ccc; box-shadow: inset 0 3px 10px rgba(0,0,0,0.1); letter-spacing: 2px; display: flex; align-items: center; justify-content: center; overflow-x: auto; white-space: nowrap;}
-        #alvo-display { background: linear-gradient(45deg, var(--ouro), #FFC107); color: #000; padding: 18px; font-weight: 900; font-size: 28px; border-radius: 12px; margin-bottom: 15px; border: 3px solid #FFA000; text-shadow: 0 1px 0 rgba(255,255,255,0.5); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #visor-conta { font-size: 24px; /* Alterado de 36px */ background: #fff; color: #333; padding: 10px; /* Alterado de 20px */ margin: 10px 0; /* Alterado de 15px 0 */ font-weight: bold; border-radius: 12px; min-height: 40px; /* Alterado de 50px */ border: 4px solid #ccc; box-shadow: inset 0 3px 10px rgba(0,0,0,0.1); letter-spacing: 2px; display: flex; align-items: center; justify-content: center; overflow-x: auto; white-space: nowrap;}
+        #alvo-display { background: linear-gradient(45deg, var(--ouro), #FFC107); color: #000; padding: 12px; /* Alterado de 18px */ font-weight: 900; font-size: 20px; /* Alterado de 28px */ border-radius: 12px; margin-bottom: 10px; /* Alterado de 15px */ border: 3px solid #FFA000; text-shadow: 0 1px 0 rgba(255,255,255,0.5); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
         /* Modais */
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
@@ -219,7 +219,7 @@
         .item-lobby { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; background: #fdfdfd; margin-bottom: 6px; border-radius: 8px; color: #333; font-weight: bold; }
         
         /* Manual/Regras */
-        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 20px; border-radius: 12px; text-align: left; font-size: 13px; border: 1px dashed #555; max-height: 250px; overflow-y: auto; }
+        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; /* Alterado de 20px */ border-radius: 12px; text-align: left; font-size: 12px; /* Alterado de 13px */ border: 1px dashed #555; max-height: 150px; /* Alterado de 250px */ overflow-y: auto; }
         .box-regras h3 { color: var(--ouro); margin-top: 18px; border-bottom: 1px solid #444; padding-bottom: 6px; font-size: 16px; display:flex; align-items:center; gap:8px;}
         .box-regras ul { padding-left: 20px; margin: 8px 0; }
         .box-regras li { margin-bottom: 8px; line-height: 1.5; }
@@ -341,7 +341,7 @@
                 </ul>
                 <h3>⚡ FICHAS POR TEMPO</h3>
                 <ul>
-                    <li>🚀 <b><20s:</b> +100 | 🏃 <b>30-40s:</b> +30 | 💀 <b>>50s:</b> -30</li>
+                    <li>🚀 <b>&lt;20s:</b> +100 | 🏃 <b>30-40s:</b> +30 | 💀 <b>&gt;50s:</b> -30</li>
                 </ul>
                 <h3>🏳️ DESISTIR</h3>
                 <ul><li>Proteja suas fichas se a conta estiver difícil!</li></ul>
@@ -430,7 +430,6 @@
             mudarTela('tela-lobby');
 
             try {
-                // ENDPOINT DE PRODUÇÃO CLOUDFLARE
                 socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
                 
                 socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
@@ -548,6 +547,7 @@
 
         function desistir() { if(confirm("Desistir rodada?")) { socket.send(JSON.stringify({type:'DESISTIR', nome:meuNome})); } }
         function enviarChatTexto() { const t=document.getElementById('input-chat').value; if(t){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:t})); document.getElementById('input-chat').value=""; } }
+        function enviarChat(m){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:m})); }
         function enviarChat(m){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:m})); }
         function doarFichas(p,v){ if(confirm(`Doar ${v}?`)){ socket.send(JSON.stringify({type:'DOAR_FICHAS', de:meuNome, para:p, valor:v})); } }
         function encerrarDiscordia(){ socket.send(JSON.stringify({type:'ENCERRAR_DISCORDIA'})); }
