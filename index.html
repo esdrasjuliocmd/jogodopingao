@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferve a Cuca: Cassino Royale</title>
+    <title>Ferve a Cuca: Edição Final</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f3818; text-align: center; margin: 0; padding-bottom: 50px; color: #fff; overflow-x: hidden; user-select: none; }
         
         /* TOPO */
         .topo { background: linear-gradient(180deg, #000, #1a1a1a); color: #FFD700; padding: 10px; border-bottom: 3px solid #FFD700; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); position: relative; z-index: 10; }
-        h1 { margin: 0; font-size: 14px; margin-left: 10px; text-transform: uppercase; letter-spacing: 1px;}
         
         .tela { display: none; padding: 10px; position: relative; z-index: 5; }
         .ativa { display: block; }
@@ -22,23 +21,57 @@
         .btn-principal { background: linear-gradient(180deg, #D32F2F, #B71C1C); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.1s; }
         .btn-principal:active { transform: translateY(3px); box-shadow: none; }
         
-        /* DECORAÇÃO TELA INICIAL */
+        /* TÍTULO NOVO MAIS VIVO */
+        .titulo-jogo {
+            font-size: 45px;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(to bottom, #FFD700, #FF8F00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(4px 4px 0px #000);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .subtitulo-jogo {
+            font-size: 22px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+            margin-top: -5px;
+            font-weight: bold;
+            letter-spacing: 4px;
+        }
+
+        /* DECORAÇÃO */
         .decoracao-cartas { position: absolute; top: -50px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .carta-decor { position: absolute; width: 80px; opacity: 0.8; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
         .c1 { left: 10%; top: 20%; transform: rotate(-15deg); }
         .c2 { right: 10%; top: 30%; transform: rotate(15deg); }
         .c3 { left: 50%; top: 10%; transform: translate(-50%) rotate(5deg); width: 100px; z-index: 2; }
 
-        /* REGRAS NA TELA INICIAL */
+        /* AVISO PISCANTE */
+        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .aviso-host {
+            background: #FFEBEE;
+            color: #D32F2F;
+            border: 2px solid #D32F2F;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            animation: piscar 1.5s infinite;
+            font-size: 14px;
+        }
+
+        /* REGRAS */
         .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; border-radius: 10px; text-align: left; font-size: 13px; border: 1px dashed #555; }
         .box-regras h3 { color: #FFD700; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
-        .box-regras li { margin-bottom: 5px; }
 
         /* BARRA DE TEMPO */
         #barra-tempo-container { width: 100%; height: 6px; background: #333; position: fixed; top: 0; left: 0; z-index: 100; }
         #barra-tempo { width: 100%; height: 100%; background: #00E676; transition: width 1s linear; }
         
-        /* LISTA DE JOGADORES NA RODADA */
+        /* JOGO */
         #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 30px; }
         .tag-player { font-size: 12px; background: #222; padding: 5px 10px; border-radius: 15px; display: flex; align-items: center; gap: 5px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .tag-player.pronto { background: #2E7D32; border-color: #00E676; }
@@ -61,7 +94,6 @@
         .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 200; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
         .contador-zao { font-size: 100px; font-weight: bold; color: #FFD700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); margin: 20px 0; }
         
-        /* LISTAS LOBBY */
         #lista-lobby { text-align: left; }
         .item-lobby { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd; background: #f9f9f9; margin-bottom: 5px; border-radius: 5px; color: #333; }
     </style>
@@ -109,8 +141,8 @@
         </div>
 
         <br><br>
-        <h1 style="font-size: 40px; color: #FFD700; text-shadow: 2px 2px 0 #000;">🎰 PINGÃO</h1>
-        <h2 style="font-size: 20px; color: #fff; letter-spacing: 3px; margin-top: -10px;">FERVE A CUCA</h2>
+        <h1 class="titulo-jogo">PINGÃO</h1>
+        <div class="subtitulo-jogo">FERVE A CUCA</div>
         
         <div class="caixa">
             <input type="text" id="nome-player" placeholder="Seu Nome">
@@ -118,12 +150,11 @@
             <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
 
             <div class="box-regras">
-                <h3>📜 Regras Rápidas</h3>
+                <h3>📜 Regras</h3>
                 <ul>
-                    <li>🎯 <b>Objetivo:</b> Usar as cartas (+ - × ÷) para chegar no ALVO.</li>
+                    <li>🎯 <b>Objetivo:</b> Chegar perto do ALVO usando (+ - × ÷).</li>
                     <li>🃏 <b>Valores:</b> A=1, J=11, Q=12, K=13.</li>
-                    <li>💰 <b>Fichas:</b> Todos começam com 500. Vitória = +100.</li>
-                    <li>💀 <b>Mata-Mata:</b> A cada 5 rodadas, o lanterninha é eliminado!</li>
+                    <li>💀 <b>Eliminação:</b> A cada 5 rodadas, o último sai!</li>
                 </ul>
             </div>
         </div>
@@ -137,13 +168,17 @@
                 <div id="link-texto" style="font-size:10px; color:#555; margin-top: 5px;"></div>
             </div>
             
+            <div class="aviso-host">
+                ⚠️ ATENÇÃO HOST:<br>Espere todos entrarem antes de clicar em iniciar!
+            </div>
+
             <div style="margin-top:20px; margin-bottom: 20px;">
                 <b style="color: #333;">Jogadores na Mesa:</b>
                 <div id="lista-lobby" style="margin-top: 10px;"></div>
             </div>
             
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="socket.send(JSON.stringify({type:'START'}))">DAR AS CARTAS</button>
-            <p id="msg-aguarde" style="color:#666; font-size: 12px;">O Host iniciará o jogo...</p>
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="iniciarComSom()">DAR AS CARTAS</button>
+            <p id="msg-aguarde" style="color:#666; font-size: 12px;">Aguardando o Host iniciar...</p>
         </div>
     </div>
 
@@ -158,21 +193,20 @@
         <div style="padding: 15px;">
             <div id="alvo-display">ALVO: ?</div>
             <div id="visor-conta">_</div>
-            
             <div id="area-cartas"></div>
 
             <div style="margin-top: 20px;">
-                <button class="sinal" onclick="add('+')">+</button>
-                <button class="sinal" onclick="add('-')">-</button>
-                <button class="sinal" onclick="add('*')">×</button>
-                <button class="sinal" onclick="add('/')">÷</button>
-                <button class="sinal" style="background:#D32F2F; border-bottom-color: #7F0000;" onclick="limpar()">C</button>
+                <button class="sinal" onclick="tocarSom('click'); add('+')">+</button>
+                <button class="sinal" onclick="tocarSom('click'); add('-')">-</button>
+                <button class="sinal" onclick="tocarSom('click'); add('*')">×</button>
+                <button class="sinal" onclick="tocarSom('click'); add('/')">÷</button>
+                <button class="sinal" style="background:#D32F2F; border-bottom-color: #7F0000;" onclick="tocarSom('click'); limpar()">C</button>
                 <br>
-                <button class="sinal" style="background:#424242; border-bottom-color: #222;" onclick="add('(')">(</button>
-                <button class="sinal" style="background:#424242; border-bottom-color: #222;" onclick="add(')')">)</button>
+                <button class="sinal" style="background:#424242; border-bottom-color: #222;" onclick="tocarSom('click'); add('(')">(</button>
+                <button class="sinal" style="background:#424242; border-bottom-color: #222;" onclick="tocarSom('click'); add(')')">)</button>
             </div>
 
-            <button id="btn-enviar" class="btn-principal" onclick="enviar()">CONFIRMAR JOGADA</button>
+            <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
         </div>
     </div>
 
@@ -185,6 +219,32 @@
         let tempoRestante = 60;
         let timerInterval;
 
+        // --- SISTEMA DE SONS ---
+        // Usando sons curtos e confiáveis da internet
+        const audioLibrary = {
+            click: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'),
+            entrou: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav'), // Som de notificação
+            vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav'), // Moeda
+            aplauso: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a'), // Game over
+            erro: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/explosion.mp3') // Eliminado
+        };
+
+        function tocarSom(tipo) {
+            try {
+                const som = audioLibrary[tipo];
+                if(som) {
+                    som.currentTime = 0;
+                    som.play().catch(e => console.log("Audio bloqueado pelo navegador"));
+                }
+            } catch(e) {}
+        }
+        
+        function iniciarComSom() {
+            tocarSom('click');
+            socket.send(JSON.stringify({type:'START'}));
+        }
+        // -----------------------
+
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             if(params.get('sala')) {
@@ -194,6 +254,7 @@
         }
 
         function entrar() {
+            tocarSom('click');
             meuNome = document.getElementById('nome-player').value.trim();
             minhaSala = document.getElementById('nome-sala').value.trim();
             if(!meuNome || !minhaSala) return alert("Preenche tudo!");
@@ -211,6 +272,10 @@
                     const data = JSON.parse(event.data);
 
                     if (data.type === 'LISTA') {
+                        // Se o número de jogadores aumentou, toca som
+                        const qtdAntiga = document.querySelectorAll('.item-lobby').length;
+                        if(data.lista.length > qtdAntiga) tocarSom('entrou');
+
                         atualizarListas(data.lista);
                         const eu = data.lista.find(p => p.nome === meuNome);
                         if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
@@ -242,8 +307,6 @@
                         const area = document.getElementById('area-cartas');
                         area.innerHTML = "";
                         data.cartas.forEach(num => {
-                            // Lógica para pegar imagem da carta real
-                            // API DeckOfCards: A=Ace, 0=10, J=Jack, Q=Queen, K=King
                             let valorImg = num;
                             if(num===1) valorImg="A"; 
                             if(num===10) valorImg="0";
@@ -251,13 +314,11 @@
                             if(num===12) valorImg="Q"; 
                             if(num===13) valorImg="K";
                             
-                            // Naipes Aleatórios (H=Copas, D=Ouros, C=Paus, S=Espadas)
                             const naipes = ['H', 'D', 'C', 'S'];
                             const naipe = naipes[Math.floor(Math.random() * naipes.length)];
                             const imgUrl = `https://deckofcardsapi.com/static/img/${valorImg}${naipe}.png`;
 
-                            // O valor que vai pra conta é o numérico (num), a imagem é só enfeite
-                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="add('${num}')">`;
+                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="tocarSom('click'); add('${num}')">`;
                         });
                         document.getElementById('btn-enviar').style.display = 'block';
                     }
@@ -267,14 +328,19 @@
                         document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
                         document.getElementById('txt-detalhe').innerText = `Resultado: ${data.valor} (Dif: ${data.dist})`;
                         document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
+                        
+                        if(data.vencedor === meuNome) tocarSom('vitoria');
+                        if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
                     }
 
                     if (data.type === 'CONTAGEM') {
                         document.getElementById('contador-regressivo').innerText = data.tempo;
+                        if(data.tempo <= 3) tocarSom('click'); // Bip final
                     }
 
                     if (data.type === 'GAME_OVER') {
                         esconderModais();
+                        tocarSom('aplauso');
                         document.getElementById('modal-gameover').style.display = 'flex';
                         document.getElementById('final-winner-name').innerText = data.vencedor;
                         document.getElementById('final-fichas').innerText = "💰 " + data.totalFichas;
