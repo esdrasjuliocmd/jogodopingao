@@ -237,7 +237,6 @@
         @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         .aviso-host { background: #FFEBEE; color: #D32F2F; border: 2px solid #D32F2F; padding: 12px; border-radius: 10px; font-weight: 900; margin-top: 15px; animation: piscar 2s infinite; font-size: 14px; text-transform: uppercase; }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
@@ -336,98 +335,62 @@
 
             <div class="box-regras">
                 <h2 style="text-align: center; color: var(--ouro); margin-top: 0; font-size: 20px;">📜 MANUAL DA MESA</h2>
-                
-                <h3>🎯 O OBJETIVO</h3>
+                <h3>🎯 OBJETIVO</h3>
                 <ul>
-                    <li>Combine <b>pelo menos 3 cartas</b> usando (+ - × ÷) para chegar o mais perto possível do número <b>ALVO</b>.</li>
-                    <li>Quem tiver a menor diferença ganha as fichas da rodada!</li>
+                    <li>Combine <b>3+ cartas</b> com (+ - × ÷) para chegar no <b>ALVO</b>.</li>
                 </ul>
-
-                <h3>⚡ CORRIDA PELAS FICHAS</h3>
+                <h3>⚡ FICHAS POR TEMPO</h3>
                 <ul>
-                    <li>🚀 <b>Até 20s:</b> +100 Fichas (Lenda!)</li>
-                    <li>🏎️ <b>20s a 30s:</b> +80 Fichas</li>
-                    <li>🏃 <b>30s a 40s:</b> +30 Fichas</li>
-                    <li>⚠️ <b>40s a 50s:</b> <b style="color:#FF5252">-15 Fichas</b> (Lento)</li>
-                    <li>💀 <b>Acima de 50s:</b> <b style="color:#FF5252">-30 Fichas</b> (Prejuízo)</li>
+                    <li>🚀 <b><20s:</b> +100 | 🏃 <b>30-40s:</b> +30 | 💀 <b>>50s:</b> -30</li>
                 </ul>
-                
-                <h3>🏳️ ESTRATÉGIA: DESISTIR</h3>
-                <ul>
-                    <li>Se a conta estiver muito difícil, clique em <b>DESISTIR</b>.</li>
-                    <li>Você não ganha pontos, mas <b>protege suas fichas</b> de serem perdidas pelo tempo!</li>
-                </ul>
-
-                <h3>💀 RODADA DE ELIMINAÇÃO</h3>
-                <ul>
-                    <li>A cada <b>5 RODADAS</b>, o jogador com MENOS fichas é eliminado!</li>
-                </ul>
-
-                <h3>📢 SALA DA BAGUNÇA</h3>
-                <ul>
-                    <li>Antes de alguém ser eliminado, abrimos a Sala da Bagunça.</li>
-                    <li>Você pode <b>DOAR</b> fichas para salvar um amigo.</li>
-                    <li>⚠️ <b>O PREÇO:</b> Quem doa fichas <b>PULA A PRÓXIMA RODADA</b> de jogo.</li>
-                </ul>
+                <h3>🏳️ DESISTIR</h3>
+                <ul><li>Proteja suas fichas se a conta estiver difícil!</li></ul>
+                <h3>📢 BAGUNÇA</h3>
+                <ul><li>Doe fichas para salvar alguém da eliminação!</li></ul>
             </div>
         </div>
     </div>
 
     <div id="tela-lobby" class="tela">
         <div class="caixa">
-            <div onclick="copiarLink()" style="background:#f0f0f0; padding:15px; border-radius:10px; cursor:pointer; font-size: 14px; border: 2px dashed #999; transition: background 0.2s;">
-                <span style="font-size: 20px;">🔗</span> <b>Clique para copiar link de convite</b>
+            <div onclick="copiarLink()" style="background:#f0f0f0; padding:15px; border-radius:10px; cursor:pointer; font-size: 14px; border: 2px dashed #999;">
+                🔗 <b>Convidar amigos para a mesa</b>
                 <div id="link-texto" style="font-size:10px; color:#666; margin-top: 8px; word-break: break-all;"></div>
             </div>
-            
-            <div class="aviso-host">⚠️ ATENÇÃO HOST:<br>Só inicie quando todos estiverem na mesa!</div>
-            
+            <div class="aviso-host">⚠️ ATENÇÃO HOST:<br>Inicie quando todos estiverem prontos!</div>
             <div style="margin-top:25px; margin-bottom: 25px;">
-                <h3 style="color: #333; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px;">👤 Jogadores na Mesa:</h3>
+                <h3 style="color: #333; margin-bottom: 10px; border-bottom: 2px solid #eee;">👤 Na Mesa:</h3>
                 <div id="lista-lobby"></div>
             </div>
-            
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20); box-shadow: 0 4px 0 #0e3512;" onclick="iniciarComSom()">DISTRIBUIR AS CARTAS</button>
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="iniciarComSom()">DISTRIBUIR AS CARTAS</button>
         </div>
     </div>
 
     <div id="tela-jogo" class="tela" style="padding:0;">
         <div style="padding: 10px;">
-            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:6px 20px; border-radius:25px; display:inline-block; font-weight: bold; border: 1px solid rgba(255,255,255,0.1);">Rodada 1</div>
+            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:6px 20px; border-radius:25px; font-weight: bold;">Rodada 1</div>
         </div>
-        
         <div id="painel-jogadores"></div>
-        
         <div style="padding: 15px; max-width: 500px; margin: 0 auto;">
             <div id="alvo-display">ALVO: ?</div>
-            
             <div id="visor-conta">_</div>
-            
             <div id="area-cartas"></div>
-            
             <div style="margin-top: 25px;">
                 <button class="sinal" onclick="tocarSom('click'); add('+')">+</button>
                 <button class="sinal" onclick="tocarSom('click'); add('-')">-</button>
                 <button class="sinal" onclick="tocarSom('click'); add('*')">×</button>
                 <button class="sinal" onclick="tocarSom('click'); add('/')">÷</button>
-                <button class="sinal" style="background:var(--vermelho); border-color: #7F0000;" onclick="tocarSom('click'); limpar()">C</button>
+                <button class="sinal" style="background:var(--vermelho);" onclick="tocarSom('click'); limpar()">C</button>
                 <br>
                 <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add('(')">(</button>
                 <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add(')')">)</button>
             </div>
-            
             <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
-            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR (PROTEGE FICHAS)</button>
-
-            <div class="legenda-pontos">
-                <b>PONTUAÇÃO:</b><br>
-                🚀 0-20s: +100 | 🏃 30-40s: +30 | <span style="color:#FF5252">⚠️ 40s+: -15</span> | <span style="color:#FF5252">💀 50s+: -30</span>
-            </div>
+            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR (SALVA FICHAS)</button>
         </div>
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO BACKEND
         let socket;
         let conta = "";
         let meuNome = "";
@@ -438,7 +401,6 @@
         let qtdCartasUsadas = 0;
         let souHost = false;
 
-        // BIBLIOTECA DE SONS
         const audioLibrary = {
             click: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'),
             entrou: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav'), 
@@ -449,86 +411,53 @@
             msg: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav')
         };
 
-        function tocarSom(tipo) { 
-            try { 
-                const som = audioLibrary[tipo]; 
-                if(som) { som.currentTime = 0; som.play().catch(e => {}); } 
-            } catch(e) {} 
-        }
-
-        function iniciarComSom() { 
-            tocarSom('click'); 
-            socket.send(JSON.stringify({type:'START'})); 
-        }
+        function tocarSom(tipo) { try { const som = audioLibrary[tipo]; if(som) { som.currentTime = 0; som.play().catch(e=>{}); } } catch(e){} }
+        function iniciarComSom() { tocarSom('click'); socket.send(JSON.stringify({type:'START'})); }
 
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
-            if(params.get('sala')) { 
-                document.getElementById('nome-sala').value = params.get('sala'); 
-                document.getElementById('div-sala').style.display = 'none'; 
-            }
+            if(params.get('sala')) { document.getElementById('nome-sala').value = params.get('sala'); document.getElementById('div-sala').style.display = 'none'; }
         }
 
         function entrar() {
             tocarSom('click');
             meuNome = document.getElementById('nome-player').value.trim();
             minhaSala = document.getElementById('nome-sala').value.trim();
-            
-            if(!meuNome || !minhaSala) return alert("Por favor, preencha seu nome e o nome da sala!");
+            if(!meuNome || !minhaSala) return alert("Preencha tudo!");
             
             document.getElementById('sala-nome-topo').innerText = `| Mesa: ${minhaSala}`;
             document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
-            
             mudarTela('tela-lobby');
 
             try {
-                // ALTERAR PARA SUA URL DO CLOUDFLARE WORKER
+                // ENDPOINT DE PRODUÇÃO CLOUDFLARE
                 socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
                 
-                socket.onopen = () => {
-                    socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
-                };
-
+                socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
-
-                    // Recebe informações de host
                     if (data.type === 'INFO_PLAYER') {
                         souHost = data.isHost;
                         document.querySelector('.aviso-host').style.display = souHost ? 'block' : 'none';
                         document.getElementById('btn-encerrar-host').style.display = souHost ? 'block' : 'none';
                         document.getElementById('msg-espera-host').style.display = souHost ? 'none' : 'block';
                     }
-
-                    // Lista de jogadores atualizada
                     if (data.type === 'LISTA') {
                         const qtdAntiga = document.querySelectorAll('.item-lobby').length;
                         if(data.lista.length > qtdAntiga) tocarSom('entrou');
-                        
                         atualizarListas(data.lista);
                         atualizarRankingBar(data.lista);
-                        
                         const eu = data.lista.find(p => p.nome === meuNome);
                         if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
                         if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
-                        
                         const host = data.lista.find(p => p.isHost);
                         if(host && host.nome === meuNome) souHost = true;
                         if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
                     }
-
-                    // Início da Negociação (Bagunça)
                     if (data.type === 'INICIO_NEGOCIACAO') {
-                        esconderModais();
-                        tocarSom('sirene');
+                        esconderModais(); tocarSom('sirene');
                         document.getElementById('modal-negociacao').style.display = 'flex';
-                        setTimeout(() => { 
-                            const box = document.getElementById('chat-box'); 
-                            box.scrollTop = box.scrollHeight; 
-                        }, 100);
                     }
-
-                    // Atualização do Chat
                     if (data.type === 'CHAT_UPDATE') {
                         tocarSom('msg');
                         const box = document.getElementById('chat-box');
@@ -539,297 +468,94 @@
                         });
                         box.scrollTop = box.scrollHeight;
                     }
-
-                    // Jogador pulou a vez (doação)
-                    if (data.type === 'PULOU_VEZ') {
-                        esconderModais();
-                        document.getElementById('modal-pulou').style.display = 'flex';
-                    }
-
-                    // Início de rodada / Cartas recebidas
                     if (data.type === 'SUA_MAO') {
-                        esconderModais();
-                        mudarTela('tela-jogo');
-                        
+                        esconderModais(); mudarTela('tela-jogo');
                         const r = data.rodada;
-                        let txt = `Rodada ${r}`;
-                        if(r % 5 === 0) txt += " 💀 ELIMINAÇÃO!";
-                        
-                        document.getElementById('info-rodada').innerText = txt;
-                        if(r % 5 === 0) document.getElementById('info-rodada').style.background = "#D32F2F";
-                        else document.getElementById('info-rodada').style.background = "rgba(255,255,255,0.2)";
-                        
-                        limpar();
-                        alvoAtual = data.alvo;
-                        iniciarTimer(60);
+                        document.getElementById('info-rodada').innerText = `Rodada ${r}${r%5===0?' 💀':' '}`;
+                        limpar(); alvoAtual = data.alvo; iniciarTimer(60);
                         document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
-                        
                         const area = document.getElementById('area-cartas');
                         area.innerHTML = "";
                         data.cartas.forEach(num => {
-                            let valorImg = num;
-                            if(num===1) valorImg="A"; 
-                            if(num===10) valorImg="0"; 
-                            if(num===11) valorImg="J"; 
-                            if(num===12) valorImg="Q"; 
-                            if(num===13) valorImg="K";
-                            
-                            const naipes = ['H', 'D', 'C', 'S'];
-                            const naipe = naipes[Math.floor(Math.random() * naipes.length)];
-                            const imgUrl = `https://deckofcardsapi.com/static/img/${valorImg}${naipe}.png`;
-                            
-                            area.innerHTML += `<img src="${imgUrl}" class="carta-real" onclick="usarCarta('${num}')">`;
+                            let v = num;
+                            if(v===1) v="A"; if(v===10) v="0"; if(v===11) v="J"; if(v===12) v="Q"; if(v===13) v="K";
+                            const n = ['H','D','C','S'][Math.floor(Math.random()*4)];
+                            area.innerHTML += `<img src="https://deckofcardsapi.com/static/img/${v}${n}.png" class="carta-real" onclick="usarCarta('${num}')">`;
                         });
-                        
-                        document.getElementById('btn-enviar').style.display = 'block';
-                        document.querySelector('.btn-desistir').style.display = 'block';
                     }
-
-                    // Fim da Rodada / Resultados
                     if (data.type === 'FIM_RODADA') {
                         document.getElementById('modal-rodada').style.display = 'flex';
-                        let sinal = data.premio >= 0 ? "+" : "";
                         document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                        document.getElementById('txt-premio').innerText = `${sinal}${data.premio} 💰`;
-                        
-                        if(data.premio < 0) document.getElementById('txt-premio').style.color = "#FF5252";
-                        else document.getElementById('txt-premio').style.color = "var(--ouro)";
-                        
-                        document.getElementById('txt-detalhe').innerText = `Resultado: ${data.valor} (Tempo: ${data.tempo}s)`;
-                        document.getElementById('txt-eliminacao').innerText = data.msgExtra || "";
-                        
-                        if(data.vencedor === meuNome && data.premio > 0) tocarSom('vitoria');
-                        else if(data.vencedor === meuNome && data.premio < 0) tocarSom('erro'); 
-                        if(data.msgExtra && data.msgExtra.includes(meuNome)) tocarSom('erro');
+                        document.getElementById('txt-premio').innerText = `${data.premio>=0?'+':''}${data.premio} 💰`;
+                        document.getElementById('txt-premio').style.color = data.premio<0?"#FF5252":"var(--ouro)";
+                        document.getElementById('txt-detalhe').innerText = `Res: ${data.valor} (${data.tempo}s)`;
+                        if(data.vencedor===meuNome && data.premio>0) tocarSom('vitoria');
                     }
-
-                    // Contagem Regressiva entre rodadas
-                    if (data.type === 'CONTAGEM') {
-                        document.getElementById('contador-regressivo').innerText = data.tempo;
-                        if(data.tempo <= 3) tocarSom('click');
-                    }
-
-                    // Fim do Jogo / Campeão
                     if (data.type === 'GAME_OVER') {
-                        esconderModais();
-                        tocarSom('aplauso');
+                        esconderModais(); tocarSom('aplauso');
                         document.getElementById('modal-gameover').style.display = 'flex';
                         document.getElementById('final-winner-name').innerText = data.vencedor;
                         document.getElementById('final-fichas').innerText = "💰 " + data.totalFichas;
-                        
-                        const divLista = document.getElementById('lista-final');
-                        divLista.innerHTML = "";
-                        data.placar.forEach((p, idx) => {
-                            let classe = "item-final", icone = "";
-                            if (idx === 0) { classe += " campeao"; icone = "🥇"; }
-                            else if (p.eliminado) { classe += " eliminado"; icone = "💀"; }
-                            else { icone = "🥈"; }
-                            divLista.innerHTML += `<div class="${classe}"><span>${icone} ${p.nome}</span><span>${p.fichas}</span></div>`;
-                        });
                     }
                 };
-
-                socket.onerror = () => {
-                    alert("Erro na conexão com o servidor!");
-                };
-
-            } catch (e) { 
-                alert("Erro ao conectar no servidor!"); 
-            }
+            } catch (e) { alert("Erro de rede!"); }
         }
 
         function atualizarRankingBar(lista) {
-            const bar = document.getElementById('barra-ranking');
-            bar.innerHTML = "";
-            const sorted = [...lista].sort((a,b) => b.fichas - a.fichas);
-            const vivos = sorted.filter(p => !p.eliminado);
-            const ultimoVivo = vivos.length > 0 ? vivos[vivos.length - 1] : null;
-
-            sorted.forEach((p, i) => {
-                let classe = "rank-item";
-                if(i === 0) classe += " lider";
-                if(p === ultimoVivo && vivos.length > 1) classe += " perigo"; 
-                if(p.eliminado) classe += " eliminado";
-                
-                let icone = "👤";
-                if(i===0) icone = "👑";
-                if(p.eliminado) icone = "💀";
-                
-                bar.innerHTML += `<div class="${classe}">${icone} ${p.nome}: ${p.fichas}</div>`;
+            const bar = document.getElementById('barra-ranking'); bar.innerHTML = "";
+            const sorted = [...lista].sort((a,b)=>b.fichas-a.fichas);
+            sorted.forEach((p,i)=>{
+                let c = "rank-item"; if(i===0) c+=" lider"; if(p.eliminado) c+=" eliminado";
+                bar.innerHTML += `<div class="${c}">${p.eliminado?'💀':'👤'} ${p.nome}: ${p.fichas}</div>`;
             });
         }
 
         function atualizarListas(lista) {
-            const lobby = document.getElementById('lista-lobby');
-            const painel = document.getElementById('painel-jogadores');
-            const listaDoacao = document.getElementById('lista-doacao');
+            const lobby = document.getElementById('lista-lobby'); lobby.innerHTML = "";
+            const painel = document.getElementById('painel-jogadores'); painel.innerHTML = "";
+            const doacao = document.getElementById('lista-doacao'); doacao.innerHTML = "";
             
-            lobby.innerHTML = "";
-            painel.innerHTML = "";
-            listaDoacao.innerHTML = "";
-            
-            const listaPobres = [...lista].sort((a,b) => a.fichas - b.fichas);
-            lista.sort((a,b) => b.fichas - a.fichas);
-
             lista.forEach(p => {
-                // Lobby
-                let statusLobby = p.pronto ? '✅' : '⏳';
-                if(p.esperando) statusLobby = '🕐 Aguardando Rodada';
-                if(p.eliminado) statusLobby = '💀 FORA';
-                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰 ${p.fichas} ${statusLobby}</span></div>`;
-
-                // Painel de jogo (apenas vivos e não esperando)
-                if(!p.eliminado && !p.esperando) {
-                    let classePronto = p.pronto ? 'pronto' : '';
-                    if(p.pulou) classePronto = 'pulou';
-                    if(p.desistiu) classePronto = 'desistiu';
-
-                    let iconePronto = p.pronto ? '✅' : '🤔';
-                    if(p.pulou) iconePronto = '🚫';
-                    if(p.desistiu) iconePronto = '🏳️';
-
-                    painel.innerHTML += `<div class="tag-player ${classePronto}">${p.nome} ${iconePronto}</div>`;
+                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰 ${p.fichas}</span></div>`;
+                if(!p.eliminado && !p.esperando) painel.innerHTML += `<div class="tag-player ${p.pronto?'pronto':''}">${p.nome} ${p.pronto?'✅':'🤔'}</div>`;
+                if(!p.eliminado && p.nome!==meuNome) {
+                    doacao.innerHTML += `<div class="item-doacao"><span>${p.nome}</span><div class="btn-group-doar">
+                        <button class="btn-doar" onclick="doarFichas('${p.nome}',50)">50</button>
+                        <button class="btn-doar" onclick="doarFichas('${p.nome}',100)">100</button>
+                    </div></div>`;
                 }
             });
-
-            // Lista para Doações
-            listaPobres.forEach(p => {
-                if(!p.eliminado && p.nome !== meuNome) {
-                    listaDoacao.innerHTML += `
-                        <div class="item-doacao">
-                            <span class="nome-pobre">${p.nome} (Possui ${p.fichas} fichas)</span>
-                            <div class="btn-group-doar">
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 50)">DOAR 50</button>
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 100)">DOAR 100</button>
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 150)">DOAR 150</button>
-                                <button class="btn-doar" onclick="doarFichas('${p.nome}', 200)">DOAR 200</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
-            else document.getElementById('btn-iniciar').style.display = 'none';
         }
 
-        function iniciarTimer(segundos) {
-            tempoRestante = segundos;
-            const barra = document.getElementById('barra-tempo');
-            barra.style.width = '100%';
-            barra.style.background = "var(--verde-neon)";
-            
+        function iniciarTimer(s) {
+            tempoRestante = s; const b = document.getElementById('barra-tempo');
             if(timerInterval) clearInterval(timerInterval);
-            
             timerInterval = setInterval(() => {
-                tempoRestante--;
-                barra.style.width = ((tempoRestante/60)*100) + '%';
-                
-                if (tempoRestante <= 20) barra.style.background = "#FF5252";
-                else if (tempoRestante <= 40) barra.style.background = "var(--ouro)";
-                else barra.style.background = "var(--verde-neon)";
-
-                if(tempoRestante <= 0) clearInterval(timerInterval);
+                tempoRestante--; b.style.width = ((tempoRestante/60)*100) + '%';
+                if(tempoRestante<=20) b.style.background="#FF5252"; else b.style.background="var(--verde-neon)";
+                if(tempoRestante<=0) clearInterval(timerInterval);
             }, 1000);
         }
 
-        function esconderModais() { 
-            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); 
-        }
-
-        function copiarLink() { 
-            navigator.clipboard.writeText(document.getElementById('link-texto').innerText); 
-            alert("Link copiado! Envie para seus amigos."); 
-        }
-
-        function usarCarta(num) { 
-            tocarSom('click'); 
-            qtdCartasUsadas++; 
-            add(num); 
-        }
-        
         function enviar() {
-            if (qtdCartasUsadas < 3) { 
-                tocarSom('erro'); 
-                return alert("⚠️ Você deve usar pelo menos 3 cartas para confirmar a jogada!"); 
-            }
-            
+            if(qtdCartasUsadas<3) return alert("Use 3+ cartas!");
             try {
-                // Remove caracteres perigosos e avalia a conta
-                const expressaoLimpa = conta.replace(/[^0-9\+\-\*\/\(\)\.]/g, '');
-                const res = eval(expressaoLimpa);
-                
-                if(res === undefined || isNaN(res) || !isFinite(res)) throw new Error();
-                
-                const tempoGasto = 60 - tempoRestante;
-                socket.send(JSON.stringify({ 
-                    type: 'JOGADA', 
-                    nome: meuNome, 
-                    valor: res, 
-                    distancia: Math.abs(alvoAtual - res), 
-                    tempo: tempoGasto 
-                }));
-                
-                document.getElementById('btn-enviar').style.display = 'none';
-                document.querySelector('.btn-desistir').style.display = 'none';
-                
-            } catch(e) { 
-                alert("Sua conta é inválida! Verifique os parênteses e sinais."); 
-            }
+                const res = eval(conta.replace(/[^0-9\+\-\*\/\(\)\.]/g, ''));
+                socket.send(JSON.stringify({ type:'JOGADA', nome:meuNome, valor:res, distancia:Math.abs(alvoAtual-res), tempo:60-tempoRestante }));
+                document.getElementById('btn-enviar').style.display='none';
+            } catch(e) { alert("Conta inválida!"); }
         }
 
-        function desistir() {
-            if(confirm("Tem certeza que quer desistir desta rodada? Você não perderá fichas por tempo, mas ficará com 0 pontos nesta mão.")) {
-                socket.send(JSON.stringify({ type: 'DESISTIR', nome: meuNome }));
-                document.getElementById('btn-enviar').style.display = 'none';
-                document.querySelector('.btn-desistir').style.display = 'none';
-            }
-        }
-
-        function enviarChatTexto() {
-            const txt = document.getElementById('input-chat').value.trim();
-            if(txt) {
-                socket.send(JSON.stringify({type: 'CHAT_MSG', nome: meuNome, msg: txt}));
-                document.getElementById('input-chat').value = "";
-            }
-        }
-
-        function enviarChat(msg) { 
-            socket.send(JSON.stringify({type: 'CHAT_MSG', nome: meuNome, msg: msg})); 
-        }
-        
-        function doarFichas(para, valor) { 
-            if(confirm(`ATENÇÃO: Doar ${valor} para ${para}? Você perderá as fichas IMEDIATAMENTE e não jogará a próxima rodada!`)) {
-                socket.send(JSON.stringify({type: 'DOAR_FICHAS', de: meuNome, para: para, valor: valor})); 
-            }
-        }
-
-        function encerrarDiscordia() {
-            if(confirm("Deseja encerrar as negociações? O jogador com menos fichas será eliminado agora!")) {
-                socket.send(JSON.stringify({type: 'ENCERRAR_DISCORDIA'}));
-            }
-        }
-
-        function add(v) { 
-            if(conta === "") {
-                conta = v;
-            } else {
-                // Adiciona espaço entre números e operadores para o visor
-                conta += v; 
-            }
-            document.getElementById('visor-conta').innerText = conta; 
-        }
-
-        function limpar() { 
-            conta = ""; 
-            qtdCartasUsadas = 0; 
-            document.getElementById('visor-conta').innerText = "_"; 
-        }
-
-        function mudarTela(id) { 
-            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa')); 
-            document.getElementById(id).classList.add('ativa'); 
-        }
+        function desistir() { if(confirm("Desistir rodada?")) { socket.send(JSON.stringify({type:'DESISTIR', nome:meuNome})); } }
+        function enviarChatTexto() { const t=document.getElementById('input-chat').value; if(t){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:t})); document.getElementById('input-chat').value=""; } }
+        function enviarChat(m){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:m})); }
+        function doarFichas(p,v){ if(confirm(`Doar ${v}?`)){ socket.send(JSON.stringify({type:'DOAR_FICHAS', de:meuNome, para:p, valor:v})); } }
+        function encerrarDiscordia(){ socket.send(JSON.stringify({type:'ENCERRAR_DISCORDIA'})); }
+        function add(v){ conta+=v; document.getElementById('visor-conta').innerText=conta; }
+        function limpar(){ conta=""; qtdCartasUsadas=0; document.getElementById('visor-conta').innerText="_"; }
+        function mudarTela(id){ document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
+        function esconderModais(){ document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
+        function copiarLink(){ navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
     </script>
 </body>
 </html>
