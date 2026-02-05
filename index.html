@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pingão: Ferve a Cuca</title>
+    <title>Ferve a Cuca: Final</title>
     <style>
         :root {
             --ouro: #FFD700;
@@ -13,254 +13,496 @@
             --verde: #2E7D32;
             --verde-neon: #00E676;
             --bg-mesa: #0f3818;
+            --preto-transparente: rgba(0, 0, 0, 0.4);
         }
 
         body { 
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
             background: var(--bg-mesa); 
-            text-align: center; margin: 0; padding-bottom: 50px; color: #fff; 
-            overflow-x: hidden; user-select: none; -webkit-tap-highlight-color: transparent;
+            text-align: center; 
+            margin: 0; 
+            padding-bottom: 50px; 
+            color: #fff; 
+            overflow-x: hidden; 
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent;
         }
         
+        /* Topo Fixo e Ranking */
         .topo-fixo { 
-            background: #111; border-bottom: 2px solid var(--ouro); padding: 5px; 
-            position: sticky; top: 0; z-index: 1000; display: flex; flex-direction: column; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 50px; 
+            background: rgba(0,0,0,0.9); display: flex; align-items: center; 
+            justify-content: space-between; padding: 0 10px; z-index: 1000; 
+            box-shadow: 0 2px 10px #000; box-sizing: border-box; 
         }
-        .topo-info { display: flex; justify-content: space-between; align-items: center; padding: 2px 10px; }
+        .topo-info { font-size: 14px; color: var(--ouro); font-weight: bold; }
+        .btn-ranking { 
+            background: none; border: 1px solid var(--ouro); color: var(--ouro); 
+            padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; 
+        }
+
+        /* Container Principal */
+        .container { 
+            margin-top: 60px; padding: 10px; max-width: 500px; margin-left: auto; margin-right: auto; 
+        }
+
+        /* Telas */
+        .tela { display: none; animation: fadeIn 0.3s ease; }
+        .tela.ativa { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Login */
+        input[type=text] { 
+            padding: 10px; font-size: 18px; border-radius: 5px; border: none; width: 80%; margin: 10px 0; 
+        }
+        button.btn-grande { 
+            padding: 12px 25px; font-size: 18px; background: var(--ouro); color: #000; 
+            border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 80%; 
+            box-shadow: 0 4px 0 var(--ouro-dark); transition: transform 0.1s; 
+        }
+        button.btn-grande:active { transform: translateY(4px); box-shadow: none; }
+
+        /* Área de Jogo */
+        .alvo-box { 
+            font-size: 40px; font-weight: 900; color: var(--verde-neon); 
+            text-shadow: 0 0 10px var(--verde-neon); margin: 10px 0; 
+        }
+        .visor-conta { 
+            font-size: 24px; min-height: 40px; background: rgba(0,0,0,0.3); 
+            margin: 10px; padding: 10px; border-radius: 10px; border: 1px solid #444; 
+        }
         
-        .ranking-bar { 
-            display: flex; gap: 10px; overflow-x: auto; padding: 8px 5px; background: #222; 
-            white-space: nowrap; scrollbar-width: none; 
+        /* Cartas */
+        .area-cartas { 
+            display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap: wrap; 
         }
-        .ranking-bar::-webkit-scrollbar { display: none; }
+        .carta { 
+            width: 60px; height: 85px; background: #fff; color: #000; border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; font-size: 24px; 
+            font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); 
+            position: relative; transition: transform 0.2s; 
+        }
+        .carta.usada { opacity: 0.4; transform: scale(0.9); pointer-events: none; background: #ddd; }
+        .carta.selecionada { border: 3px solid var(--verde-neon); transform: translateY(-5px); }
+        .naipe { font-size: 12px; position: absolute; top: 2px; right: 4px; }
+        .carta-red { color: var(--vermelho); }
+
+        /* Controles Matemáticos */
+        .controles { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; 
+        }
+        .btn-op { 
+            padding: 15px; font-size: 20px; background: #333; color: #fff; border: none; 
+            border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #111; 
+        }
+        .btn-op:active { transform: translateY(3px); box-shadow: none; }
         
-        .rank-item { 
-            font-size: 10px; padding: 3px 8px; background: #333; border-radius: 12px; 
-            border: 1px solid #444; font-weight: bold;
-        }
-
-        .tela { display: none; padding: 10px; margin-top: 10px; }
-        .ativa { display: block; }
-
-        .caixa { 
-            background: rgba(255, 255, 255, 0.95); color: #333; border-radius: 15px; 
-            padding: 15px; margin: 10px auto; max-width: 90%; 
-            border: 2px solid var(--ouro); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .titulo-jogo { font-size: 32px; font-weight: 900; margin: 0; background: linear-gradient(to bottom, var(--ouro), var(--ouro-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(2px 2px 0px #000); }
-        .subtitulo-jogo { font-size: 16px; color: #fff; text-shadow: 2px 2px 0 #000; margin-top: -5px; font-weight: bold; letter-spacing: 2px; }
-
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; text-align: center; }
+        .acoes-jogo { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+        .btn-limpar { background: var(--vermelho); color: white; flex: 1; }
+        .btn-enviar { background: var(--verde); color: white; flex: 1; }
         
-        .btn-principal { 
-            background: linear-gradient(180deg, var(--vermelho), var(--vermelho-dark)); 
-            color: white; padding: 15px; border: none; border-radius: 8px; font-size: 18px; 
-            font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 0 #7F0000; 
+        /* Botão Desistir - AGORA VISÍVEL */
+        .btn-desistir { 
+            background: #555; color: #ccc; margin-top: 15px; width: 100%; padding: 10px; 
+            border: 1px dashed #777; font-size: 14px; cursor: pointer; 
         }
-        .btn-principal:active { transform: translateY(3px); box-shadow: none; }
+        .btn-desistir:hover { background: #444; color: #fff; border-color: #fff; }
 
-        #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 20px 0; flex-wrap: wrap; }
-        .carta-real { width: 65px; height: auto; cursor: pointer; transition: transform 0.1s; border-radius: 5px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.4)); }
+        /* Lista de Jogadores (Ranking) */
+        #lista-ranking { 
+            list-style: none; padding: 0; margin: 0; text-align: left; max-height: 300px; overflow-y: auto; 
+        }
+        .item-ranking { 
+            padding: 10px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; 
+            align-items: center; background: rgba(0,0,0,0.5); 
+        }
+        .item-ranking.eliminado { color: #555; text-decoration: line-through; }
+        .item-ranking.lider { border-left: 4px solid var(--ouro); }
         
-        .sinal { 
-            width: 46px; height: 46px; font-size: 20px; margin: 2px; border: none; 
-            border-radius: 12px; background: #263238; color: white; font-weight: bold; 
-            border-bottom: 4px solid #000; cursor: pointer;
+        /* Modal */
+        .modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); z-index: 2000; display: none; 
+            align-items: center; justify-content: center; flex-direction: column; 
         }
-        .sinal:active { transform: translateY(2px); border-bottom: none; }
-
-        #visor-conta { 
-            font-size: 24px; background: #fff; color: #333; padding: 10px; margin: 10px 0; 
-            font-weight: bold; border-radius: 12px; min-height: 40px; border: 4px solid #ccc;
-            display: flex; align-items: center; justify-content: center; letter-spacing: 2px;
+        .modal-content { 
+            background: #222; padding: 20px; border-radius: 10px; border: 2px solid var(--ouro); 
+            max-width: 90%; text-align: center; box-shadow: 0 0 20px var(--ouro); 
         }
+        .modal h2 { margin-top: 0; color: var(--ouro); }
+        
+        /* Chat */
+        .chat-area { margin-top: 20px; border-top: 1px solid #444; padding-top: 10px; }
+        #chat-msgs { height: 100px; overflow-y: auto; text-align: left; font-size: 12px; margin-bottom: 5px; color: #aaa; }
+        .msg-sistema { color: var(--ouro); font-style: italic; }
 
-        #alvo-display { 
-            background: linear-gradient(45deg, var(--ouro), #FFC107); color: #000; 
-            padding: 12px; font-weight: 900; font-size: 20px; border-radius: 12px; 
-            margin-bottom: 10px; border: 3px solid #FFA000; 
-        }
-
-        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; padding: 20px; text-align: center; }
-        .tag-player { font-size: 12px; background: #222; padding: 6px 12px; border-radius: 20px; border: 1px solid #555; }
-        .tag-player.pronto { background: var(--verde); border-color: var(--verde-neon); }
     </style>
 </head>
 <body>
 
     <div class="topo-fixo">
-        <div class="topo-info">
-            <span style="font-size:13px; color:#ccc;">💰 Fichas: <span id="minhas-fichas-topo" style="color:var(--ouro); font-weight:bold;">500</span></span>
-            <span id="sala-nome-topo" style="font-size:13px; color:#aaa; font-weight: bold;"></span>
-        </div>
-        <div id="barra-ranking" class="ranking-bar">
-            <div class="rank-item lider">🏆 Aguardando...</div>
-        </div>
-        <div style="width: 100%; height: 6px; background: #333;"><div id="barra-tempo" style="width: 100%; height: 100%; background: var(--verde-neon); transition: width 1s linear;"></div></div>
+        <div class="topo-info">PINGÃO V11</div>
+        <div id="status-fichas" class="topo-info">💰 500</div>
+        <button class="btn-ranking" onclick="toggleRanking()">🏆 Ranking</button>
     </div>
 
-    <div id="tela-entrada" class="tela ativa">
-        <br><h1 class="titulo-jogo">PINGÃO</h1><div class="subtitulo-jogo">FERVE A CUCA</div>
-        <div class="caixa">
-            <input type="text" id="nome-player" placeholder="Seu Nome" maxlength="12">
-            <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
-            <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
-        </div>
-    </div>
+    <div class="container">
 
-    <div id="tela-lobby" class="tela">
-        <div class="caixa">
-            <div onclick="copiarLink()" style="background:#f0f0f0; padding:15px; border-radius:10px; cursor:pointer; font-size: 14px; border: 2px dashed #999; color: #333;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="18" style="vertical-align:middle; margin-right:5px;"> 
-                <b>Convidar amigos</b>
-                <div id="link-texto" style="font-size:10px; color:#666; margin-top: 8px; word-break: break-all;"></div>
+        <div id="tela-login" class="tela ativa">
+            <h1>FERVE A CUCA 🔥</h1>
+            <p>Digite seu nome para entrar:</p>
+            <input type="text" id="nome-jogador" placeholder="Seu apelido..." maxlength="12">
+            <br>
+            <button class="btn-grande" onclick="entrar()">ENTRAR</button>
+        </div>
+
+        <div id="tela-lobby" class="tela">
+            <h2>Aguardando...</h2>
+            <p id="msg-lobby">O Host iniciará a partida em breve.</p>
+            <div id="area-host" style="display:none; margin-top:20px;">
+                <p style="color:var(--ouro)">👑 Você é o Host</p>
+                <button class="btn-grande" onclick="iniciarPartida()">INICIAR JOGO</button>
             </div>
-            <div id="lista-lobby" style="margin-top:20px; text-align: left; color: #333;"></div>
-            <button id="btn-iniciar" class="btn-principal" style="display:none; background: var(--verde);" onclick="socket.send(JSON.stringify({type:'START'}))">DISTRIBUIR CARTAS</button>
-        </div>
-    </div>
-
-    <div id="tela-jogo" class="tela">
-        <div id="painel-jogadores" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-bottom: 10px;"></div>
-        <div class="caixa" style="max-width: 100%;">
-            <div id="alvo-display">ALVO: ?</div>
-            <div id="visor-conta">_</div>
-            <div id="area-cartas"></div>
-            <div>
-                <button class="sinal" onclick="add('+')">+</button>
-                <button class="sinal" onclick="add('-')">-</button>
-                <button class="sinal" onclick="add('*')">×</button>
-                <button class="sinal" onclick="add('/')">÷</button>
-                <button class="sinal" style="background:var(--vermelho);" onclick="limpar()">C</button>
+            <div class="chat-area">
+                <div id="chat-msgs"></div>
+                <input type="text" id="input-chat" placeholder="Mensagem..." style="width:70%; font-size:14px;">
+                <button onclick="enviarChatTexto()" style="width:20%; font-size:14px;">Env</button>
             </div>
-            <button id="btn-enviar" class="btn-principal" onclick="enviar()">CONFIRMAR JOGADA</button>
+        </div>
+
+        <div id="tela-jogo" class="tela">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:12px; color:#aaa;">RODADA <span id="num-rodada">1</span></span>
+                <span style="font-size:12px; color:#aaa;">⏳ <span id="timer">00</span>s</span>
+            </div>
+            
+            <div class="alvo-box">ALVO: <span id="alvo-num">?</span></div>
+            
+            <div class="visor-conta" id="visor-conta">_</div>
+            
+            <div class="area-cartas" id="area-cartas">
+                </div>
+
+            <div class="controles">
+                <button class="btn-op" onclick="add('+')">+</button>
+                <button class="btn-op" onclick="add('-')">-</button>
+                <button class="btn-op" onclick="add('*')">x</button>
+                <button class="btn-op" onclick="add('/')">÷</button>
+                <button class="btn-op" onclick="add('(')">(</button>
+                <button class="btn-op" onclick="add(')')">)</button>
+            </div>
+
+            <div class="acoes-jogo">
+                <button class="btn-grande btn-limpar" onclick="limpar()">LIMPAR</button>
+                <button class="btn-grande btn-enviar" onclick="enviarJogada()">ENVIAR</button>
+            </div>
+
+            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR DA RODADA (Salvar Fichas)</button>
+
+        </div>
+        
+        <div id="tela-discordia" class="tela">
+            <h2 style="color:var(--vermelho)">SALA DA DISCÓRDIA 😈</h2>
+            <p>Doe fichas para salvar alguém (e pule a próxima vez) ou guarde para si.</p>
+            <div id="lista-doacao" style="text-align:left; margin:20px 0;"></div>
+            <div id="host-discordia" style="display:none;">
+                <button class="btn-grande" onclick="encerrarDiscordia()">ENCERRAR NEGOCIAÇÃO</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modal-ranking" class="modal" onclick="if(event.target===this) toggleRanking()">
+        <div class="modal-content">
+            <h2>🏆 RANKING</h2>
+            <ul id="lista-ranking"></ul>
+            <button class="btn-grande" onclick="toggleRanking()" style="margin-top:10px; background:#555; color:#fff;">FECHAR</button>
         </div>
     </div>
 
-    <div id="modal-rodada" class="modal">
-        <h2 id="txt-vencedor" style="color: var(--verde-neon);"></h2>
-        <h3 id="txt-premio" style="font-size: 40px; color: var(--ouro);"></h3>
-        <p>Próxima rodada em:</p>
-        <div id="contador-regressivo" style="font-size: 60px; font-weight: bold;">8</div>
+    <div id="modal-resultado" class="modal">
+        <div class="modal-content">
+            <h2 id="res-titulo">RESULTADO</h2>
+            <p id="res-msg" style="font-size:18px;"></p>
+            <div id="res-extra" style="color:var(--vermelho); font-weight:bold; margin-top:10px;"></div>
+            <br>
+            <p style="font-size:12px; color:#aaa;">Próxima rodada em breve...</p>
+        </div>
     </div>
 
     <script>
         let socket;
-        let conta = "";
         let meuNome = "";
-        let minhaSala = "";
-        let alvoAtual = 0;
-        let tempoRestante = 60;
-        let timerInterval;
+        let conta = "";
+        let cartasMinhaMao = [];
         let qtdCartasUsadas = 0;
-        let souHost = false;
+        let rodadaAtual = 0;
 
-        function tocarSom() { try { new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3').play(); } catch(e){} }
-
-        function entrar() {
-            meuNome = document.getElementById('nome-player').value.trim();
-            minhaSala = document.getElementById('nome-sala').value.trim();
-            if(!meuNome || !minhaSala) return alert("Preencha os campos!");
+        // Conexão
+        function conectar() {
+            const protocolo = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            // Pega o nome da sala da URL ou usa padrão
+            const params = new URLSearchParams(window.location.search);
+            const sala = params.get('sala') || 'sala-padrao';
             
-            document.getElementById('sala-nome-topo').innerText = `| ${minhaSala}`;
-            document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
-            mudarTela('tela-lobby');
+            socket = new WebSocket(`${protocolo}//${window.location.host}/ws?sala=${sala}`);
 
-            socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
-            
+            socket.onopen = () => {
+                console.log("Conectado!");
+                // Se tiver nome salvo (reconexão), tenta entrar direto
+                if(meuNome) socket.send(JSON.stringify({ type: 'JOIN', nome: meuNome }));
+            };
+
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                if (data.type === 'INFO_PLAYER') souHost = data.isHost;
-                if (data.type === 'LISTA') {
-                    atualizarListas(data.lista);
-                    const eu = data.lista.find(p => p.nome === meuNome);
-                    if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
-                    if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
-                }
-                if (data.type === 'SUA_MAO') {
-                    esconderModais(); mudarTela('tela-jogo');
-                    alvoAtual = data.alvo; limpar(); iniciarTimer();
-                    document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
-                    const area = document.getElementById('area-cartas'); area.innerHTML = "";
-                    data.cartas.forEach(num => {
-                        let v = num; if(v===1)v="A";if(v===11)v="J";if(v===12)v="Q";if(v===13)v="K";
-                        const naipe = ['S','H','D','C'][Math.floor(Math.random()*4)];
-                        area.innerHTML += `<img src="https://deckofcardsapi.com/static/img/${v}${naipe}.png" class="carta-real" onclick="usarCarta(this, '${num}')">`;
-                    });
-                }
-                if (data.type === 'FIM_RODADA') {
-                    document.getElementById('modal-rodada').style.display = 'flex';
-                    document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
-                    document.getElementById('txt-premio').innerText = `${data.premio >= 0 ? '+' : ''}${data.premio} 💰`;
-                }
-                if (data.type === 'CONTAGEM') document.getElementById('contador-regressivo').innerText = data.tempo;
+                processarMensagem(data);
             };
-            socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
+            
+            socket.onclose = () => {
+                console.log("Desconectado. Tentando reconectar...");
+                setTimeout(conectar, 2000);
+            };
         }
 
-        // --- FUNÇÃO DE CLIQUE NAS CARTAS (CORRIGIDA) ---
-        function usarCarta(elemento, valor) {
-            tocarSom();
-            add(valor);
+        function entrar() {
+            const nomeInput = document.getElementById('nome-jogador').value.trim();
+            if (!nomeInput) return alert("Digite um nome!");
+            meuNome = nomeInput;
+            conectar();
+        }
+
+        function processarMensagem(data) {
+            if (data.type === 'INFO_PLAYER') {
+                mudarTela('tela-lobby');
+                document.getElementById('area-host').style.display = data.isHost ? 'block' : 'none';
+                if(data.isHost) document.getElementById('msg-lobby').innerText = "Você é o Host. Inicie quando todos estiverem prontos.";
+            }
+            
+            if (data.type === 'LISTA') {
+                atualizarRanking(data.lista);
+                // Atualiza se sou host em tempo real (caso o host tenha saído)
+                const eu = data.lista.find(j => j.nome === meuNome);
+                if (eu) {
+                    document.getElementById('status-fichas').innerText = `💰 ${eu.fichas}`;
+                    document.getElementById('area-host').style.display = eu.isHost ? 'block' : 'none';
+                    if (document.getElementById('tela-discordia').classList.contains('ativa')) {
+                         document.getElementById('host-discordia').style.display = eu.isHost ? 'block' : 'none';
+                    }
+                }
+            }
+
+            if (data.type === 'SUA_MAO') {
+                esconderModais();
+                mudarTela('tela-jogo');
+                rodadaAtual = data.rodada;
+                document.getElementById('num-rodada').innerText = data.rodada;
+                document.getElementById('alvo-num').innerText = data.alvo;
+                renderizarCartas(data.cartas);
+                limpar();
+            }
+            
+            if (data.type === 'ESPERANDO_RODADA') {
+                 mudarTela('tela-lobby');
+                 document.getElementById('msg-lobby').innerText = `Rodada ${data.rodada} em andamento. Aguarde a próxima...`;
+            }
+            
+            if (data.type === 'CONTAGEM') {
+                document.getElementById('timer').innerText = data.tempo;
+                if(data.tempo <= 5) document.getElementById('timer').style.color = 'red';
+                else document.getElementById('timer').style.color = 'white';
+            }
+
+            if (data.type === 'FIM_RODADA') {
+                mostrarResultado(data);
+            }
+
+            if (data.type === 'PULOU_VEZ') {
+                mudarTela('tela-lobby');
+                document.getElementById('msg-lobby').innerText = "Você pulou esta vez (punição por doação). Aguarde...";
+            }
+
+            if (data.type === 'INICIO_NEGOCIACAO') {
+                mudarTela('tela-discordia');
+                const eu = document.getElementById('area-host').style.display === 'block'; // Checagem simples visual
+                document.getElementById('host-discordia').style.display = eu ? 'block' : 'none';
+            }
+            
+            if (data.type === 'CHAT_UPDATE') {
+                const div = document.getElementById('chat-msgs');
+                div.innerHTML = data.log.map(l => {
+                    if(l.sistema) return `<div class="msg-sistema">${l.msg}</div>`;
+                    return `<div><b>${l.nome}:</b> ${l.msg}</div>`;
+                }).join('');
+                div.scrollTop = div.scrollHeight;
+            }
+
+            if (data.type === 'GAME_OVER') {
+                alert(`FIM DE JOGO! Vencedor: ${data.vencedor}`);
+                location.reload();
+            }
+        }
+
+        // Lógica de Jogo
+        function renderizarCartas(cartas) {
+            const area = document.getElementById('area-cartas');
+            area.innerHTML = "";
+            cartas.forEach((valor, i) => {
+                const el = document.createElement('div');
+                el.className = `carta ${[1,2,3].includes(Math.floor(Math.random()*4)) ? '' : 'carta-red'}`; // Cor aleatória só visual
+                el.innerText = valor;
+                el.onclick = () => usarCarta(valor, el);
+                area.appendChild(el);
+            });
+            qtdCartasUsadas = 0;
+        }
+
+        function usarCarta(valor, elemento) {
+            if (elemento.classList.contains('usada')) return;
+            conta += valor;
+            elemento.classList.add('usada');
             qtdCartasUsadas++;
-            elemento.style.opacity = '0.2';
-            elemento.style.pointerEvents = 'none';
-            elemento.style.transform = 'scale(0.9)';
+            atualizarVisor();
         }
 
-        function add(v) { 
-            conta += v; 
-            document.getElementById('visor-conta').innerText = conta; 
+        function add(op) {
+            conta += op;
+            atualizarVisor();
         }
 
-        function limpar() { 
-            conta = ""; 
-            qtdCartasUsadas = 0; 
-            document.getElementById('visor-conta').innerText = "_"; 
-            document.querySelectorAll('.carta-real').forEach(c => {
-                c.style.opacity = '1';
-                c.style.pointerEvents = 'auto';
-                c.style.transform = 'scale(1)';
-            });
+        function atualizarVisor() {
+            document.getElementById('visor-conta').innerText = conta;
         }
 
-        function enviar() {
-            if(qtdCartasUsadas < 3) return alert("Use pelo menos 3 cartas!");
+        function limpar() {
+            conta = "";
+            qtdCartasUsadas = 0;
+            document.querySelectorAll('.carta').forEach(c => c.classList.remove('usada'));
+            atualizarVisor();
+        }
+
+        function enviarJogada() {
+            if (qtdCartasUsadas < 4) return alert("Use todas as 4 cartas!");
             try {
-                const res = eval(conta);
-                socket.send(JSON.stringify({ type:'JOGADA', nome:meuNome, valor:res, distancia:Math.abs(alvoAtual-res), tempo:60-tempoRestante }));
-                document.getElementById('btn-enviar').style.display='none';
-            } catch(e) { alert("Conta inválida!"); }
+                // Segurança básica contra eval malicioso
+                if (/[^0-9+\-*/().]/.test(conta)) throw new Error("Inválido");
+                const resultado = eval(conta);
+                const alvo = parseInt(document.getElementById('alvo-num').innerText);
+                const dist = Math.abs(alvo - resultado);
+                
+                socket.send(JSON.stringify({ 
+                    type: 'JOGADA', 
+                    valor: resultado, 
+                    distancia: dist,
+                    tempo: document.getElementById('timer').innerText 
+                }));
+                
+                mudarTela('tela-lobby');
+                document.getElementById('msg-lobby').innerText = "Resposta enviada! Aguardando outros...";
+                
+            } catch (e) { alert("Conta inválida!"); }
         }
 
-        function iniciarTimer() {
-            tempoRestante = 60;
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                tempoRestante--;
-                document.getElementById('barra-tempo').style.width = (tempoRestante/60*100) + "%";
-                if(tempoRestante <= 0) clearInterval(timerInterval);
-            }, 1000);
+        function desistir() {
+            if(confirm("Desistir rodada? Você ficará com 9999 de distância, mas não perderá fichas extras.")) {
+                socket.send(JSON.stringify({type:'DESISTIR'}));
+                mudarTela('tela-lobby');
+                document.getElementById('msg-lobby').innerText = "Você desistiu desta rodada.";
+            }
         }
 
-        function atualizarListas(lista) {
-            const lobby = document.getElementById('lista-lobby'); lobby.innerHTML = "";
-            const painel = document.getElementById('painel-jogadores'); painel.innerHTML = "";
-            lista.forEach(p => {
-                lobby.innerHTML += `<div style="padding:5px; border-bottom:1px solid #eee;">👤 ${p.nome} - 💰 ${p.fichas}</div>`;
-                painel.innerHTML += `<div class="tag-player ${p.pronto?'pronto':''}">${p.nome}</div>`;
+        function iniciarPartida() {
+            socket.send(JSON.stringify({ type: 'START_GAME' }));
+        }
+
+        function encerrarDiscordia() {
+            socket.send(JSON.stringify({ type: 'ENCERRAR_DISCORDIA' }));
+        }
+        
+        // Chat e Doação
+        function enviarChatTexto() {
+            const input = document.getElementById('input-chat');
+            const msg = input.value;
+            if(msg) {
+                socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:msg}));
+                input.value="";
+            }
+        }
+
+        function doarFichas(nomeDestino) {
+            const valor = prompt(`Quanto quer doar para ${nomeDestino}? (Você pulará a próxima rodada!)`);
+            if (valor && parseInt(valor) > 0) {
+                socket.send(JSON.stringify({type:'DOAR_FICHAS', para:nomeDestino, valor:valor}));
+            }
+        }
+
+        // UI Auxiliar
+        function toggleRanking() {
+            const modal = document.getElementById('modal-ranking');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function atualizarRanking(lista) {
+            const ul = document.getElementById('lista-ranking');
+            const listaDoacao = document.getElementById('lista-doacao');
+            
+            ul.innerHTML = "";
+            listaDoacao.innerHTML = "";
+            
+            // Ordena por fichas
+            lista.sort((a,b) => b.fichas - a.fichas);
+            
+            lista.forEach((j, i) => {
+                // Lista Principal
+                const li = document.createElement('li');
+                li.className = `item-ranking ${j.eliminado ? 'eliminado' : ''} ${i===0 ? 'lider' : ''}`;
+                li.innerHTML = `
+                    <span>${i+1}. ${j.nome} ${j.isHost ? '👑' : ''}</span>
+                    <span>${j.fichas}</span>
+                `;
+                ul.appendChild(li);
+                
+                // Lista de Doação (Discórdia) - Só mostra outros vivos
+                if (j.nome !== meuNome && !j.eliminado) {
+                    const div = document.createElement('div');
+                    div.style.marginBottom = "10px";
+                    div.innerHTML = `
+                        <button onclick="doarFichas('${j.nome}')" style="background:#444; color:#fff; border:1px solid #777; padding:5px; width:100%;">
+                            Doar para ${j.nome} (${j.fichas})
+                        </button>
+                    `;
+                    listaDoacao.appendChild(div);
+                }
             });
         }
 
-        function mudarTela(id) { document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
-        function esconderModais() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); document.getElementById('btn-enviar').style.display='block'; }
-        function copiarLink() { navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
+        function mostrarResultado(data) {
+            const modal = document.getElementById('modal-resultado');
+            const titulo = document.getElementById('res-titulo');
+            const msg = document.getElementById('res-msg');
+            const extra = document.getElementById('res-extra');
 
-        window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            if(params.get('sala')) { document.getElementById('nome-sala').value = params.get('sala'); document.getElementById('div-sala').style.display = 'none'; }
+            titulo.innerText = `VENCEDOR: ${data.vencedor}`;
+            msg.innerHTML = `
+                Resultado: <b>${data.valor}</b> (Dist: ${data.dist})<br>
+                Prêmio: <span style="color:var(--verde-neon)">+${data.premio}</span>
+            `;
+            extra.innerText = data.msgExtra || "";
+
+            modal.style.display = 'flex';
+            
+            // Fecha sozinho após 7s
+            setTimeout(() => { modal.style.display = 'none'; }, 7000);
         }
+
+        function mudarTela(id) {
+            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+            document.getElementById(id).classList.add('ativa');
+        }
+
+        function esconderModais() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        }
+
     </script>
 </body>
 </html>
