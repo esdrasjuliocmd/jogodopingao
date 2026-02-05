@@ -30,479 +30,532 @@
         
         /* Topo Fixo e Ranking */
         .topo-fixo { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 50px; 
-            background: rgba(0,0,0,0.9); display: flex; align-items: center; 
-            justify-content: space-between; padding: 0 10px; z-index: 1000; 
-            box-shadow: 0 2px 10px #000; box-sizing: border-box; 
+            background: #111; 
+            border-bottom: 2px solid var(--ouro); 
+            padding: 5px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
         }
-        .topo-info { font-size: 14px; color: var(--ouro); font-weight: bold; }
-        .btn-ranking { 
-            background: none; border: 1px solid var(--ouro); color: var(--ouro); 
-            padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; 
+        .topo-info { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 2px 10px; 
         }
-
-        /* Container Principal */
-        .container { 
-            margin-top: 60px; padding: 10px; max-width: 500px; margin-left: auto; margin-right: auto; 
+        .ranking-bar { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            padding: 8px 5px; 
+            background: #222; 
+            white-space: nowrap; 
+            scrollbar-width: none; 
         }
-
-        /* Telas */
-        .tela { display: none; animation: fadeIn 0.3s ease; }
-        .tela.ativa { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Login */
-        input[type=text] { 
-            padding: 10px; font-size: 18px; border-radius: 5px; border: none; width: 80%; margin: 10px 0; 
-        }
-        button.btn-grande { 
-            padding: 12px 25px; font-size: 18px; background: var(--ouro); color: #000; 
-            border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 80%; 
-            box-shadow: 0 4px 0 var(--ouro-dark); transition: transform 0.1s; 
-        }
-        button.btn-grande:active { transform: translateY(4px); box-shadow: none; }
-
-        /* Área de Jogo */
-        .alvo-box { 
-            font-size: 40px; font-weight: 900; color: var(--verde-neon); 
-            text-shadow: 0 0 10px var(--verde-neon); margin: 10px 0; 
-        }
-        .visor-conta { 
-            font-size: 24px; min-height: 40px; background: rgba(0,0,0,0.3); 
-            margin: 10px; padding: 10px; border-radius: 10px; border: 1px solid #444; 
-        }
+        .ranking-bar::-webkit-scrollbar { display: none; }
         
-        /* Cartas */
-        .area-cartas { 
-            display: flex; justify-content: center; gap: 10px; margin: 15px 0; flex-wrap: wrap; 
+        .rank-item { 
+            font-size: 10px; /* Alterado de 11px */
+            padding: 3px 8px; /* Alterado de 4px 10px */
+            background: #333; 
+            border-radius: 12px; 
+            border: 1px solid #444; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            font-weight: bold;
         }
-        .carta { 
-            width: 60px; height: 85px; background: #fff; color: #000; border-radius: 8px; 
-            display: flex; align-items: center; justify-content: center; font-size: 24px; 
-            font-weight: bold; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); 
-            position: relative; transition: transform 0.2s; 
-        }
-        .carta.usada { opacity: 0.4; transform: scale(0.9); pointer-events: none; background: #ddd; }
-        .carta.selecionada { border: 3px solid var(--verde-neon); transform: translateY(-5px); }
-        .naipe { font-size: 12px; position: absolute; top: 2px; right: 4px; }
-        .carta-red { color: var(--vermelho); }
+        .rank-item.lider { border-color: var(--ouro); color: var(--ouro); background: rgba(255, 215, 0, 0.1); }
+        .rank-item.perigo { border-color: #FF5252; color: #FF5252; }
+        .rank-item.eliminado { text-decoration: line-through; opacity: 0.5; }
 
-        /* Controles Matemáticos */
-        .controles { 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; 
+        /* Estrutura de Telas e Caixas */
+        .tela { display: none; padding: 10px; position: relative; z-index: 5; margin-top: 10px; }
+        .ativa { display: block; }
+        .caixa { 
+            background: rgba(255, 255, 255, 0.95); 
+            color: #333; 
+            border-radius: 15px; 
+            padding: 15px; /* Alterado de 25px */
+            margin: 10px auto; /* Alterado de 20px auto */
+            max-width: 90%; /* Alterado de 450px */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 2px solid var(--ouro); 
+            position: relative; 
+            z-index: 5; 
         }
-        .btn-op { 
-            padding: 15px; font-size: 20px; background: #333; color: #fff; border: none; 
-            border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #111; 
+
+        /* Inputs e Botões */
+        input { 
+            width: 90%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            font-size: 18px; 
+            text-align: center; 
+            background: #f9f9f9; 
+            outline: none;
         }
-        .btn-op:active { transform: translateY(3px); box-shadow: none; }
+        input:focus { border-color: var(--ouro-dark); }
+
+        .btn-principal { 
+            background: linear-gradient(180deg, var(--vermelho), var(--vermelho-dark)); 
+            color: white; 
+            padding: 15px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 10px; 
+            box-shadow: 0 4px 0 #7F0000; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            transition: transform 0.1s; 
+        }
+        .btn-principal:active { transform: translateY(3px); box-shadow: none; }
         
-        .acoes-jogo { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-        .btn-limpar { background: var(--vermelho); color: white; flex: 1; }
-        .btn-enviar { background: var(--verde); color: white; flex: 1; }
-        
-        /* Botão Desistir - AGORA VISÍVEL */
         .btn-desistir { 
-            background: #555; color: #ccc; margin-top: 15px; width: 100%; padding: 10px; 
-            border: 1px dashed #777; font-size: 14px; cursor: pointer; 
+            background: #37474F; 
+            color: #fff; 
+            padding: 12px; 
+            width: 100%; 
+            margin-top: 15px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            cursor: pointer; 
+            border-bottom: 2px solid #263238; 
         }
-        .btn-desistir:hover { background: #444; color: #fff; border-color: #fff; }
+        .btn-desistir:hover { background: #455A64; }
 
-        /* Lista de Jogadores (Ranking) */
-        #lista-ranking { 
-            list-style: none; padding: 0; margin: 0; text-align: left; max-height: 300px; overflow-y: auto; 
+        /* Estética do Logo */
+        .titulo-jogo { 
+            font-size: 32px; /* Alterado de 45px */
+            font-weight: 900; 
+            margin: 0; 
+            background: linear-gradient(to bottom, var(--ouro), var(--ouro-dark)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            filter: drop-shadow(2px 2px 0px #000); /* Sombra reduzida */
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            position: relative; 
+            z-index: 10; 
         }
-        .item-ranking { 
-            padding: 10px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; 
-            align-items: center; background: rgba(0,0,0,0.5); 
+        .subtitulo-jogo { 
+            font-size: 16px; /* Alterado de 22px */
+            color: #fff; 
+            text-shadow: 2px 2px 0 #000; 
+            margin-top: -5px; 
+            font-weight: bold; 
+            letter-spacing: 2px; /* Alterado de 4px */
+            position: relative; 
+            z-index: 10; 
         }
-        .item-ranking.eliminado { color: #555; text-decoration: line-through; }
-        .item-ranking.lider { border-left: 4px solid var(--ouro); }
-        
-        /* Modal */
-        .modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.85); z-index: 2000; display: none; 
-            align-items: center; justify-content: center; flex-direction: column; 
-        }
-        .modal-content { 
-            background: #222; padding: 20px; border-radius: 10px; border: 2px solid var(--ouro); 
-            max-width: 90%; text-align: center; box-shadow: 0 0 20px var(--ouro); 
-        }
-        .modal h2 { margin-top: 0; color: var(--ouro); }
-        
-        /* Chat */
-        .chat-area { margin-top: 20px; border-top: 1px solid #444; padding-top: 10px; }
-        #chat-msgs { height: 100px; overflow-y: auto; text-align: left; font-size: 12px; margin-bottom: 5px; color: #aaa; }
-        .msg-sistema { color: var(--ouro); font-style: italic; }
 
+        /* Cartas de Decoração Background */
+        .decoracao-cartas { position: absolute; top: 150px; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0.4; }
+        .carta-decor { position: absolute; width: 100px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
+        .c1 { left: -20px; top: 50px; transform: rotate(-25deg); }
+        .c2 { right: -20px; top: 100px; transform: rotate(25deg); }
+        .c3 { left: 50%; top: 200px; transform: translate(-50%) rotate(10deg); width: 120px; }
+
+        /* Barra de Tempo */
+        #barra-tempo-container { width: 100%; height: 6px; background: #333; position: absolute; bottom: 0; left: 0; z-index: 100; }
+        #barra-tempo { width: 100%; height: 100%; background: var(--verde-neon); transition: width 1s linear; }
+        
+        /* Sala da Discórdia / Chat */
+        .discordia-bg { background: linear-gradient(135deg, #4a0000, #000) !important; }
+        .chat-container { display: flex; flex-direction: column; height: 250px; /* Alterado de 350px */ width: 100%; max-width: 400px; }
+        .chat-box { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 5px; padding: 10px; text-align: left; margin-bottom: 5px; border: 1px solid #ff4081; }
+        .chat-msg { margin-bottom: 8px; font-size: 13px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .chat-msg.sistema { color: var(--ouro); font-style: italic; text-align: center; margin: 10px 0; background: rgba(255,215,0,0.1); padding: 5px; border-radius: 5px; border: none;}
+        .input-chat-row { display: flex; gap: 5px; }
+        .input-chat { flex: 1; padding: 12px; border-radius: 5px; border: none; font-size: 14px; text-align: left; }
+        .btn-enviar-chat { background: #2196F3; color: white; border: none; padding: 0 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* Doações */
+        .lista-doacao { margin-top: 15px; max-height: 200px; overflow-y: auto; border-top: 1px solid #555; padding-top: 10px; }
+        .item-doacao { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 8px; border-radius: 8px; text-align: left; }
+        .nome-pobre { font-weight: bold; color: var(--ouro); font-size: 14px; display: block; margin-bottom: 5px; }
+        .btn-group-doar { display: flex; gap: 5px; flex-wrap: wrap; }
+        .btn-doar { flex: 1; min-width: 45px; background: #d81b60; color: white; border: none; padding: 8px 5px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; }
+
+        .btn-encerrar-host { background: #D50000; color: white; padding: 15px; width: 100%; font-weight: bold; border: 2px solid white; border-radius: 10px; margin-top: 10px; cursor: pointer; display: none; }
+        .msg-espera-host { color: #aaa; font-style: italic; margin-top: 10px; display: none; }
+
+        /* Painel Ativo de Jogadores */
+        #painel-jogadores { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 40px; }
+        .tag-player { font-size: 12px; background: #222; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; border: 1px solid #555; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .tag-player.pronto { background: var(--verde); border-color: var(--verde-neon); }
+        .tag-player.pulou { background: #880e4f; border-color: #ff4081; opacity: 0.8; }
+        .tag-player.desistiu { background: #555; border-color: #777; opacity: 0.7; }
+        .tag-player.eliminado { text-decoration: line-through; opacity: 0.5; background: #333; }
+
+        /* Gameplay - Cartas e Visor */
+        #area-cartas { display: flex; justify-content: center; gap: 8px; margin: 25px 0; perspective: 1000px; flex-wrap: wrap; }
+        .carta-real { width: 65px; /* Alterado de 85px */ height: auto; cursor: pointer; transition: transform 0.2s, filter 0.2s; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5)); border-radius: 5px; }
+        .carta-real:hover { transform: translateY(-10px) rotate(2deg); filter: brightness(1.1) drop-shadow(0 10px 15px rgba(0,0,0,0.4)); }
+        .carta-real:active { transform: scale(0.9); }
+        
+        .sinal { width: 46px; /* Alterado de 58px */ height: 46px; /* Alterado de 58px */ font-size: 20px; /* Alterado de 26px */ margin: 2px; /* Alterado de 4px */ border: none; border-radius: 12px; background: #263238; color: white; cursor: pointer; border-bottom: 4px solid #000; transition: all 0.1s; font-weight: bold; }
+        .sinal:active { transform: translateY(3px); border-bottom: none; }
+        
+        #visor-conta { font-size: 24px; /* Alterado de 36px */ background: #fff; color: #333; padding: 10px; /* Alterado de 20px */ margin: 10px 0; /* Alterado de 15px 0 */ font-weight: bold; border-radius: 12px; min-height: 40px; /* Alterado de 50px */ border: 4px solid #ccc; box-shadow: inset 0 3px 10px rgba(0,0,0,0.1); letter-spacing: 2px; display: flex; align-items: center; justify-content: center; overflow-x: auto; white-space: nowrap;}
+        #alvo-display { background: linear-gradient(45deg, var(--ouro), #FFC107); color: #000; padding: 12px; /* Alterado de 18px */ font-weight: 900; font-size: 20px; /* Alterado de 28px */ border-radius: 12px; margin-bottom: 10px; /* Alterado de 15px */ border: 3px solid #FFA000; text-shadow: 0 1px 0 rgba(255,255,255,0.5); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        /* Modais */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box;}
+        .contador-zao { font-size: 120px; font-weight: 900; color: var(--ouro); text-shadow: 0 0 30px rgba(255, 215, 0, 0.6); margin: 10px 0; font-family: 'Courier New', Courier, monospace; }
+        
+        /* Lobby */
+        #lista-lobby { text-align: left; }
+        .item-lobby { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; background: #fdfdfd; margin-bottom: 6px; border-radius: 8px; color: #333; font-weight: bold; }
+        
+        /* Manual/Regras */
+        .box-regras { margin-top: 20px; background: #222; color: #ddd; padding: 15px; /* Alterado de 20px */ border-radius: 12px; text-align: left; font-size: 12px; /* Alterado de 13px */ border: 1px dashed #555; max-height: 150px; /* Alterado de 250px */ overflow-y: auto; }
+        .box-regras h3 { color: var(--ouro); margin-top: 18px; border-bottom: 1px solid #444; padding-bottom: 6px; font-size: 16px; display:flex; align-items:center; gap:8px;}
+        .box-regras ul { padding-left: 20px; margin: 8px 0; }
+        .box-regras li { margin-bottom: 8px; line-height: 1.5; }
+        .box-regras b { color: #fff; }
+
+        .legenda-pontos { font-size: 11px; color: #aaa; margin-top: 15px; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px; border: 1px solid #333; }
+
+        /* Game Over */
+        #lista-final { width: 100%; max-width: 320px; margin-top: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; max-height: 250px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2); }
+        .item-final { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        .item-final:last-child { border-bottom: none; }
+        .item-final.eliminado { color: #999; text-decoration: line-through; }
+        .item-final.campeao { color: var(--ouro); font-weight: 900; font-size: 18px; background: rgba(255,215,0,0.1); border-radius: 8px; padding: 12px 10px; margin-bottom: 10px; border: 1px solid var(--ouro); }
+
+        @keyframes piscar { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .aviso-host { background: #FFEBEE; color: #D32F2F; border: 2px solid #D32F2F; padding: 12px; border-radius: 10px; font-weight: 900; margin-top: 15px; animation: piscar 2s infinite; font-size: 14px; text-transform: uppercase; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="topo-fixo">
-        <div class="topo-info">PINGÃO V11</div>
-        <div id="status-fichas" class="topo-info">💰 500</div>
-        <button class="btn-ranking" onclick="toggleRanking()">🏆 Ranking</button>
+        <div class="topo-info">
+            <span style="font-size:13px; color:#ccc;">💰 Fichas: <span id="minhas-fichas-topo" style="color:var(--ouro); font-weight:bold;">500</span></span>
+            <span id="sala-nome-topo" style="font-size:13px; color:#aaa; font-weight: bold;"></span>
+        </div>
+        <div id="barra-ranking" class="ranking-bar">
+            <div class="rank-item lider">🏆 Aguardando Mesa...</div>
+        </div>
+        <div id="barra-tempo-container"><div id="barra-tempo"></div></div>
     </div>
 
-    <div class="container">
-
-        <div id="tela-login" class="tela ativa">
-            <h1>FERVE A CUCA 🔥</h1>
-            <p>Digite seu nome para entrar:</p>
-            <input type="text" id="nome-jogador" placeholder="Seu apelido..." maxlength="12">
-            <br>
-            <button class="btn-grande" onclick="entrar()">ENTRAR</button>
-        </div>
-
-        <div id="tela-lobby" class="tela">
-            <h2>Aguardando...</h2>
-            <p id="msg-lobby">O Host iniciará a partida em breve.</p>
-            <div id="area-host" style="display:none; margin-top:20px;">
-                <p style="color:var(--ouro)">👑 Você é o Host</p>
-                <button class="btn-grande" onclick="iniciarPartida()">INICIAR JOGO</button>
-            </div>
-            <div class="chat-area">
-                <div id="chat-msgs"></div>
-                <input type="text" id="input-chat" placeholder="Mensagem..." style="width:70%; font-size:14px;">
-                <button onclick="enviarChatTexto()" style="width:20%; font-size:14px;">Env</button>
-            </div>
-        </div>
-
-        <div id="tela-jogo" class="tela">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:12px; color:#aaa;">RODADA <span id="num-rodada">1</span></span>
-                <span style="font-size:12px; color:#aaa;">⏳ <span id="timer">00</span>s</span>
-            </div>
-            
-            <div class="alvo-box">ALVO: <span id="alvo-num">?</span></div>
-            
-            <div class="visor-conta" id="visor-conta">_</div>
-            
-            <div class="area-cartas" id="area-cartas">
-                </div>
-
-            <div class="controles">
-                <button class="btn-op" onclick="add('+')">+</button>
-                <button class="btn-op" onclick="add('-')">-</button>
-                <button class="btn-op" onclick="add('*')">x</button>
-                <button class="btn-op" onclick="add('/')">÷</button>
-                <button class="btn-op" onclick="add('(')">(</button>
-                <button class="btn-op" onclick="add(')')">)</button>
-            </div>
-
-            <div class="acoes-jogo">
-                <button class="btn-grande btn-limpar" onclick="limpar()">LIMPAR</button>
-                <button class="btn-grande btn-enviar" onclick="enviarJogada()">ENVIAR</button>
-            </div>
-
-            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR DA RODADA (Salvar Fichas)</button>
-
-        </div>
+    <div id="modal-negociacao" class="modal discordia-bg" style="justify-content: flex-start; padding-top: 40px; z-index: 1500;">
+        <h2 style="color: var(--ouro); margin: 0; font-size: 28px; text-shadow: 0 0 10px red;">📢 SALA DA BAGUNÇA</h2>
+        <p style="font-size: 13px; color: #ff80ab; margin-top: 5px; font-weight: bold;">DOE FICHAS E SALVE ALGUÉM DA ELIMINAÇÃO!</p>
         
-        <div id="tela-discordia" class="tela">
-            <h2 style="color:var(--vermelho)">SALA DA DISCÓRDIA 😈</h2>
-            <p>Doe fichas para salvar alguém (e pule a próxima vez) ou guarde para si.</p>
-            <div id="lista-doacao" style="text-align:left; margin:20px 0;"></div>
-            <div id="host-discordia" style="display:none;">
-                <button class="btn-grande" onclick="encerrarDiscordia()">ENCERRAR NEGOCIAÇÃO</button>
+        <div class="chat-container">
+            <div id="chat-box" class="chat-box"></div>
+            <div class="input-chat-row">
+                <input type="text" id="input-chat" class="input-chat" placeholder="Diga algo...">
+                <button class="btn-enviar-chat" onclick="enviarChatTexto()">ENVIAR</button>
+            </div>
+            <div style="display:flex; gap:8px; margin: 12px 0; justify-content:center;">
+                <button class="btn-doar" style="background:#b71c1c" onclick="enviarChat('🆘 SOCORRO! VOU CAIR!')">🆘 SOCORRO!</button>
+                <button class="btn-doar" style="background:#1a237e" onclick="enviarChat('🤝 QUEM ME AJUDA?')">🤝 AJUDA?</button>
+                <button class="btn-doar" style="background:#1b5e20" onclick="enviarChat('💰 POSSO DOAR!')">💰 TENHO FICHAS</button>
+            </div>
+            <div id="lista-doacao" class="lista-doacao"></div>
+        </div>
+
+        <button id="btn-encerrar-host" class="btn-encerrar-host" onclick="encerrarDiscordia()">ENCERRAR NEGOCIAÇÃO E ELIMINAR</button>
+        <p id="msg-espera-host" class="msg-espera-host">Esperando o Host dar o veredito final...</p>
+    </div>
+
+    <div id="modal-rodada" class="modal">
+        <h2 id="txt-vencedor" style="color: var(--verde-neon); font-size: 32px; margin-bottom: 5px;">...</h2>
+        <h3 id="txt-premio" style="color: var(--ouro); font-size: 55px; margin: 10px 0;"></h3>
+        <p id="txt-detalhe" style="font-size: 18px; color: #ccc;">...</p>
+        <h3 id="txt-eliminacao" style="color: #FF5252; font-size: 24px; margin-top: 25px; font-weight: 900;"></h3>
+        <p style="margin-top: 40px; color: #888; text-transform: uppercase; font-size: 12px; letter-spacing: 2px;">Próxima rodada em:</p>
+        <div id="contador-regressivo" class="contador-zao">8</div>
+    </div>
+
+    <div id="modal-espera" class="modal">
+        <h1 style="font-size: 80px; margin: 0;">⏳</h1>
+        <h2 style="font-size: 28px;">MESA OCUPADA!</h2>
+        <p style="color: #aaa; max-width: 250px;">Existe um jogo em andamento nesta sala agora.</p>
+        <div style="margin-top: 30px; color: var(--ouro); border: 2px dashed var(--ouro); padding: 15px; border-radius: 10px; font-weight: bold;">
+            Você entra automaticamente na próxima rodada!
+        </div>
+    </div>
+
+    <div id="modal-pulou" class="modal">
+        <h1 style="font-size: 80px; margin: 0;">🚫</h1>
+        <h2 style="font-size: 28px; color: #ff80ab;">VOCÊ PULOU ESSA!</h2>
+        <p style="max-width: 300px; line-height: 1.5;">Você foi generoso e doou fichas na Rodada da Bagunça. Agora você descansa e assiste a mesa.</p>
+    </div>
+
+    <div id="modal-gameover" class="modal" style="background: linear-gradient(135deg, #1b5e20, #000);">
+        <h1 style="font-size: 100px; margin: 0; filter: drop-shadow(0 0 20px gold);">🏆</h1>
+        <h1 style="color: var(--ouro); font-size: 40px; margin: 10px 0;">O GRANDE CAMPEÃO!</h1>
+        <h2 id="final-winner-name" style="font-size: 55px; margin: 15px 0; color: white; text-shadow: 2px 2px 0 #000, 0 0 20px gold;">...</h2>
+        <h3 id="final-fichas" style="background: white; color: black; padding: 12px 30px; border-radius: 50px; font-size: 24px;">💰 0</h3>
+        <div id="lista-final"></div>
+        <br>
+        <button class="btn-principal" style="max-width: 300px;" onclick="location.reload()">NOVO CAMPEONATO</button>
+    </div>
+
+    <div id="modal-eliminado" class="modal">
+        <h1 style="font-size: 100px; margin: 0;">💀</h1>
+        <h2 style="color: #FF5252; font-size: 36px; margin: 10px 0;">VOCÊ QUEBROU!</h2>
+        <p style="font-size: 18px; opacity: 0.7;">Suas fichas acabaram e a banca venceu.</p>
+        <button class="btn-principal" style="width: auto; padding: 15px 40px; margin-top: 30px;" onclick="location.reload()">SAIR DA MESA</button>
+    </div>
+
+    <div id="tela-entrada" class="tela ativa">
+        <div class="decoracao-cartas">
+            <img src="https://deckofcardsapi.com/static/img/AS.png" class="carta-decor c1">
+            <img src="https://deckofcardsapi.com/static/img/KD.png" class="carta-decor c2">
+            <img src="https://deckofcardsapi.com/static/img/JH.png" class="carta-decor c3">
+        </div>
+        <br><br>
+        <h1 class="titulo-jogo">PINGÃO</h1>
+        <div class="subtitulo-jogo">FERVE A CUCA</div>
+        
+        <div class="caixa">
+            <input type="text" id="nome-player" placeholder="Seu Nome / Nick" maxlength="12">
+            <div id="div-sala"><input type="text" id="nome-sala" placeholder="Nome da Sala"></div>
+            <button class="btn-principal" onclick="entrar()">SENTAR NA MESA</button>
+
+            <div class="box-regras">
+                <h2 style="text-align: center; color: var(--ouro); margin-top: 0; font-size: 20px;">📜 MANUAL DA MESA</h2>
+                <h3>🎯 OBJETIVO</h3>
+                <ul>
+                    <li>Combine <b>3+ cartas</b> com (+ - × ÷) para chegar no <b>ALVO</b>.</li>
+                </ul>
+                <h3>⚡ FICHAS POR TEMPO</h3>
+                <ul>
+                    <li>🚀 <b>&lt;20s:</b> +100 | 🏃 <b>30-40s:</b> +30 | 💀 <b>&gt;50s:</b> -30</li>
+                </ul>
+                <h3>🏳️ DESISTIR</h3>
+                <ul><li>Proteja suas fichas se a conta estiver difícil!</li></ul>
+                <h3>📢 BAGUNÇA</h3>
+                <ul><li>Doe fichas para salvar alguém da eliminação!</li></ul>
             </div>
         </div>
-
     </div>
 
-    <div id="modal-ranking" class="modal" onclick="if(event.target===this) toggleRanking()">
-        <div class="modal-content">
-            <h2>🏆 RANKING</h2>
-            <ul id="lista-ranking"></ul>
-            <button class="btn-grande" onclick="toggleRanking()" style="margin-top:10px; background:#555; color:#fff;">FECHAR</button>
+    <div id="tela-lobby" class="tela">
+        <div class="caixa">
+            <div onclick="copiarLink()" style="background:#f0f0f0; padding:15px; border-radius:10px; cursor:pointer; font-size: 14px; border: 2px dashed #999;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="18" style="vertical-align:middle; margin-right:5px;"> <b>Convidar amigos para a mesa</b>
+                <div id="link-texto" style="font-size:10px; color:#666; margin-top: 8px; word-break: break-all;"></div>
+            </div>
+            <div class="aviso-host">⚠️ ATENÇÃO HOST:<br>Inicie quando todos estiverem prontos!</div>
+            <div style="margin-top:25px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin-bottom: 10px; border-bottom: 2px solid #eee;">👤 Na Mesa:</h3>
+                <div id="lista-lobby"></div>
+            </div>
+            <button id="btn-iniciar" class="btn-principal" style="display:none; background: linear-gradient(180deg, #2E7D32, #1B5E20);" onclick="iniciarComSom()">DISTRIBUIR AS CARTAS</button>
         </div>
     </div>
 
-    <div id="modal-resultado" class="modal">
-        <div class="modal-content">
-            <h2 id="res-titulo">RESULTADO</h2>
-            <p id="res-msg" style="font-size:18px;"></p>
-            <div id="res-extra" style="color:var(--vermelho); font-weight:bold; margin-top:10px;"></div>
-            <br>
-            <p style="font-size:12px; color:#aaa;">Próxima rodada em breve...</p>
+    <div id="tela-jogo" class="tela" style="padding:0;">
+        <div style="padding: 10px;">
+            <div id="info-rodada" style="font-size: 14px; background:rgba(255,255,255,0.2); padding:6px 20px; border-radius:25px; font-weight: bold;">Rodada 1</div>
+        </div>
+        <div id="painel-jogadores"></div>
+        <div style="padding: 15px; max-width: 500px; margin: 0 auto;">
+            <div id="alvo-display">ALVO: ?</div>
+            <div id="visor-conta">_</div>
+            <div id="area-cartas"></div>
+            <div style="margin-top: 25px;">
+                <button class="sinal" onclick="tocarSom('click'); add('+')">+</button>
+                <button class="sinal" onclick="tocarSom('click'); add('-')">-</button>
+                <button class="sinal" onclick="tocarSom('click'); add('*')">×</button>
+                <button class="sinal" onclick="tocarSom('click'); add('/')">÷</button>
+                <button class="sinal" style="background:var(--vermelho);" onclick="tocarSom('click'); limpar()">C</button>
+                <br>
+                <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add('(')">(</button>
+                <button class="sinal" style="background:#424242;" onclick="tocarSom('click'); add(')')">)</button>
+            </div>
+            <button id="btn-enviar" class="btn-principal" onclick="tocarSom('click'); enviar()">CONFIRMAR JOGADA</button>
+            <button class="btn-desistir" onclick="desistir()">🏳️ DESISTIR (SALVA FICHAS)</button>
         </div>
     </div>
 
     <script>
         let socket;
-        let meuNome = "";
         let conta = "";
-        let cartasMinhaMao = [];
+        let meuNome = "";
+        let minhaSala = "";
+        let alvoAtual = 0;
+        let tempoRestante = 60;
+        let timerInterval;
         let qtdCartasUsadas = 0;
-        let rodadaAtual = 0;
+        let souHost = false;
 
-        // Conexão
-        function conectar() {
-            const protocolo = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            // Pega o nome da sala da URL ou usa padrão
+        const audioLibrary = {
+            click: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'),
+            entrou: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav'), 
+            vitoria: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/bonus.wav'), 
+            aplauso: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/week7-brrring.m4a'), 
+            erro: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/explosion.mp3'),
+            sirene: new Audio('https://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/thrust.mp3'),
+            msg: new Audio('https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/pause.wav')
+        };
+
+        function tocarSom(tipo) { try { const som = audioLibrary[tipo]; if(som) { som.currentTime = 0; som.play().catch(e=>{}); } } catch(e){} }
+        function iniciarComSom() { tocarSom('click'); socket.send(JSON.stringify({type:'START'})); }
+
+        window.onload = () => {
             const params = new URLSearchParams(window.location.search);
-            const sala = params.get('sala') || 'sala-padrao';
-            
-            socket = new WebSocket(`${protocolo}//${window.location.host}/ws?sala=${sala}`);
-
-            socket.onopen = () => {
-                console.log("Conectado!");
-                // Se tiver nome salvo (reconexão), tenta entrar direto
-                if(meuNome) socket.send(JSON.stringify({ type: 'JOIN', nome: meuNome }));
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                processarMensagem(data);
-            };
-            
-            socket.onclose = () => {
-                console.log("Desconectado. Tentando reconectar...");
-                setTimeout(conectar, 2000);
-            };
+            if(params.get('sala')) { document.getElementById('nome-sala').value = params.get('sala'); document.getElementById('div-sala').style.display = 'none'; }
         }
 
         function entrar() {
-            const nomeInput = document.getElementById('nome-jogador').value.trim();
-            if (!nomeInput) return alert("Digite um nome!");
-            meuNome = nomeInput;
-            conectar();
-        }
-
-        function processarMensagem(data) {
-            if (data.type === 'INFO_PLAYER') {
-                mudarTela('tela-lobby');
-                document.getElementById('area-host').style.display = data.isHost ? 'block' : 'none';
-                if(data.isHost) document.getElementById('msg-lobby').innerText = "Você é o Host. Inicie quando todos estiverem prontos.";
-            }
+            tocarSom('click');
+            meuNome = document.getElementById('nome-player').value.trim();
+            minhaSala = document.getElementById('nome-sala').value.trim();
+            if(!meuNome || !minhaSala) return alert("Preencha tudo!");
             
-            if (data.type === 'LISTA') {
-                atualizarRanking(data.lista);
-                // Atualiza se sou host em tempo real (caso o host tenha saído)
-                const eu = data.lista.find(j => j.nome === meuNome);
-                if (eu) {
-                    document.getElementById('status-fichas').innerText = `💰 ${eu.fichas}`;
-                    document.getElementById('area-host').style.display = eu.isHost ? 'block' : 'none';
-                    if (document.getElementById('tela-discordia').classList.contains('ativa')) {
-                         document.getElementById('host-discordia').style.display = eu.isHost ? 'block' : 'none';
-                    }
-                }
-            }
+            document.getElementById('sala-nome-topo').innerText = `| Mesa: ${minhaSala}`;
+            document.getElementById('link-texto').innerText = window.location.href.split('?')[0] + "?sala=" + encodeURIComponent(minhaSala);
+            mudarTela('tela-lobby');
 
-            if (data.type === 'SUA_MAO') {
-                esconderModais();
-                mudarTela('tela-jogo');
-                rodadaAtual = data.rodada;
-                document.getElementById('num-rodada').innerText = data.rodada;
-                document.getElementById('alvo-num').innerText = data.alvo;
-                renderizarCartas(data.cartas);
-                limpar();
-            }
-            
-            if (data.type === 'ESPERANDO_RODADA') {
-                 mudarTela('tela-lobby');
-                 document.getElementById('msg-lobby').innerText = `Rodada ${data.rodada} em andamento. Aguarde a próxima...`;
-            }
-            
-            if (data.type === 'CONTAGEM') {
-                document.getElementById('timer').innerText = data.tempo;
-                if(data.tempo <= 5) document.getElementById('timer').style.color = 'red';
-                else document.getElementById('timer').style.color = 'white';
-            }
-
-            if (data.type === 'FIM_RODADA') {
-                mostrarResultado(data);
-            }
-
-            if (data.type === 'PULOU_VEZ') {
-                mudarTela('tela-lobby');
-                document.getElementById('msg-lobby').innerText = "Você pulou esta vez (punição por doação). Aguarde...";
-            }
-
-            if (data.type === 'INICIO_NEGOCIACAO') {
-                mudarTela('tela-discordia');
-                const eu = document.getElementById('area-host').style.display === 'block'; // Checagem simples visual
-                document.getElementById('host-discordia').style.display = eu ? 'block' : 'none';
-            }
-            
-            if (data.type === 'CHAT_UPDATE') {
-                const div = document.getElementById('chat-msgs');
-                div.innerHTML = data.log.map(l => {
-                    if(l.sistema) return `<div class="msg-sistema">${l.msg}</div>`;
-                    return `<div><b>${l.nome}:</b> ${l.msg}</div>`;
-                }).join('');
-                div.scrollTop = div.scrollHeight;
-            }
-
-            if (data.type === 'GAME_OVER') {
-                alert(`FIM DE JOGO! Vencedor: ${data.vencedor}`);
-                location.reload();
-            }
-        }
-
-        // Lógica de Jogo
-        function renderizarCartas(cartas) {
-            const area = document.getElementById('area-cartas');
-            area.innerHTML = "";
-            cartas.forEach((valor, i) => {
-                const el = document.createElement('div');
-                el.className = `carta ${[1,2,3].includes(Math.floor(Math.random()*4)) ? '' : 'carta-red'}`; // Cor aleatória só visual
-                el.innerText = valor;
-                el.onclick = () => usarCarta(valor, el);
-                area.appendChild(el);
-            });
-            qtdCartasUsadas = 0;
-        }
-
-        function usarCarta(valor, elemento) {
-            if (elemento.classList.contains('usada')) return;
-            conta += valor;
-            elemento.classList.add('usada');
-            qtdCartasUsadas++;
-            atualizarVisor();
-        }
-
-        function add(op) {
-            conta += op;
-            atualizarVisor();
-        }
-
-        function atualizarVisor() {
-            document.getElementById('visor-conta').innerText = conta;
-        }
-
-        function limpar() {
-            conta = "";
-            qtdCartasUsadas = 0;
-            document.querySelectorAll('.carta').forEach(c => c.classList.remove('usada'));
-            atualizarVisor();
-        }
-
-        function enviarJogada() {
-            if (qtdCartasUsadas < 4) return alert("Use todas as 4 cartas!");
             try {
-                // Segurança básica contra eval malicioso
-                if (/[^0-9+\-*/().]/.test(conta)) throw new Error("Inválido");
-                const resultado = eval(conta);
-                const alvo = parseInt(document.getElementById('alvo-num').innerText);
-                const dist = Math.abs(alvo - resultado);
+                socket = new WebSocket(`wss://pingao-backend.esdrasjulio.workers.dev/?sala=${minhaSala}`);
                 
-                socket.send(JSON.stringify({ 
-                    type: 'JOGADA', 
-                    valor: resultado, 
-                    distancia: dist,
-                    tempo: document.getElementById('timer').innerText 
-                }));
-                
-                mudarTela('tela-lobby');
-                document.getElementById('msg-lobby').innerText = "Resposta enviada! Aguardando outros...";
-                
-            } catch (e) { alert("Conta inválida!"); }
+                socket.onopen = () => socket.send(JSON.stringify({type: 'JOIN', nome: meuNome}));
+                socket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'INFO_PLAYER') {
+                        souHost = data.isHost;
+                        document.querySelector('.aviso-host').style.display = souHost ? 'block' : 'none';
+                        document.getElementById('btn-encerrar-host').style.display = souHost ? 'block' : 'none';
+                        document.getElementById('msg-espera-host').style.display = souHost ? 'none' : 'block';
+                    }
+                    if (data.type === 'LISTA') {
+                        const qtdAntiga = document.querySelectorAll('.item-lobby').length;
+                        if(data.lista.length > qtdAntiga) tocarSom('entrou');
+                        atualizarListas(data.lista);
+                        atualizarRankingBar(data.lista);
+                        const eu = data.lista.find(p => p.nome === meuNome);
+                        if(eu && eu.eliminado) document.getElementById('modal-eliminado').style.display = 'flex';
+                        if(eu) document.getElementById('minhas-fichas-topo').innerText = eu.fichas;
+                        const host = data.lista.find(p => p.isHost);
+                        if(host && host.nome === meuNome) souHost = true;
+                        if(souHost) document.getElementById('btn-iniciar').style.display = 'block';
+                    }
+                    if (data.type === 'INICIO_NEGOCIACAO') {
+                        esconderModais(); tocarSom('sirene');
+                        document.getElementById('modal-negociacao').style.display = 'flex';
+                    }
+                    if (data.type === 'CHAT_UPDATE') {
+                        tocarSom('msg');
+                        const box = document.getElementById('chat-box');
+                        box.innerHTML = "";
+                        data.log.forEach(l => {
+                            if(l.sistema) box.innerHTML += `<div class="chat-msg sistema">${l.msg}</div>`;
+                            else box.innerHTML += `<div class="chat-msg"><b>${l.nome}:</b> ${l.msg}</div>`;
+                        });
+                        box.scrollTop = box.scrollHeight;
+                    }
+                    if (data.type === 'SUA_MAO') {
+                        esconderModais(); mudarTela('tela-jogo');
+                        const r = data.rodada;
+                        document.getElementById('info-rodada').innerText = `Rodada ${r}${r%5===0?' 💀':' '}`;
+                        limpar(); alvoAtual = data.alvo; iniciarTimer(60);
+                        document.getElementById('alvo-display').innerText = "ALVO: " + alvoAtual;
+                        const area = document.getElementById('area-cartas');
+                        area.innerHTML = "";
+                        data.cartas.forEach(num => {
+                            let v = num;
+                            if(v===1) v="A"; if(v===10) v="0"; if(v===11) v="J"; if(v===12) v="Q"; if(v===13) v="K";
+                            const n = ['H','D','C','S'][Math.floor(Math.random()*4)];
+                            area.innerHTML += `<img src="https://deckofcardsapi.com/static/img/${v}${n}.png" class="carta-real" onclick="usarCarta('${num}')">`;
+                        });
+                    }
+                    if (data.type === 'FIM_RODADA') {
+                        document.getElementById('modal-rodada').style.display = 'flex';
+                        document.getElementById('txt-vencedor').innerText = `${data.vencedor} Venceu!`;
+                        document.getElementById('txt-premio').innerText = `${data.premio>=0?'+':''}${data.premio} 💰`;
+                        document.getElementById('txt-premio').style.color = data.premio<0?"#FF5252":"var(--ouro)";
+                        document.getElementById('txt-detalhe').innerText = `Res: ${data.valor} (${data.tempo}s)`;
+                        if(data.vencedor===meuNome && data.premio>0) tocarSom('vitoria');
+                    }
+                    if (data.type === 'GAME_OVER') {
+                        esconderModais(); tocarSom('aplauso');
+                        document.getElementById('modal-gameover').style.display = 'flex';
+                        document.getElementById('final-winner-name').innerText = data.vencedor;
+                        document.getElementById('final-fichas').innerText = "💰 " + data.totalFichas;
+                    }
+                };
+            } catch (e) { alert("Erro de rede!"); }
         }
 
-        function desistir() {
-            if(confirm("Desistir rodada? Você ficará com 9999 de distância, mas não perderá fichas extras.")) {
-                socket.send(JSON.stringify({type:'DESISTIR'}));
-                mudarTela('tela-lobby');
-                document.getElementById('msg-lobby').innerText = "Você desistiu desta rodada.";
-            }
+        function atualizarRankingBar(lista) {
+            const bar = document.getElementById('barra-ranking'); bar.innerHTML = "";
+            const sorted = [...lista].sort((a,b)=>b.fichas-a.fichas);
+            sorted.forEach((p,i)=>{
+                let c = "rank-item"; if(i===0) c+=" lider"; if(p.eliminado) c+=" eliminado";
+                bar.innerHTML += `<div class="${c}">${p.eliminado?'💀':'👤'} ${p.nome}: ${p.fichas}</div>`;
+            });
         }
 
-        function iniciarPartida() {
-            socket.send(JSON.stringify({ type: 'START_GAME' }));
-        }
-
-        function encerrarDiscordia() {
-            socket.send(JSON.stringify({ type: 'ENCERRAR_DISCORDIA' }));
-        }
-        
-        // Chat e Doação
-        function enviarChatTexto() {
-            const input = document.getElementById('input-chat');
-            const msg = input.value;
-            if(msg) {
-                socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:msg}));
-                input.value="";
-            }
-        }
-
-        function doarFichas(nomeDestino) {
-            const valor = prompt(`Quanto quer doar para ${nomeDestino}? (Você pulará a próxima rodada!)`);
-            if (valor && parseInt(valor) > 0) {
-                socket.send(JSON.stringify({type:'DOAR_FICHAS', para:nomeDestino, valor:valor}));
-            }
-        }
-
-        // UI Auxiliar
-        function toggleRanking() {
-            const modal = document.getElementById('modal-ranking');
-            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function atualizarRanking(lista) {
-            const ul = document.getElementById('lista-ranking');
-            const listaDoacao = document.getElementById('lista-doacao');
+        function atualizarListas(lista) {
+            const lobby = document.getElementById('lista-lobby'); lobby.innerHTML = "";
+            const painel = document.getElementById('painel-jogadores'); painel.innerHTML = "";
+            const doacao = document.getElementById('lista-doacao'); doacao.innerHTML = "";
             
-            ul.innerHTML = "";
-            listaDoacao.innerHTML = "";
-            
-            // Ordena por fichas
-            lista.sort((a,b) => b.fichas - a.fichas);
-            
-            lista.forEach((j, i) => {
-                // Lista Principal
-                const li = document.createElement('li');
-                li.className = `item-ranking ${j.eliminado ? 'eliminado' : ''} ${i===0 ? 'lider' : ''}`;
-                li.innerHTML = `
-                    <span>${i+1}. ${j.nome} ${j.isHost ? '👑' : ''}</span>
-                    <span>${j.fichas}</span>
-                `;
-                ul.appendChild(li);
-                
-                // Lista de Doação (Discórdia) - Só mostra outros vivos
-                if (j.nome !== meuNome && !j.eliminado) {
-                    const div = document.createElement('div');
-                    div.style.marginBottom = "10px";
-                    div.innerHTML = `
-                        <button onclick="doarFichas('${j.nome}')" style="background:#444; color:#fff; border:1px solid #777; padding:5px; width:100%;">
-                            Doar para ${j.nome} (${j.fichas})
-                        </button>
-                    `;
-                    listaDoacao.appendChild(div);
+            lista.forEach(p => {
+                lobby.innerHTML += `<div class="item-lobby"><span>${p.nome}</span><span>💰 ${p.fichas}</span></div>`;
+                if(!p.eliminado && !p.esperando) painel.innerHTML += `<div class="tag-player ${p.pronto?'pronto':''}">${p.nome} ${p.pronto?'✅':'🤔'}</div>`;
+                if(!p.eliminado && p.nome!==meuNome) {
+                    doacao.innerHTML += `<div class="item-doacao"><span>${p.nome}</span><div class="btn-group-doar">
+                        <button class="btn-doar" onclick="doarFichas('${p.nome}',50)">50</button>
+                        <button class="btn-doar" onclick="doarFichas('${p.nome}',100)">100</button>
+                    </div></div>`;
                 }
             });
         }
 
-        function mostrarResultado(data) {
-            const modal = document.getElementById('modal-resultado');
-            const titulo = document.getElementById('res-titulo');
-            const msg = document.getElementById('res-msg');
-            const extra = document.getElementById('res-extra');
-
-            titulo.innerText = `VENCEDOR: ${data.vencedor}`;
-            msg.innerHTML = `
-                Resultado: <b>${data.valor}</b> (Dist: ${data.dist})<br>
-                Prêmio: <span style="color:var(--verde-neon)">+${data.premio}</span>
-            `;
-            extra.innerText = data.msgExtra || "";
-
-            modal.style.display = 'flex';
-            
-            // Fecha sozinho após 7s
-            setTimeout(() => { modal.style.display = 'none'; }, 7000);
+        function iniciarTimer(s) {
+            tempoRestante = s; const b = document.getElementById('barra-tempo');
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                tempoRestante--; b.style.width = ((tempoRestante/60)*100) + '%';
+                if(tempoRestante<=20) b.style.background="#FF5252"; else b.style.background="var(--verde-neon)";
+                if(tempoRestante<=0) clearInterval(timerInterval);
+            }, 1000);
         }
 
-        function mudarTela(id) {
-            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-            document.getElementById(id).classList.add('ativa');
+        function enviar() {
+            if(qtdCartasUsadas<3) return alert("Use 3+ cartas!");
+            try {
+                const res = eval(conta.replace(/[^0-9\+\-\*\/\(\)\.]/g, ''));
+                socket.send(JSON.stringify({ type:'JOGADA', nome:meuNome, valor:res, distancia:Math.abs(alvoAtual-res), tempo:60-tempoRestante }));
+                document.getElementById('btn-enviar').style.display='none';
+            } catch(e) { alert("Conta inválida!"); }
         }
 
-        function esconderModais() {
-            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-        }
-
+        function desistir() { if(confirm("Desistir rodada?")) { socket.send(JSON.stringify({type:'DESISTIR', nome:meuNome})); } }
+        function enviarChatTexto() { const t=document.getElementById('input-chat').value; if(t){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:t})); document.getElementById('input-chat').value=""; } }
+        function enviarChat(m){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:m})); }
+        function enviarChat(m){ socket.send(JSON.stringify({type:'CHAT_MSG', nome:meuNome, msg:m})); }
+        function doarFichas(p,v){ if(confirm(`Doar ${v}?`)){ socket.send(JSON.stringify({type:'DOAR_FICHAS', de:meuNome, para:p, valor:v})); } }
+        function encerrarDiscordia(){ socket.send(JSON.stringify({type:'ENCERRAR_DISCORDIA'})); }
+        function add(v){ conta+=v; document.getElementById('visor-conta').innerText=conta; }
+        function limpar(){ conta=""; qtdCartasUsadas=0; document.getElementById('visor-conta').innerText="_"; }
+        function mudarTela(id){ document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa')); document.getElementById(id).classList.add('ativa'); }
+        function esconderModais(){ document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); }
+        function copiarLink(){ navigator.clipboard.writeText(document.getElementById('link-texto').innerText); alert("Link Copiado!"); }
     </script>
 </body>
 </html>
